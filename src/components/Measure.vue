@@ -1,47 +1,130 @@
 <template>
   <div class="measure">
       <div class="strings" v-for="(string, key) in tab.strings" :key="key">
-        <StringComponent :notes="string.notes"/>
+        <StringComponent :bars="string.bars" :tuning="string.tuning"/>
       </div>
   </div>
 </template>
 
 <script>
-
-import StringComponent from './String.vue'
+import StringComponent from "./String.vue";
 
 export default {
-  name: 'Measure',
+  name: "Measure",
   components: {
     StringComponent
   },
-  data: function(){
+  data: function() {
     return {
-        tab: {
+      tab: {
         strings: [
-            {
-            notes: ['3','1','1','0']
-            },
-            {
-            notes: ['3','3','1','1']
-            },
-            {
-            notes: ['0','2','2','0']
-            },
-            {
-            notes: ['0','0','3','2']
-            },
-            {
-            notes: ['2','-','3','3']
-            },
-            {
-            notes: ['3','-','1','0']
-            }
+          {
+            tuning: "e",
+            bars: [
+              {
+                notes: ["3", "1", "1", "0"]
+              },
+              {
+                notes: ["3", "1", "1", "0"]
+              },
+              {
+                notes: ["3", "1", "1", "0"]
+              },
+              {
+                notes: ["3", "1", "1", "0"]
+              }
+            ]
+          },
+          {
+            tuning: "B",
+            bars: [
+              {
+                notes: ["3", "3", "1", "1"]
+              },
+              {
+                notes: ["3", "3", "1", "1"]
+              },
+              {
+                notes: ["3", "3", "1", "1"]
+              },
+              {
+                notes: ["3", "3", "1", "1"]
+              }
+            ]
+          },
+          {
+            tuning: "G",
+            bars: [
+              {
+                notes: ["0", "2", "2", "0"]
+              },
+              {
+                notes: ["0", "2", "2", "0"]
+              },
+              {
+                notes: ["0", "2", "2", "0"]
+              },
+              {
+                notes: ["0", "2", "2", "0"]
+              }
+            ]
+          },
+          {
+            tuning: "D",
+            bars: [
+              {
+                notes: ["0", "0", "3", "2"]
+              },
+              {
+                notes: ["0", "0", "3", "2"]
+              },
+              {
+                notes: ["0", "0", "3", "2"]
+              },
+              {
+                notes: ["0", "0", "3", "2"]
+              }
+            ]
+          },
+          {
+            tuning: "A",
+            bars: [
+              {
+                notes: ["2", "-", "3", "3"]
+              },
+              {
+                notes: ["2", "-", "3", "3"]
+              },
+              {
+                notes: ["2", "-", "3", "3"]
+              },
+              {
+                notes: ["2", "-", "3", "3"]
+              }
+            ]
+          },
+          {
+            tuning: "E",
+            bars: [
+              {
+                notes: ["3", "-", "1", "-"]
+              },
+              {
+                notes: ["3", "-", "1", "-"]
+              },
+              {
+                notes: ["3", "-", "1", "-"]
+              },
+              {
+                notes: ["3", "-", "1", "-"]
+              }
+            ]
+          }
         ]
-    }   
-}
+      }
+    };
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -65,8 +148,8 @@ h1 {
   font-size: 48pt;
 }
 
-.tab-staff {
-  font-size: 36pt;
-  font-family: 'Courier New', Courier, monospace;
+.annotations {
+  font-size: 18pt;
+  font-family: "Courier New", Courier, monospace;
 }
 </style>
