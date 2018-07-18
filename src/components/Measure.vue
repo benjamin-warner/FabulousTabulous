@@ -1,8 +1,14 @@
 <template>
   <div class="measure">
-    <span class="bars-list" v-for="(bar, barKey) in tab.bars" :key="barKey">
-      <BarComponent :beats="bar"/>
-    </span>
+    <table>
+      <tbody>
+        <tr>
+          <td v-for="(bar, strum) in tab.bars" :key="strum">
+            <BarComponent :beats="bar.beats"/>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -19,7 +25,7 @@ export default {
       tab: {
         bars: [
           {
-            sounds: [
+            beats: [
               [
               '0',
               '1',
@@ -35,7 +41,7 @@ export default {
             ]
           },
           {
-            sounds: [
+            beats: [
               [
                 '8',
                 '9',
@@ -49,7 +55,39 @@ export default {
                 '15'
               ]
             ]
-          }
+          },
+          {
+            beats: [
+              [
+              '0',
+              '1',
+              '2',
+              '3'
+            ],   
+            [
+              '4',
+              '5',
+              '6',
+              '7'
+            ]
+            ]            
+          },
+          {
+            beats: [
+              [
+              '0',
+              '1',
+              '2',
+              '3'
+            ],   
+            [
+              '4',
+              '5',
+              '6',
+              '7'
+            ]
+            ]            
+          }          
         ]
       }
     }
