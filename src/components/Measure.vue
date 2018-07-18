@@ -1,8 +1,14 @@
 <template>
   <div class="measure">
-      <div class="strings" v-for="(string, key) in tab.strings" :key="key">
-        <StringComponent :bars="string.bars" :tuning="string.tuning"/>
-      </div>
+      <table>
+        <tbody>
+          <tr v-for="(strum, bar) in tab.bars" :key="bar">
+            <td v-for="(notes, string) in strum.sounds" :key="string">
+              {{strum.sounds[string][bar]}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
   </div>
 </template>
 
@@ -17,114 +23,28 @@ export default {
   data: function() {
     return {
       tab: {
-        strings: [
+        bars: [
           {
-            tuning: "e",
-            bars: [
-              {
-                notes: ["3", "1", "1", "0"]
-              },
-              {
-                notes: ["3", "1", "1", "0"]
-              },
-              {
-                notes: ["3", "1", "1", "0"]
-              },
-              {
-                notes: ["3", "1", "1", "0"]
-              }
+            sounds:[
+              [
+              '0',
+              '1',
+              '2',
+              '3'
+            ],   
+            [
+              '4',
+              '5',
+              '6',
+              '7'
             ]
-          },
-          {
-            tuning: "B",
-            bars: [
-              {
-                notes: ["3", "3", "1", "1"]
-              },
-              {
-                notes: ["3", "3", "1", "1"]
-              },
-              {
-                notes: ["3", "3", "1", "1"]
-              },
-              {
-                notes: ["3", "3", "1", "1"]
-              }
-            ]
-          },
-          {
-            tuning: "G",
-            bars: [
-              {
-                notes: ["0", "2", "2", "0"]
-              },
-              {
-                notes: ["0", "2", "2", "0"]
-              },
-              {
-                notes: ["0", "2", "2", "0"]
-              },
-              {
-                notes: ["0", "2", "2", "0"]
-              }
-            ]
-          },
-          {
-            tuning: "D",
-            bars: [
-              {
-                notes: ["0", "0", "3", "2"]
-              },
-              {
-                notes: ["0", "0", "3", "2"]
-              },
-              {
-                notes: ["0", "0", "3", "2"]
-              },
-              {
-                notes: ["0", "0", "3", "2"]
-              }
-            ]
-          },
-          {
-            tuning: "A",
-            bars: [
-              {
-                notes: ["2", "-", "3", "3"]
-              },
-              {
-                notes: ["2", "-", "3", "3"]
-              },
-              {
-                notes: ["2", "-", "3", "3"]
-              },
-              {
-                notes: ["2", "-", "3", "3"]
-              }
-            ]
-          },
-          {
-            tuning: "E",
-            bars: [
-              {
-                notes: ["3", "-", "1", "-"]
-              },
-              {
-                notes: ["3", "-", "1", "-"]
-              },
-              {
-                notes: ["3", "-", "1", "-"]
-              },
-              {
-                notes: ["3", "-", "1", "-"]
-              }
             ]
           }
         ]
       }
-    };
+    }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
