@@ -2,9 +2,9 @@
   <div class="measure">
       <table>
         <tbody>
-          <tr v-for="(strum, bar) in tab.bars" :key="bar">
-            <td v-for="(notes, string) in strum.sounds" :key="string">
-              {{strum.sounds[string][bar]}}
+          <tr v-for="(note, string) in tab.bars[0].sounds[0]" :key="string">
+            <td v-for="(notes, strum) in tab.bars[0].sounds" :key="strum">
+              {{tab.bars[0].sounds[strum][string]}}
             </td>
           </tr>
         </tbody>
