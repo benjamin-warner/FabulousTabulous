@@ -1,31 +1,25 @@
 <template>
   <div class="measure">
-      <table>
-        <tbody>
-          <tr v-for="(note, string) in tab.bars[0].sounds[0]" :key="string">
-            <td v-for="(notes, strum) in tab.bars[0].sounds" :key="strum">
-              {{tab.bars[0].sounds[strum][string]}}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+    <span class="bars-list" v-for="(bar, barKey) in tab.bars" :key="barKey">
+      <BarComponent :beats="bar"/>
+    </span>
   </div>
 </template>
 
 <script>
-import StringComponent from "./String.vue";
+import BarComponent from "./Bar.vue";
 
 export default {
   name: "Measure",
   components: {
-    StringComponent
+    BarComponent
   },
   data: function() {
     return {
       tab: {
         bars: [
           {
-            sounds:[
+            sounds: [
               [
               '0',
               '1',
@@ -38,6 +32,22 @@ export default {
               '6',
               '7'
             ]
+            ]
+          },
+          {
+            sounds: [
+              [
+                '8',
+                '9',
+                '10',
+                '11',
+              ],
+              [
+                '12',
+                '13',
+                '14',
+                '15'
+              ]
             ]
           }
         ]
