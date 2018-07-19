@@ -2,16 +2,15 @@
   <div class="measure">
     <table>
       <tbody>
-        <tr v-for="(bar, barKey) in tab.bars" :key="barKey">
-          <td v-for="(beat, beatKey) in bar.beats" :key="beatKey">
-            <span v-for="(note, noteKey) in beat" :key="noteKey">
-              -{{tab.bars[beatKey].beats[noteKey][barKey]}}-
-            </span>|
+        <tr v-for="(string, stringKey) in tab.strings" :key="stringKey">{{string}}
+          <td v-for="(note, noteKey) in tab.strings" :key="noteKey">
+            |-<span v-for="(beat, beatKey) in tab.bars" :key="beatKey">-{{tab.bars[beatKey].beats[beatKey][stringKey]}}-</span>-
           </td>
         </tr>
       </tbody>
     </table>
   </div>
+  <!-- {{tab.bars[stringKey].beats[noteKey][barKey]}} -->
 </template>
 
 <script>
@@ -25,6 +24,14 @@ export default {
   data: function() {
     return {
       tab: {
+        strings:[
+          'e',
+          'B',
+          'G',
+          'D',
+          'A',
+          'E'
+        ],
         bars: [
           {
             beats: [
@@ -32,25 +39,33 @@ export default {
               '00',
               '01',
               '02',
-              '03'
+              '03',
+              '09',
+              '09'
             ],   
             [
               '04',
               '05',
               '06',
-              '07'
+              '07',
+              '09',
+              '09'
             ],
               [
               '01',
               '01',
               '02',
-              '03'
+              '03',
+              '09',
+              '09'
             ],   
             [
               '04',
               '05',
               '06',
-              '07'
+              '07',
+              '09',
+              '09'
             ]            
             ]
           },
@@ -60,25 +75,33 @@ export default {
               '11',
               '11',
               '12',
-              '13'
+              '13',
+              '09',
+              '09'
             ],   
             [
               '14',
               '15',
               '16',
-              '17'
+              '17',
+              '09',
+              '09'
             ],
               [
               '11',
               '11',
               '12',
-              '13'
+              '13',
+              '09',
+              '09'
             ],   
             [
               '14',
               '15',
               '16',
-              '17'
+              '17',
+              '09',
+              '09'
             ]
             ]
           },
@@ -88,25 +111,33 @@ export default {
               '20',
               '21',
               '22',
-              '23'
+              '23',
+              '09',
+              '09'
             ],   
             [
               '24',
               '25',
               '26',
-              '27'
+              '27',
+              '09',
+              '09'
             ],
             [
               '20',
               '21',
               '22',
-              '23'
+              '23',
+              '09',
+              '09'
             ],   
             [
               '24',
               '25',
               '26',
-              '27'
+              '27',
+              '09',
+              '09'
             ]
             ]            
           },
@@ -116,25 +147,33 @@ export default {
               '30',
               '31',
               '32',
-              '33'
+              '33',
+              '09',
+              '09'
             ],   
             [
               '34',
               '35',
               '36',
-              '37'
+              '37',
+              '09',
+              '09'
             ],
             [
               '30',
               '31',
               '32',
-              '33'
+              '33',
+              '09',
+              '09'
             ],   
             [
               '34',
               '35',
               '36',
-              '37'
+              '37',
+              '09',
+              '09'
             ]
             ],            
           }          
