@@ -1,6 +1,10 @@
 <template>
-  <span class="bar">
-    {{beats}}
+  <span class="bar" >
+    <span v-for="(note, noteKey) in beats[0]" :key="noteKey">
+      <span v-for="(beat, beatKey) in beats" :key="beatKey">
+        {{ beats[beatKey][noteKey] }}
+      </span>|
+    </span>
   </span>
 </template>
 
@@ -26,7 +30,4 @@ h1 {
   font-family: 'Courier New', Courier, monospace;
 }
 
-table{
-    display: inline-block;
-}
 </style>

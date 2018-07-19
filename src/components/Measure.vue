@@ -2,9 +2,11 @@
   <div class="measure">
     <table>
       <tbody>
-        <tr>
-          <td v-for="(bar, strum) in tab.bars" :key="strum">
-            <BarComponent :beats="bar.beats"/>
+        <tr v-for="(bar, barKey) in tab.bars" :key="barKey">
+          <td v-for="(beat, beatKey) in bar.beats" :key="beatKey">
+            <span v-for="(note, noteKey) in beat" :key="noteKey">
+              -{{tab.bars[beatKey].beats[noteKey][barKey]}}-
+            </span>|
           </td>
         </tr>
       </tbody>
@@ -27,66 +29,114 @@ export default {
           {
             beats: [
               [
-              '0',
-              '1',
-              '2',
-              '3'
+              '00',
+              '01',
+              '02',
+              '03'
             ],   
             [
-              '4',
-              '5',
-              '6',
-              '7'
+              '04',
+              '05',
+              '06',
+              '07'
+            ],
+              [
+              '01',
+              '01',
+              '02',
+              '03'
+            ],   
+            [
+              '04',
+              '05',
+              '06',
+              '07'
+            ]            
+            ]
+          },
+          {
+            beats: [
+              [
+              '11',
+              '11',
+              '12',
+              '13'
+            ],   
+            [
+              '14',
+              '15',
+              '16',
+              '17'
+            ],
+              [
+              '11',
+              '11',
+              '12',
+              '13'
+            ],   
+            [
+              '14',
+              '15',
+              '16',
+              '17'
             ]
             ]
           },
           {
             beats: [
               [
-                '8',
-                '9',
-                '10',
-                '11',
-              ],
-              [
-                '12',
-                '13',
-                '14',
-                '15'
-              ]
-            ]
-          },
-          {
-            beats: [
-              [
-              '0',
-              '1',
-              '2',
-              '3'
+              '20',
+              '21',
+              '22',
+              '23'
             ],   
             [
-              '4',
-              '5',
-              '6',
-              '7'
+              '24',
+              '25',
+              '26',
+              '27'
+            ],
+            [
+              '20',
+              '21',
+              '22',
+              '23'
+            ],   
+            [
+              '24',
+              '25',
+              '26',
+              '27'
             ]
             ]            
           },
           {
             beats: [
               [
-              '0',
-              '1',
-              '2',
-              '3'
+              '30',
+              '31',
+              '32',
+              '33'
             ],   
             [
-              '4',
-              '5',
-              '6',
-              '7'
+              '34',
+              '35',
+              '36',
+              '37'
+            ],
+            [
+              '30',
+              '31',
+              '32',
+              '33'
+            ],   
+            [
+              '34',
+              '35',
+              '36',
+              '37'
             ]
-            ]            
+            ],            
           }          
         ]
       }
@@ -114,6 +164,16 @@ a {
 
 h1 {
   font-size: 48pt;
+}
+
+table, caption, tbody, tfoot, thead, tr, th, td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
 }
 
 .annotations {
