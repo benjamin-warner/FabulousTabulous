@@ -1,13 +1,13 @@
 <template>
   <div class="measure">
-    <table>
+    <table >
       <tbody>
         <tr v-for="(string, stringKey) in tab.strings" :key="stringKey">{{string}}
-          <td v-for="(note, noteKey) in tab.strings" :key="noteKey">
-            |-<span v-for="(beat, beatKey) in tab.bars" :key="beatKey">-{{tab.bars[beatKey].beats[beatKey][stringKey]}}-</span>-
+          <td v-for="(bar, barKey) in tab.bars" :key="barKey">
+            |-<span v-for="(beat, beatKey) in bar.beats" :key="beatKey">-{{tab.bars[barKey].beats[beatKey][stringKey]}}-</span>-
           </td>
         </tr>
-      </tbody>
+      </tbody>  
     </table>
   </div>
   <!-- {{tab.bars[stringKey].beats[noteKey][barKey]}} -->
@@ -36,56 +36,56 @@ export default {
           {
             beats: [
               [
-              '00',
+              '01',
               '01',
               '02',
               '03',
               '09',
-              '09'
+              '84'
             ],   
             [
-              '04',
+              '23',
               '05',
               '06',
               '07',
               '09',
-              '09'
+              '85'
             ],
               [
-              '01',
+              '45',
               '01',
               '02',
               '03',
               '09',
-              '09'
+              '86'
             ],   
             [
-              '04',
+              '67',
               '05',
               '06',
               '07',
               '09',
-              '09'
+              '87'
             ]            
             ]
           },
           {
             beats: [
               [
-              '11',
+              '89',
               '11',
               '12',
               '13',
               '09',
-              '09'
+              '88'
             ],   
             [
-              '14',
+              '10',
               '15',
               '16',
               '17',
               '09',
-              '09'
+              '89'
             ],
               [
               '11',
@@ -93,87 +93,87 @@ export default {
               '12',
               '13',
               '09',
-              '09'
+              '90'
             ],   
             [
-              '14',
+              '12',
               '15',
               '16',
               '17',
               '09',
-              '09'
+              '91'
             ]
             ]
           },
           {
             beats: [
               [
-              '20',
+              '13',
               '21',
               '22',
               '23',
               '09',
-              '09'
+              '92'
             ],   
             [
-              '24',
+              '14',
               '25',
               '26',
               '27',
               '09',
-              '09'
+              '93'
             ],
             [
-              '20',
+              '15',
               '21',
               '22',
               '23',
               '09',
-              '09'
+              '94'
             ],   
             [
-              '24',
+              '16',
               '25',
               '26',
               '27',
               '09',
-              '09'
+              '95'
             ]
             ]            
           },
           {
             beats: [
               [
-              '30',
+              '17',
               '31',
               '32',
               '33',
               '09',
-              '09'
+              '96'
             ],   
             [
-              '34',
+              '18',
               '35',
               '36',
               '37',
               '09',
-              '09'
+              '97'
             ],
             [
-              '30',
+              '19',
               '31',
               '32',
               '33',
               '09',
-              '09'
+              '98'
             ],   
             [
-              '34',
+              '20',
               '35',
               '36',
               '37',
               '09',
-              '09'
+              '99'
             ]
             ],            
           }          
@@ -186,26 +186,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+table {
+  padding: 1px;
+   border: 1px solid black;
 }
 
-h1 {
-  font-size: 48pt;
+td {
+  padding: 1px;
+   border: 1px solid red;
 }
 
-table, caption, tbody, tfoot, thead, tr, th, td {
+/* table, caption, tbody, tfoot, thead, tr, th, td {
     margin: 0;
     padding: 0;
     border: 0;
@@ -213,10 +205,10 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     font-size: 100%;
     vertical-align: baseline;
     background: transparent;
+} */
+
+.measure {
+  font-family: 'Courier New', Courier, monospace;
 }
 
-.annotations {
-  font-size: 18pt;
-  font-family: "Courier New", Courier, monospace;
-}
 </style>
