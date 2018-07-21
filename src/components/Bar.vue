@@ -3,7 +3,7 @@
     <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
       <div class="bar-block">
         <div v-for="(string, stringKey) in tuning" :key="stringKey">
-         {{spacer}}
+         <span v-if="beatKey === 0"><strong>|</strong></span>{{spacer}}
         </div>
       </div>        
       <div class="beat bar-block">
@@ -12,11 +12,6 @@
         </div>
       </div>      
     </div>
-    <div class="bar-block">
-          <div v-for="(string, stringKey) in tuning" :key="stringKey">
-          {{spacer}}
-        </div>
-      </div>
   </div>
 </template>
 

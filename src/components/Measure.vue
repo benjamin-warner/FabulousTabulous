@@ -2,16 +2,11 @@
   <div class="measure">
     <div class="tuning">
       <div v-for="(tune, tuneKey) in tab.tuning" :key="tuneKey">
-        <strong>{{tune}}|</strong>
+        <strong>{{tune}}</strong>
       </div>
     </div>
     <span v-for="(bar, barKey) in tab.bars" :key="barKey">
       <BarComponent :barData="bar" :tuning="tab.tuning" :spacer="spacer"/>
-      <div class="bar-block">
-        <div v-for="(tune, tuneKey) in tab.tuning" :key="tuneKey">
-          <strong>|</strong>
-        </div>
-      </div>
     </span>
   </div>
 </template>
