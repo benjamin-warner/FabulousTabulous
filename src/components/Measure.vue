@@ -6,7 +6,12 @@
       </div>
     </div>
     <span v-for="(bar, barKey) in tab.bars" :key="barKey">
-      <BarComponent :barData="bar" :tuning="tab.tuning"/>
+      <BarComponent :barData="bar" :tuning="tab.tuning" :spacer="spacer"/>
+      <div class="bar-block">
+        <div v-for="(tune, tuneKey) in tab.tuning" :key="tuneKey">
+          <strong>|</strong>
+        </div>
+      </div>
     </span>
   </div>
 </template>
@@ -21,6 +26,7 @@ export default {
   },
   data: function() {
     return {
+      spacer: '--',
       tab: {
         tuning:[
         'e',
@@ -189,7 +195,12 @@ export default {
   display: inline-block;
 }
 
+.bar-block{
+  display: inline-block;
+}
+
 .measure {
+  font-size: 14pt;
   font-family: 'Courier New', Courier, monospace;
 }
 
