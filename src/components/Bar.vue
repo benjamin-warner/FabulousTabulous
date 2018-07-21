@@ -1,18 +1,21 @@
 <template>
   <span class="bar" >
-    <span v-for="(note, noteKey) in beats[0]" :key="noteKey">
+    {{this.$parent.tab.tuning.length}}
+    <span v-for="(string, stringKey) in this.$parent.tab.tuning.length" :key="stringKey"></span>
+    <!-- <span v-for="(note, noteKey) in beats[0]" :key="noteKey">
       <span v-for="(beat, beatKey) in beats" :key="beatKey">
         {{ beats[beatKey][noteKey] }}
       </span>|
-    </span>
+    </span> -->
   </span>
+  <!-- <strong>|</strong>-<span class="three" v-for="(beat, beatKey) in bar.beats" :key="beatKey">-<strong>{{tab.bars[barKey].beats[beatKey][stringKey]}}</strong>-</span> -->
 </template>
 
 <script>
 export default {
   name: 'Bar',
   props: {
-      beats: undefined
+      barData: undefined
   }
 }
 

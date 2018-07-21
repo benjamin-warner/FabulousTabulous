@@ -1,8 +1,6 @@
 <template>
   <div class="measure">
-        <div class="one" v-for="(string, stringKey) in tab.strings" :key="stringKey"><strong>{{string}}</strong>
-          <span class="two" v-for="(bar, barKey) in tab.bars" :key="barKey"><strong>|</strong>-<span class="three" v-for="(beat, beatKey) in bar.beats" :key="beatKey">-<strong>{{tab.bars[barKey].beats[beatKey][stringKey]}}</strong>-</span>-</span>
-        </div>
+      <span v-for="(bar, barKey) in tab.bars" :key="barKey"><strong>{{barKey}}</strong><BarComponent :barData="bar"/></span>
   </div>
 </template>
 
@@ -17,13 +15,13 @@ export default {
   data: function() {
     return {
       tab: {
-        strings:[
-          'e',
-          'B',
-          'G',
-          'D',
-          'A',
-          'E'
+        tuning:[
+        'e',
+        'B',
+        'G',
+        'D',
+        'A',
+        'E'
         ],
         bars: [
           {
