@@ -1,6 +1,13 @@
 <template>
   <div class="measure">
-      <span v-for="(bar, barKey) in tab.bars" :key="barKey"><strong>{{barKey}}</strong><BarComponent :barData="bar"/></span>
+    <div class="tuning">
+      <div v-for="(tune, tuneKey) in tab.tuning" :key="tuneKey">
+        <strong>{{tune}}|</strong>
+      </div>
+    </div>
+    <span v-for="(bar, barKey) in tab.bars" :key="barKey">
+      <BarComponent :barData="bar" :tuning="tab.tuning"/>
+    </span>
   </div>
 </template>
 
@@ -27,11 +34,11 @@ export default {
           {
             beats: [
               [
-              '01',
+              '00',
               '01',
               '02',
               '03',
-              '09',
+              '04',
               '84'
             ],   
             [
@@ -178,14 +185,8 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.one {
-  padding: 1px;
-   border: 1px solid black;
-} 
-
- .two {
-  padding: 1px;
-   border: 1px solid red;
+.tuning {
+  display: inline-block;
 }
 
 .measure {
