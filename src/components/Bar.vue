@@ -1,21 +1,43 @@
 <template>
-  <div class="bar noselect">
-    <div v-for="(string, stringKey) in tuning.length" :key="stringKey">
-      <span v-for="(beat, beatKey) in barData.beats" :key="beatKey">{{spacer}}<strong>{{barData.beats[beatKey][stringKey]}}</strong></span>{{spacer}}<strong>|</strong>
+  <div class="bar bar-block noselect" v-on:click="onBarSelected(index)">
+    <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
+      <div class="bar-block" v-on:click="onBeatSelected(beatKey)">
+        <div v-for="(string, stringKey) in tuning" :key="stringKey">
+         <span v-if="beatKey === 0"><strong>|</strong></span>{{spacer}}
+        </div>
+      </div>        
+      <div class="beat bar-block">
+        <div v-for="(string, stringKey) in tuning" :key="stringKey">
+          <strong><span class="note" v-on:click="onNoteSelected(stringKey)">{{barData.beats[beatKey][stringKey]}}</span></strong>
+        </div>
+      </div>      
     </div>
   </div>
 </template>
 
 <script>
+/* eslint-disable */
 export default {
   name: 'Bar',
   props: {
+    index: Number,
     tuning: undefined,
-    barData: undefined
+    barData: undefined,
+    spacer: String,
   },
   data: function(){
     return{
-      spacer: '--'
+    }
+  },
+  methods: {
+    onBarSelected: function(index){
+      console.log("bar", index);
+    },
+    onBeatSelected: function(index){
+      console.log("beat", index);
+    },
+    onNoteSelected: function(index){
+      console.log("note", index);
     }
   }
 }
@@ -25,18 +47,25 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-h1 {
-  font-size: 48pt;
+.bar {
+  font-size: 14pt;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-.bar {
+.bar-block{
   display: inline-block;
-  font-size: 12pt;
-  font-family: 'Courier New', Courier, monospace;
 }
 
 .bar:hover{
   background: yellowgreen;
+}
+
+.beat:hover{
+  background: powderblue;
+}
+
+.note:hover{
+  background: tomato;
 }
 
 .noselect {
