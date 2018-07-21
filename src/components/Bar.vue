@@ -2,11 +2,10 @@
   <div class="bar noselect" v-on:click="onBarSelected">
     <div class="beat" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
       <div v-for="(string, stringKey) in tuning" :key="stringKey">
-        {{spacer}}<strong>{{barData.beats[beatKey][stringKey]}}</strong>
+        {{spacer}}<strong>{{barData.beats[beatKey][stringKey]}}</strong><span v-if="beatKey === barData.beats.length-1">{{spacer}}<strong>|</strong></span>
       </div>
     </div>
   </div>
-  <!-- <span v-for="(beat, beatKey) in barData.beats" :key="beatKey">{{spacer}}<strong>{{barData.beats[beatKey][stringKey]}}</strong></span>{{spacer}}<strong>|</strong> -->
 </template>
 
 <script>
@@ -49,6 +48,10 @@ h1 {
 
 .beat{
   display: inline-block;
+}
+
+.beat:hover{
+  background: tomato;
 }
 
 .noselect {
