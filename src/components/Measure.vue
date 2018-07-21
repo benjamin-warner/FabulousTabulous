@@ -1,16 +1,9 @@
 <template>
   <div class="measure">
-    <table >
-      <tbody>
-        <tr v-for="(string, stringKey) in tab.strings" :key="stringKey">{{string}}
-          <td v-for="(bar, barKey) in tab.bars" :key="barKey">
-            |-<span v-for="(beat, beatKey) in bar.beats" :key="beatKey">-{{tab.bars[barKey].beats[beatKey][stringKey]}}-</span>-
-          </td>
-        </tr>
-      </tbody>  
-    </table>
+        <div class="one" v-for="(string, stringKey) in tab.strings" :key="stringKey"><strong>{{string}}</strong>
+          <span class="two" v-for="(bar, barKey) in tab.bars" :key="barKey"><strong>|</strong>-<span class="three" v-for="(beat, beatKey) in bar.beats" :key="beatKey">-<strong>{{tab.bars[barKey].beats[beatKey][stringKey]}}</strong>-</span>-</span>
+        </div>
   </div>
-  <!-- {{tab.bars[stringKey].beats[noteKey][barKey]}} -->
 </template>
 
 <script>
@@ -187,25 +180,15 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-table {
+.one {
   padding: 1px;
    border: 1px solid black;
-}
+} 
 
-td {
+ .two {
   padding: 1px;
    border: 1px solid red;
 }
-
-/* table, caption, tbody, tfoot, thead, tr, th, td {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
-    background: transparent;
-} */
 
 .measure {
   font-family: 'Courier New', Courier, monospace;
