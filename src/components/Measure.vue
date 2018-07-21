@@ -1,72 +1,197 @@
 <template>
   <div class="measure">
-      <div class="strings" v-for="(string, key) in tab.strings" :key="key">
-        <StringComponent :notes="string.notes"/>
-      </div>
+        <div class="one" v-for="(string, stringKey) in tab.strings" :key="stringKey"><strong>{{string}}</strong>
+          <span class="two" v-for="(bar, barKey) in tab.bars" :key="barKey"><strong>|</strong>-<span class="three" v-for="(beat, beatKey) in bar.beats" :key="beatKey">-<strong>{{tab.bars[barKey].beats[beatKey][stringKey]}}</strong>-</span>-</span>
+        </div>
   </div>
 </template>
 
 <script>
-
-import StringComponent from './String.vue'
+import BarComponent from "./Bar.vue";
 
 export default {
-  name: 'Measure',
+  name: "Measure",
   components: {
-    StringComponent
+    BarComponent
   },
-  data: function(){
+  data: function() {
     return {
-        tab: {
-        strings: [
-            {
-            notes: ['3','1','1','0']
-            },
-            {
-            notes: ['3','3','1','1']
-            },
-            {
-            notes: ['0','2','2','0']
-            },
-            {
-            notes: ['0','0','3','2']
-            },
-            {
-            notes: ['2','-','3','3']
-            },
-            {
-            notes: ['3','-','1','0']
-            }
+      tab: {
+        strings:[
+          'e',
+          'B',
+          'G',
+          'D',
+          'A',
+          'E'
+        ],
+        bars: [
+          {
+            beats: [
+              [
+              '01',
+              '01',
+              '02',
+              '03',
+              '09',
+              '84'
+            ],   
+            [
+              '23',
+              '05',
+              '06',
+              '07',
+              '09',
+              '85'
+            ],
+              [
+              '45',
+              '01',
+              '02',
+              '03',
+              '09',
+              '86'
+            ],   
+            [
+              '67',
+              '05',
+              '06',
+              '07',
+              '09',
+              '87'
+            ]            
+            ]
+          },
+          {
+            beats: [
+              [
+              '89',
+              '11',
+              '12',
+              '13',
+              '09',
+              '88'
+            ],   
+            [
+              '10',
+              '15',
+              '16',
+              '17',
+              '09',
+              '89'
+            ],
+              [
+              '11',
+              '11',
+              '12',
+              '13',
+              '09',
+              '90'
+            ],   
+            [
+              '12',
+              '15',
+              '16',
+              '17',
+              '09',
+              '91'
+            ]
+            ]
+          },
+          {
+            beats: [
+              [
+              '13',
+              '21',
+              '22',
+              '23',
+              '09',
+              '92'
+            ],   
+            [
+              '14',
+              '25',
+              '26',
+              '27',
+              '09',
+              '93'
+            ],
+            [
+              '15',
+              '21',
+              '22',
+              '23',
+              '09',
+              '94'
+            ],   
+            [
+              '16',
+              '25',
+              '26',
+              '27',
+              '09',
+              '95'
+            ]
+            ]            
+          },
+          {
+            beats: [
+              [
+              '17',
+              '31',
+              '32',
+              '33',
+              '09',
+              '96'
+            ],   
+            [
+              '18',
+              '35',
+              '36',
+              '37',
+              '09',
+              '97'
+            ],
+            [
+              '19',
+              '31',
+              '32',
+              '33',
+              '09',
+              '98'
+            ],   
+            [
+              '20',
+              '35',
+              '36',
+              '37',
+              '09',
+              '99'
+            ]
+            ],            
+          }          
         ]
-    }   
-}
+      }
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+
+.one {
+  padding: 1px;
+   border: 1px solid black;
+} 
+
+ .two {
+  padding: 1px;
+   border: 1px solid red;
 }
 
-h1 {
-  font-size: 48pt;
-}
-
-.tab-staff {
-  font-size: 36pt;
+.measure {
   font-family: 'Courier New', Courier, monospace;
 }
+
 </style>

@@ -1,6 +1,8 @@
 <template>
   <div class="string">
-        <span class="tab-staff" v-for="(note, noteKey) in notes" :key="noteKey">{{note}}-</span>
+        <b>{{tuning}}|
+        <span v-for="(bar, barKey) in bars" :key="barKey">
+        <span v-for="(note, noteKey) in bar.notes" :key="noteKey">{{note}}--</span>|--</span></b>
   </div>
 </template>
 
@@ -8,7 +10,9 @@
 export default {
   name: 'String',
   props: {
-      notes: undefined
+      tuning: '',
+      bars: undefined,
+      annotation: false
   }
 }
 
@@ -21,8 +25,8 @@ h1 {
   font-size: 48pt;
 }
 
-.tab-staff {
-  font-size: 36pt;
+.string {
+  font-size: 12pt;
   font-family: 'Courier New', Courier, monospace;
 }
 </style>
