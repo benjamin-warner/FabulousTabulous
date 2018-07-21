@@ -6,7 +6,7 @@
       </div>
     </div>
     <span v-for="(bar, barKey) in tab.bars" :key="barKey">
-      <BarComponent :barData="bar" :tuning="tab.tuning" :spacer="spacer"/>
+      <BarComponent :index="barKey" :barData="bar" :tuning="tab.tuning" :spacer="spacer"/>
     </span>
   </div>
 </template>

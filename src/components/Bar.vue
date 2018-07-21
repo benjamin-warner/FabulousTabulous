@@ -1,14 +1,14 @@
 <template>
-  <div class="bar bar-block noselect" v-on:click="onBarSelected">
+  <div class="bar bar-block noselect" v-on:click="onBarSelected(index)">
     <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
-      <div class="bar-block">
+      <div class="bar-block" v-on:click="onBeatSelected(beatKey)">
         <div v-for="(string, stringKey) in tuning" :key="stringKey">
          <span v-if="beatKey === 0"><strong>|</strong></span>{{spacer}}
         </div>
       </div>        
       <div class="beat bar-block">
         <div v-for="(string, stringKey) in tuning" :key="stringKey">
-          <strong><span class="note" v-on:click.self="onNoteSelected(stringKey)">{{barData.beats[beatKey][stringKey]}}</span></strong>
+          <strong><span class="note" v-on:click="onNoteSelected(stringKey)">{{barData.beats[beatKey][stringKey]}}</span></strong>
         </div>
       </div>      
     </div>
@@ -20,6 +20,7 @@
 export default {
   name: 'Bar',
   props: {
+    index: Number,
     tuning: undefined,
     barData: undefined,
     spacer: String,
@@ -29,8 +30,11 @@ export default {
     }
   },
   methods: {
-    onBarSelected: function(){
-      console.log("bar")
+    onBarSelected: function(index){
+      console.log("bar", index);
+    },
+    onBeatSelected: function(index){
+      console.log("beat", index);
     },
     onNoteSelected: function(index){
       console.log("note", index);
