@@ -1,27 +1,22 @@
 <template>
-  <div class="bar bar-block noselect" v-on:click="onBarSelected(index)">
+  <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
-      <div class="bar-block" v-on:click="onBeatSelected(beatKey)">
-        <div v-for="(string, stringKey) in tuning" :key="stringKey">
-         <span v-if="beatKey === 0"><strong>|</strong></span>{{spacer}}
-        </div>
-      </div>        
-      <div class="beat bar-block">
-        <div v-for="(string, stringKey) in tuning" :key="stringKey">
-          <strong><span class="note" v-on:click="onNoteSelected(stringKey)">{{barData.beats[beatKey][stringKey]}}</span></strong>
-        </div>
-      </div>      
+      <Beat :beatData="beat" :index="beatKey"/>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import Beat from './Beat.vue'
+
 export default {
   name: 'Bar',
+  components: {
+    Beat
+  },
   props: {
     index: Number,
-    tuning: undefined,
     barData: undefined,
     spacer: String,
   },
@@ -30,15 +25,7 @@ export default {
     }
   },
   methods: {
-    onBarSelected: function(index){
-      console.log("bar", index);
-    },
-    onBeatSelected: function(index){
-      console.log("beat", index);
-    },
-    onNoteSelected: function(index){
-      console.log("note", index);
-    }
+
   }
 }
 
@@ -60,12 +47,8 @@ export default {
   background: yellowgreen;
 }
 
-.beat:hover{
-  background: powderblue;
-}
-
 .note:hover{
-  background: tomato;
+  background: powderblue;
 }
 
 .noselect {
