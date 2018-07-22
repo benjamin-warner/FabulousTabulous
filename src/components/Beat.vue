@@ -1,5 +1,5 @@
 <template>
-  <div id="beat">
+  <div>
     <div class="beat-block">
       <div v-for="(note, noteKey) in beatData" :key="noteKey">
         <span v-if="index === 0">|</span>--

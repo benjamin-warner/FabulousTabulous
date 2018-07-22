@@ -1,9 +1,9 @@
 <template>
-    <div class="bar bar-block noselect" v-on:click="onBarSelected(index)">
-      <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
-        <Beat :beatData="beat" :index="beatKey"/>
-      </div>
+  <div class="bar bar-block noselect">
+    <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
+      <Beat :beatData="beat" :index="beatKey"/>
     </div>
+  </div>
 </template>
 
 <script>
@@ -25,18 +25,7 @@ export default {
     }
   },
   methods: {
-    onBarSelected: function(index){
-      console.log("bar", index);
-    },
-    onBeatSelected: function(index){
-      console.log("beat", index);
-    },
-    onNoteSelected: function(index){
-      console.log("note", index);
-    },
-    editNote: function(stringKey, beatKey){
-      this.editing = !this.editing;
-    }
+
   }
 }
 
