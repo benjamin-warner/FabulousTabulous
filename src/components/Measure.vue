@@ -1,13 +1,12 @@
 <template>
   <div class="measure">
-    {{index}}
     <div class="tuning">
       <div v-for="(tune, tuneKey) in tuning" :key="tuneKey">
         <strong>{{tune}}</strong>
       </div>
     </div>
     <span v-for="(bar, barKey) in bars" :key="barKey">
-      <BarComponent :index="barKey"/>
+      <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
     </span>
   </div>
 </template>
@@ -19,19 +18,15 @@ import TabStore from './TabStore.js';
 export default {
   name: 'Measure',
   props: {
-    index: Number
+    measureIndex: Number
   },
   components: {
     BarComponent
   },
-  created: function(){
-    this.tuning = TabStore.getTuning();
-    this.bars = TabStore.getBars(0);
-  },
   data: function() {
     return {
-      tuning: undefined,
-      bars: undefined
+      tuning: TabStore.data.tuning,
+      bars: TabStore.data.measures[this.measureIndex].bars
     }
   }
 }

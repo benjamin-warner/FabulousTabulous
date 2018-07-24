@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="beat-block">
-      <div v-for="(note, noteKey) in beatData" :key="noteKey">
-        <span v-if="index === 0">|</span>--
+      <div v-for="(note, noteKey) in notes" :key="noteKey">
+        <span v-if="beatIndex === 0">|</span>--
       </div>
     </div>      
     <div class="beat beat-block">
-      <div v-for="(note, noteKey) in beatData" :key="noteKey">
-        <Note :noteData="note"/>
+      <div v-for="(note, noteKey) in notes" :key="noteKey">
+        <Note :measureIndex="measureIndex" :barIndex="barIndex" :beatIndex="beatIndex" :noteIndex="noteKey"/>
       </div>
     </div>
   </div>      
@@ -15,21 +15,24 @@
 
 <script>
 /* eslint-disable */
-import Note from "./Note.vue";
+import Note from './Note.vue';
+import TabStore from './TabStore.js'
 
 export default {
-  name: "Beat",
+  name: 'Beat',
   components: {
     Note
   },
   props: {
-    index: Number,
-    beatData: undefined
+    measureIndex: Number,
+    barIndex: Number,
+    beatIndex: Number,
   },
   data: function() {
-    return {};
+    return {
+      notes: TabStore.data.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex]
+    };
   },
-  methods: {}
 };
 </script>
 

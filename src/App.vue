@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <h1>Rad Tab.</h1>
     <TabComponent/>
   </div>
 </template>
