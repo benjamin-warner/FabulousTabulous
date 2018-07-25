@@ -5,9 +5,12 @@
         <strong>{{tune}}</strong>
       </div>
     </div>
-    <div class="bar-block" v-for="(bar, barKey) in bars" :key="barKey">
+    <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar">
       <div><span>Bar {{barKey}}<button v-on:click="deleteBar(barKey)">Delete</button></span></div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
+    </div>
+    <div class="bar-block" v-if="bars.length < 4">
+      <button v-on:click="addBar">Add</button>
     </div>
   </div>
 </template>
@@ -33,8 +36,11 @@ export default {
   },
   methods: {
     deleteBar(key){
-      console.log('deleting',key)
-      delete this.bars.splice(key,1);
+      this.bars.splice(key,1);
+    },
+    addBar(){
+      var newBar = TabStore.newBarTemplate();
+      this.bars.push(newBar);
     }
   }
 }
