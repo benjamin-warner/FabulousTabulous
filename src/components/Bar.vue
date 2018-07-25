@@ -13,14 +13,10 @@
 
 <script>
 /* eslint-disable */
-import Beat from './Beat.vue';
 import TabStore from './TabStore.js';
 
 export default {
   name: 'Bar',
-  components: {
-    Beat
-  },
   props: {
     measureIndex: Number,
     barIndex: String,
