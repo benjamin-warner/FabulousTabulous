@@ -1,12 +1,15 @@
 <template>
   <div class="tab">
-    <MeasureComponent/>
+    <div v-for="(measure, measureKey) in measures" :key="measureKey">
+      <MeasureComponent :measureIndex="measureKey"/>
+    </div>
   </div>
 </template>
 
 <script>
-
-import MeasureComponent from '../components/Measure.vue'
+/* eslint-disable */
+import MeasureComponent from './Measure.vue'
+import TabStore from './TabStore.js'
 
 export default {
   name: 'Tab',
@@ -15,9 +18,7 @@ export default {
   },
   data: function(){
     return {
-        tab: {
-            
-        }
+      measures: TabStore.tab.measures
     }
   }
 }

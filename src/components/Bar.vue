@@ -1,14 +1,20 @@
 <template>
   <div class="bar bar-block noselect">
-    <div class="bar-block" v-for="(beat, beatKey) in barData.beats" :key="beatKey">
-      <Beat :beatData="beat" :index="beatKey"/>
+    <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
+      <div v-for="(string, stringKey) in beat" :key="stringKey">
+        <span>
+          <span v-if="beatKey == 0"><strong>|--</strong></span>
+          <strong>{{string}}</strong>--
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import Beat from './Beat.vue'
+import Beat from './Beat.vue';
+import TabStore from './TabStore.js';
 
 export default {
   name: 'Bar',
@@ -16,16 +22,13 @@ export default {
     Beat
   },
   props: {
-    index: Number,
-    barData: undefined,
-    spacer: String,
+    measureIndex: Number,
+    barIndex: String,
   },
   data: function(){
     return{
+      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex]
     }
-  },
-  methods: {
-
   }
 }
 

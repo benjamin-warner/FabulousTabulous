@@ -1,23 +1,29 @@
 <template>
   <div>
-    <span v-if="editing"><input type="text" maxlength="3" size="3" v-model="changeStack[changeStack.length-1]" v-on:keyup.enter="addChange"></span>
-    <span v-else-if="dirty" v-on:click="edit">{{ changeStack[changeStack.length-1] }}</span>
-    <span v-else v-on:click="edit">{{noteData}}</span>
+    <span v-if="editing"><input type="text" maxlength="3" size="3" v-model="note" v-on:keyup.enter="addChange"></span>
+    <span v-else v-on:click="edit">{{note}}</span>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
+import TabStore from './TabStore.js'
+
 export default {
   name: 'Note',
   props: {
-      noteData: undefined
+      measureIndex: Number,
+      barIndex: Number,
+      beatIndex: Number,
+      noteIndex: Number
   },
   data: function(){
     return{
         editing: false,
         dirty: false,
-        changeStack: []
+        changeStack: [],
+        change: '',
+        note: TabStore.data.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex][this.noteIndex]
     }
   },
   methods: {
@@ -28,8 +34,7 @@ export default {
       }
     },
     addChange: function(){
-        this.dirty = true;
-        this.editing = !this.editing;
+      this.editing = !this.editing;
     }
   }
 }
