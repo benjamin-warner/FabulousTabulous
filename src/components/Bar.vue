@@ -2,7 +2,10 @@
   <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
       <div v-for="(string, stringKey) in beat" :key="stringKey">
-        <span><span v-if="beatKey == 0"><strong>|--</strong></span><strong>{{string}}</strong>--</span>
+        <span>
+          <span v-if="beatKey == 0"><strong>|--</strong></span>
+          <strong>{{string}}</strong>--
+        </span>
       </div>
     </div>
   </div>
@@ -24,9 +27,9 @@ export default {
   },
   data: function(){
     return{
-      beats: TabStore.measures[this.measureIndex].bars[this.barIndex]
+      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex]
     }
-  },
+  }
 }
 
 </script>

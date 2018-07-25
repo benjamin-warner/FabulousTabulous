@@ -1,5 +1,7 @@
 /* eslint-disable */
 const TabStore = {
+  changeStack: [],
+  tab:{
     spacer: '--',
     tuning: [
       'e',
@@ -150,6 +152,7 @@ const TabStore = {
         ] // bar's beats
       }// bars
     }] //measures
+  }
 }
 
 export default TabStore

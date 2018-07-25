@@ -5,13 +5,15 @@
         <strong>{{tune}}</strong>
       </div>
     </div>
-    <span v-for="(bar, barKey) in bars" :key="barKey">
+    <div class="bar-block" v-for="(bar, barKey) in bars" :key="barKey">
+      <div>Bar {{barKey}}</div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
-    </span>
+    </div>
   </div>
 </template>
 
 <script>
+/* eslint-disable */
 import BarComponent from './Bar.vue';
 import TabStore from './TabStore.js';
 
@@ -25,8 +27,8 @@ export default {
   },
   data: function() {
     return {
-      tuning: TabStore.tuning,
-      bars: TabStore.measures[this.measureIndex].bars
+      tuning: TabStore.tab.tuning,
+      bars: TabStore.tab.measures[this.measureIndex].bars
     }
   }
 }

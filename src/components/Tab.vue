@@ -18,7 +18,7 @@ export default {
   },
   data: function(){
     return {
-      measures: TabStore.measures
+      measures: TabStore.tab.measures
     }
   }
 }
