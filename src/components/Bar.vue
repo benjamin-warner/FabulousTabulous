@@ -2,7 +2,7 @@
   <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
       <div v-for="(string, stringKey) in beat" :key="stringKey">
-        {{string}} 
+        <span><span v-if="beatKey == 0"><strong>|--</strong></span><strong>{{string}}</strong>--</span>
       </div>
     </div>
   </div>
