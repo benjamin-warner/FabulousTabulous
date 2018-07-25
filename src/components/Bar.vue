@@ -1,7 +1,9 @@
 <template>
   <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
-      {{beats}}
+      <div v-for="(string, stringKey) in beat" :key="stringKey">
+        {{string}} 
+      </div>
     </div>
   </div>
 </template>
@@ -18,7 +20,7 @@ export default {
   },
   props: {
     measureIndex: Number,
-    barIndex: Number,
+    barIndex: String,
   },
   data: function(){
     return{
