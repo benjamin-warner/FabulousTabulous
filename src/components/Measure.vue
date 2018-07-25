@@ -25,8 +25,8 @@ export default {
   },
   data: function() {
     return {
-      tuning: TabStore.data.tuning,
-      bars: TabStore.data.measures[this.measureIndex].bars
+      tuning: TabStore.tuning,
+      bars: TabStore.measures[this.measureIndex].bars
     }
   }
 }

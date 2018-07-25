@@ -2,7 +2,6 @@
   <div class="tab">
     <div v-for="(measure, measureKey) in measures" :key="measureKey">
       <MeasureComponent :measureIndex="measureKey"/>
-      {{measures}}
     </div>
   </div>
 </template>
@@ -19,7 +18,7 @@ export default {
   },
   data: function(){
     return {
-      measures: TabStore.data.measures
+      measures: TabStore.measures
     }
   }
 }

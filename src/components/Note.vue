@@ -1,6 +1,7 @@
 <template>
   <div>
-    {{note}}
+    <span v-if="editing"><input type="text" maxlength="3" size="3" v-model="note" v-on:keyup.enter="addChange"></span>
+    <span v-else v-on:click="edit">{{note}}</span>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ export default {
         editing: false,
         dirty: false,
         changeStack: [],
+        change: '',
         note: TabStore.data.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex][this.noteIndex]
     }
   },
@@ -32,8 +34,7 @@ export default {
       }
     },
     addChange: function(){
-        this.dirty = true;
-        this.editing = !this.editing;
+      this.editing = !this.editing;
     }
   }
 }

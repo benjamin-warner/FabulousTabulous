@@ -1,7 +1,7 @@
 <template>
   <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
-      <Beat :measureIndex="measureIndex" :barIndex="barIndex" :beatIndex="beatKey"/>
+      {{beats}}
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ export default {
   },
   data: function(){
     return{
-      beats: TabStore.data.measures[this.measureIndex].bars[this.barIndex].beats
+      beats: TabStore.measures[this.measureIndex].bars[this.barIndex]
     }
   },
 }
