@@ -13,8 +13,8 @@ const TabStore = {
     ],
     measures: [
       {
-      bars: {
-      0:[
+      bars: [
+      [
           [
             '00',
             '01',
@@ -48,7 +48,7 @@ const TabStore = {
             '87'
           ]
         ],
-        1:[
+        [
           [
             '89',
             '11',
@@ -82,7 +82,7 @@ const TabStore = {
             '91'
           ]  
         ],
-        2:[ 
+        [ 
           [
             '13',
             '21',
@@ -116,7 +116,7 @@ const TabStore = {
             '95'
           ]
         ],
-        3:[
+        [
           [
             '17',
             '31',
@@ -150,7 +150,7 @@ const TabStore = {
             '99'
           ]
         ] // bar's beats
-      }// bars
+      ]// bars
     }] //measures
   }
 }

@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="bar-block" v-for="(bar, barKey) in bars" :key="barKey">
-      <div>Bar {{barKey}}</div>
+      <div><span>Bar {{barKey}}<button v-on:click="deleteBar(barKey)">Delete</button></span></div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
     </div>
   </div>
@@ -29,6 +29,12 @@ export default {
     return {
       tuning: TabStore.tab.tuning,
       bars: TabStore.tab.measures[this.measureIndex].bars
+    }
+  },
+  methods: {
+    deleteBar(key){
+      console.log('deleting',key)
+      delete this.bars.splice(key,1);
     }
   }
 }

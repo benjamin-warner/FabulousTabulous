@@ -19,7 +19,7 @@ export default {
   name: 'Bar',
   props: {
     measureIndex: Number,
-    barIndex: String,
+    barIndex: Number,
   },
   data: function(){
     return{
