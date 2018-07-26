@@ -5,16 +5,18 @@
         <strong>{{tune}}</strong>
       </div>
     </div>
+    <button v-if="measureEmpty" v-on:click="insertBarAt(0)">+</button>
     <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar.id">
       <div>
         <button v-if="measureNotFull" v-on:click="insertBarAt(barKey)">+</button>
-        <button v-on:click="deleteBar(bar)">Delete</button>
+        <button v-on:click="deleteBar(bar)">X</button>
         <button v-if="measureNotFull" v-on:click="insertBarAt(barKey+1)">+</button>
       </div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
     </div>
   </div>
 </template>
+
 
 <script>
 /* eslint-disable */
@@ -38,6 +40,9 @@ export default {
   computed: {
     measureNotFull(){
       return this.bars.length < 4;
+    },
+    measureEmpty(){
+      return this.bars.length === 0;
     }
   },
   methods: {
