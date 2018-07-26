@@ -5,8 +5,12 @@
         <strong>{{tune}}</strong>
       </div>
     </div>
-    <div class="bar-block" v-for="(bar, barKey) in bars" :key="barKey">
-      <div>Bar {{barKey}}</div>
+    <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar.id">
+      <div>
+        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey)">+</button>
+        <button v-on:click="deleteBar(bar)">Delete</button>
+        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey+1)">+</button>
+      </div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
     </div>
   </div>
@@ -29,6 +33,26 @@ export default {
     return {
       tuning: TabStore.tab.tuning,
       bars: TabStore.tab.measures[this.measureIndex].bars
+    }
+  },
+  computed: {
+    measureNotFull(){
+      return this.bars.length < 4;
+    }
+  },
+  methods: {
+    deleteBar(bar){
+      var toDelete = this.bars.indexOf(bar);
+      this.bars.splice(toDelete,1);
+    },
+    insertBarAt(index){
+      var newBar = {}
+      newBar.beats = [];
+      for(var i = 0; i < 4; i++){
+        newBar.beats.push(['--','--','--','--','--','--']);
+      }
+      newBar.id = + new Date();
+      this.bars.splice(index,0,newBar);
     }
   }
 }
