@@ -5,12 +5,13 @@
         <strong>{{tune}}</strong>
       </div>
     </div>
-    <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar">
-      <div><span>Bar {{barKey}}<button v-on:click="deleteBar(barKey)">Delete</button></span></div>
+    <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar.id">
+      <div>
+        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey)">+</button>
+        <button v-on:click="deleteBar(bar)">Delete</button>
+        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey+1)">+</button>
+      </div>
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
-    </div>
-    <div class="bar-block" v-if="bars.length < 4">
-      <button v-on:click="addBar">Add</button>
     </div>
   </div>
 </template>
@@ -34,13 +35,24 @@ export default {
       bars: TabStore.tab.measures[this.measureIndex].bars
     }
   },
+  computed: {
+    measureNotFull(){
+      return this.bars.length < 4;
+    }
+  },
   methods: {
-    deleteBar(key){
-      this.bars.splice(key,1);
+    deleteBar(bar){
+      var toDelete = this.bars.indexOf(bar);
+      this.bars.splice(toDelete,1);
     },
-    addBar(){
-      var newBar = TabStore.newBarTemplate();
-      this.bars.push(newBar);
+    insertBarAt(index){
+      var newBar = {}
+      newBar.beats = [];
+      for(var i = 0; i < 4; i++){
+        newBar.beats.push(['--','--','--','--','--','--']);
+      }
+      newBar.id = + new Date();
+      this.bars.splice(index,0,newBar);
     }
   }
 }

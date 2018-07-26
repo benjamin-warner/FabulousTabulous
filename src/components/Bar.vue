@@ -23,7 +23,7 @@ export default {
   },
   data: function(){
     return{
-      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex]
+      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats
     }
   }
 }
