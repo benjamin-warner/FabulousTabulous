@@ -3,13 +3,13 @@
     <div v-for="(measure, measureKey) in measures" :key="measure.id">
       <div class="measure-block">
         <div>
-          <button v-on:click="addNewTab">+</button>
+          <button v-on:click="insertNewMeasure(measureKey)">+</button>
         </div>
         <div>
           <button v-if="measureKey !== 0" v-on:click="deleteMeasure(measureKey)">x</button>
         </div>
         <div>
-          <button v-on:click="addNewTab">+</button>
+          <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
         </div>
       </div>
       <MeasureComponent class="measure-block" :measureIndex="measureKey"/>
@@ -33,7 +33,7 @@ export default {
     }
   },
   methods: {
-    addNewTab(){
+    insertNewMeasure(index){
       var bars = []
       for(var i = 0; i < 4; i++){ //bars
         var newBar = {}
@@ -45,7 +45,7 @@ export default {
         newBar.id = + new Date() + i;
         bars.push(newBar);
       }
-      this.measures.push({bars, id: + new Date()});
+      this.measures.splice(index, 0, {bars, id: + new Date()});
     },
     deleteMeasure(key){
       this.measures.splice(key,1);
