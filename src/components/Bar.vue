@@ -45,8 +45,11 @@ export default {
     },
     addChange(beatIndex, noteIndex, change){
       this.beats[beatIndex][noteIndex] = change;
+      this.closeEditor(beatIndex, noteIndex)
+    },
+    closeEditor(beatIndex, noteIndex){
       this.editing.beatIndex = null;
-      this.editing.noteIndex = null
+      this.editing.noteIndex = null;      
     }
   }
 }

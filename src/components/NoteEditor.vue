@@ -1,6 +1,6 @@
 <template>
   <span class="note-editor bar-block noselect">
-      <input id="note-input" type="text" size="2" v-model="changes" onfocus="this.select()" v-on:keyup.enter="addChange">
+      <input id="note-input" type="text" size="2" v-model="changes" @blur="onFocusLost" onfocus="this.select()" v-on:keyup.enter="addChange">
   </span>
 </template>
 
@@ -29,6 +29,9 @@ export default {
   methods: {
     addChange(){
       this.$parent.addChange(this.beatIndex, this.noteIndex, this.changes);
+    },
+    onFocusLost(){
+      this.$parent.closeEditor(this.beatIndex, this.noteIndex);
     }
   }
 };
