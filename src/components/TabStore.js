@@ -13,6 +13,7 @@ const TabStore = {
     ],
     measures: [
       {
+      id: 0,
       bars: [
         {
           id: 0,
