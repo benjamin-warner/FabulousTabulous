@@ -17,7 +17,6 @@
   </div>
 </template>
 
-
 <script>
 /* eslint-disable */
 import BarComponent from './Bar.vue';

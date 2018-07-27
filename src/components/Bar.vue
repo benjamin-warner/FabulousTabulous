@@ -4,7 +4,8 @@
       <div v-for="(note, noteKey) in beat" :key="noteKey">
         <span>
           <span v-if="beatKey === 0"><strong>|--</strong></span>
-          <NoteEditor v-if="isBeingEdited(beatKey,noteKey)"/><span v-else><strong v-on:click="editNote(beatKey,noteKey)">{{note}}</strong>--</span>
+          <NoteEditor v-if="isBeingEdited(beatKey,noteKey)" :note="note" :beatIndex="beatKey" :noteIndex="noteKey"/>
+          <strong v-else v-on:click="editNote(beatKey,noteKey)">{{note}}</strong>--
         </span>
       </div>
     </div>
@@ -34,15 +35,18 @@ export default {
   computed: {
 
   },
-  methods: {
-    
+  methods: {  
     editNote(beatIndex, noteIndex){
-      console.log('hi');
       this.editing.beatIndex = beatIndex;
       this.editing.noteIndex = noteIndex;
     },
     isBeingEdited(beatIndex, noteIndex){
       return this.editing.beatIndex === beatIndex && this.editing.noteIndex === noteIndex;
+    },
+    addChange(beatIndex, noteIndex, change){
+      this.beats[beatIndex][noteIndex] = change;
+      this.editing.beatIndex = null;
+      this.editing.noteIndex = null
     }
   }
 }
