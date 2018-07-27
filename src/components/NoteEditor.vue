@@ -1,6 +1,6 @@
 <template>
   <span class="note-editor bar-block noselect">
-      <input id="note-input" type="text" size="2" v-model="changes" @blur="onFocusLost" onfocus="this.select()" v-on:keyup.enter="addChange">
+      <input id="note-input" type="text" size="2" v-model="changes" @blur="closeEditor" v-on:keyup.esc="closeEditor" onfocus="this.select()" v-on:keyup.enter="addChange">
   </span>
 </template>
 
@@ -30,7 +30,7 @@ export default {
     addChange(){
       this.$parent.addChange(this.beatIndex, this.noteIndex, this.changes);
     },
-    onFocusLost(){
+    closeEditor(){
       this.$parent.closeEditor(this.beatIndex, this.noteIndex);
     }
   }
