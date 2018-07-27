@@ -6,7 +6,7 @@
           <button v-on:click="insertNewMeasure(measureKey)">+</button>
         </div>
         <div>
-          <button v-if="measureKey !== 0" v-on:click="deleteMeasure(measureKey)">x</button>
+          <button v-if="measures.length > 1" v-on:click="deleteMeasure(measureKey)">x</button>
         </div>
         <div>
           <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
