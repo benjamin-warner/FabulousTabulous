@@ -20,8 +20,8 @@
 <script>
 /* eslint-disable */
 import MeasureComponent from './Measure.vue';
-import TabStore from './TabStore.js';
-import EventBus from '../eventBus.js';
+import TabStore from '../../tabStore.js';
+import EventBus from '../../eventBus.js';
 
 export default {
   name: 'Tab',

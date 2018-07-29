@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <TabComponent/>
+    <EditorComponent/>
   </div>
 </template>
 
 <script>
-import TabComponent from './components/Tab.vue'
+import EditorComponent from './editor/Editor.vue'
 import EventBus from './eventBus.js'
 
 export default {
   name: 'app',
   components: {
-    TabComponent,
+    EditorComponent,
   },
   mounted(){
     document.onkeydown = function(evt) {

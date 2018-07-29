@@ -12,9 +12,9 @@
 
 <script>
 /* eslint-disable */
-import TabStore from './TabStore.js';
+import TabStore from '../../tabStore.js';
 import NoteEditor from './NoteEditor.vue'
-import EventBus from '../eventBus.js'
+import EventBus from '../../eventBus.js'
 
 export default {
   name: 'Bar',
