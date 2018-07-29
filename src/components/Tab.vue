@@ -37,7 +37,7 @@ export default {
   mounted(){
     var self = this;
     EventBus.$on('undo', this.undo);
-    EventBus.$on('addNoteChange', (data) => { self.addChange(data) });
+    EventBus.$on('addChange', (data) => { self.addChange(data) });
   },
   methods: {
     insertNewMeasure(index){
@@ -59,17 +59,16 @@ export default {
     },
     undo(){
       var lastChange = this.changeStack.pop();
-      console.log('undoing...')
-
       if(lastChange != undefined && lastChange != null){
-        var pojo = JSON.parse(JSON.stringify(lastChange));
-        switch(pojo.type){
-          case 'note-replaced': 
-          console.log('note-replace')
-          console.log(pojo.oldState)
-            this.measures[pojo.location.measure]
-                .bars[pojo.location.bar]
-                .beats[pojo.location.beat].splice(pojo.location.note, 1,  pojo.oldState);
+        var location = lastChange.location;
+        switch(lastChange.type){
+          case 'note-replaced':
+            this.measures[location.measure]
+                .bars[location.bar]
+                .beats[location.beat].splice(location.note, 1,  lastChange.oldState);
+            break;
+          case 'bar-deleted':
+            this.measures[location.measure].bars.splice(location.bar,0, lastChange.oldState);
             break;
           default:
             break;
@@ -77,7 +76,6 @@ export default {
       }
     },
     addChange(changeData){
-      console.log('adding change...')
       this.changeStack.push(changeData);
     }
   }

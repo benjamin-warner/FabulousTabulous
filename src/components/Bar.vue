@@ -40,7 +40,7 @@ export default {
       return this.editing.beatIndex === beatIndex && this.editing.noteIndex === noteIndex;
     },
     changeNote(beatIndex, noteIndex, change){
-      EventBus.$emit('addNoteChange', 
+      EventBus.$emit('addChange', 
       {
         type:'note-replaced', 
         location: {
