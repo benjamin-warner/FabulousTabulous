@@ -21,6 +21,7 @@
 /* eslint-disable */
 import BarComponent from './Bar.vue';
 import TabStore from './TabStore.js';
+import EventBus from '../eventBus.js';
 
 export default {
   name: 'Measure',
@@ -47,6 +48,15 @@ export default {
   methods: {
     deleteBar(bar){
       var toDelete = this.bars.indexOf(bar);
+      EventBus.$emit('addChange', 
+      {
+        type:'bar-deleted', 
+        location: {
+          measure: this.measureIndex,
+          bar: toDelete,
+        },
+        oldState: bar
+      });
       this.bars.splice(toDelete,1);
     },
     insertBarAt(index){
@@ -56,6 +66,14 @@ export default {
         newBar.beats.push(['--','--','--','--','--','--']);
       }
       newBar.id = + new Date();
+      EventBus.$emit('addChange',
+        {
+          type: 'bar-added',
+          location: {
+            measure: this.measureIndex,
+            bar: index
+          }
+        });
       this.bars.splice(index,0,newBar);
     }
   }
