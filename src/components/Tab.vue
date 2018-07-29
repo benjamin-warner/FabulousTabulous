@@ -52,9 +52,22 @@ export default {
         newBar.id = + new Date() + i;
         bars.push(newBar);
       }
+      EventBus.$emit('addChange', {
+        type: 'measure-added',
+        location: {
+          measure: index
+        }
+      })
       this.measures.splice(index, 0, {bars, id: + new Date()});
     },
     deleteMeasure(key){
+      EventBus.$emit('addChange', {
+        type: 'measure-deleted',
+        location: {
+          measure: key
+        },
+        oldState: this.measures[key]
+      })
       this.measures.splice(key,1);
     },
     undo(){
@@ -72,6 +85,12 @@ export default {
             break;
           case 'bar-added':
             this.measures[location.measure].bars.splice(location.bar,1);
+            break;
+          case 'measure-deleted':
+            this.measures.splice(location.measure, 0, lastChange.oldState);
+            break
+          case 'measure-added':
+            this.measures.splice(location.measure, 1);
             break;
           default:
             break;
