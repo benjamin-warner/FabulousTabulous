@@ -1,5 +1,5 @@
 <template>
-  <div class="tab">
+  <div class="tab" >
     <div v-for="(measure, measureKey) in measures" :key="measure.id">
       <div class="measure-block">
         <div>
@@ -19,8 +19,9 @@
 
 <script>
 /* eslint-disable */
-import MeasureComponent from './Measure.vue'
-import TabStore from './TabStore.js'
+import MeasureComponent from './Measure.vue';
+import TabStore from './TabStore.js';
+import EventBus from '../eventBus.js';
 
 export default {
   name: 'Tab',
@@ -29,8 +30,14 @@ export default {
   },
   data: function(){
     return {
-      measures: TabStore.tab.measures
+      measures: TabStore.tab.measures,
+      changeStack: []
     }
+  },
+  mounted(){
+    var self = this;
+    EventBus.$on('undo', this.undo);
+    EventBus.$on('addNoteChange', (data) => { self.addChange(data) });
   },
   methods: {
     insertNewMeasure(index){
@@ -49,6 +56,29 @@ export default {
     },
     deleteMeasure(key){
       this.measures.splice(key,1);
+    },
+    undo(){
+      var lastChange = this.changeStack.pop();
+      console.log('undoing...')
+
+      if(lastChange != undefined && lastChange != null){
+        var pojo = JSON.parse(JSON.stringify(lastChange));
+        switch(pojo.type){
+          case 'note-replaced': 
+          console.log('note-replace')
+          console.log(pojo.oldState)
+            this.measures[pojo.location.measure]
+                .bars[pojo.location.bar]
+                .beats[pojo.location.beat].splice(pojo.location.note, 1,  pojo.oldState);
+            break;
+          default:
+            break;
+        }
+      }
+    },
+    addChange(changeData){
+      console.log('adding change...')
+      this.changeStack.push(changeData);
     }
   }
 }

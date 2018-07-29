@@ -2,11 +2,9 @@
   <div class="bar bar-block noselect">
     <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
       <div v-for="(note, noteKey) in beat" :key="noteKey">
-        <span>
-          <span v-if="beatKey === 0"><strong>|--</strong></span>
-          <NoteEditor v-if="isBeingEdited(beatKey,noteKey)" :note="note" :beatIndex="beatKey" :noteIndex="noteKey"/>
-          <strong v-else v-on:click="editNote(beatKey,noteKey)">{{note}}</strong>--
-        </span>
+        <span v-if="beatKey === 0"><strong>|--</strong></span>
+        <NoteEditor v-if="isBeingEdited(beatKey,noteKey)" :note="note" :beatIndex="beatKey" :noteIndex="noteKey"/>
+        <strong v-else v-on:click="editNote(beatKey,noteKey)">{{note}}</strong>--
       </div>
     </div>
   </div>
@@ -16,6 +14,7 @@
 /* eslint-disable */
 import TabStore from './TabStore.js';
 import NoteEditor from './NoteEditor.vue'
+import EventBus from '../eventBus.js'
 
 export default {
   name: 'Bar',
@@ -32,9 +31,6 @@ export default {
       editing: {beatIndex : null, noteIndex : null}
     }
   },
-  computed: {
-
-  },
   methods: {  
     editNote(beatIndex, noteIndex){
       this.editing.beatIndex = beatIndex;
@@ -43,7 +39,18 @@ export default {
     isBeingEdited(beatIndex, noteIndex){
       return this.editing.beatIndex === beatIndex && this.editing.noteIndex === noteIndex;
     },
-    addChange(beatIndex, noteIndex, change){
+    changeNote(beatIndex, noteIndex, change){
+      EventBus.$emit('addNoteChange', 
+      {
+        type:'note-replaced', 
+        location: {
+          measure: this.measureIndex,
+          bar: this.barIndex,
+          beat: beatIndex,
+          note: noteIndex
+        },
+        oldState: this.beats[beatIndex][noteIndex]
+      });
       this.beats[beatIndex][noteIndex] = change;
       this.closeEditor(beatIndex, noteIndex)
     },

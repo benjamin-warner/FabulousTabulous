@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     addChange(){
-      this.$parent.addChange(this.beatIndex, this.noteIndex, this.changes);
+      this.$parent.changeNote(this.beatIndex, this.noteIndex, this.changes);
     },
     closeEditor(){
       this.$parent.closeEditor(this.beatIndex, this.noteIndex);
