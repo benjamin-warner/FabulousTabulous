@@ -18,11 +18,21 @@ export default {
       evt = evt || window.event;
       if (navigator.appVersion.indexOf("Mac")!=-1){
         if (evt.metaKey && evt.keyCode === 90) {
+          evt.preventDefault();
           EventBus.$emit('undo');
+        }
+        else if(evt.metaKey && evt.keyCode === 89){
+          evt.preventDefault();
+          EventBus.$emit('redo');
         }
       }
       if (evt.ctrlKey && evt.keyCode === 90) {
-          alert("Ctrl-Z");
+        evt.preventDefault();
+        EventBus.$emit('undo');
+      }
+      else if(evt.ctrlKey && evt.keyCode === 89){
+        evt.preventDefault();
+        EventBus.$emit('redo');
       }
     };
   },
