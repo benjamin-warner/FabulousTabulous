@@ -66,6 +66,14 @@ export default {
         newBar.beats.push(['--','--','--','--','--','--']);
       }
       newBar.id = + new Date();
+      EventBus.$emit('addChange',
+        {
+          type: 'bar-added',
+          location: {
+            measure: this.measureIndex,
+            bar: index
+          }
+        });
       this.bars.splice(index,0,newBar);
     }
   }

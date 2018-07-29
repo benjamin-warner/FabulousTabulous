@@ -70,6 +70,9 @@ export default {
           case 'bar-deleted':
             this.measures[location.measure].bars.splice(location.bar,0, lastChange.oldState);
             break;
+          case 'bar-added':
+            this.measures[location.measure].bars.splice(location.bar,1);
+            break;
           default:
             break;
         }
