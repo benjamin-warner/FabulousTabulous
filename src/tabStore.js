@@ -1,6 +1,5 @@
 /* eslint-disable */
 const TabStore = {
-  changeStack: [],
   tab:{
     spacer: '--',
     tuning: [
