@@ -1,55 +1,51 @@
 /* eslint-disable */
-import TabStore from '../tabStore.js'
+const ChangeMarshal = function(){
+  var undoStack = [];
+  var redoStack = [];
 
-const ChangeMarshal = {
-
-  tabReference: TabStore.tab,
-  undoStack: [],
-  redoStack: [],
-
-  Type: Object.freeze({
+  var Type = Object.freeze({
     Delete: 1,
     Create: 2,
     Update: 3,
-  }),
+  });
 
-  removeValue: function(propertyReference, index){
-    this.pushToChangeStack(propertyReference, index, propertyReference[index], this.Type.Delete);
+  function removeValue(propertyReference, index){
+    pushToChangeStack(propertyReference, index, propertyReference[index], Type.Delete);
     propertyReference.splice(index, 1);
-  },
+  }
 
-  addValue: function(propertyReference, index, newValue){
-    this.pushToChangeStack(propertyReference, index, newValue, this.Type.Create);
+  function addValue(propertyReference, index, newValue){
+    pushToChangeStack(propertyReference, index, newValue, Type.Create);
     propertyReference.splice(index, 0, newValue);
-  },
+  }
 
-  updateValue: function(propertyReference, index, newValue){
-    this.pushToChangeStack(propertyReference, index, propertyReference[index], this.Type.Update);
+  function updateValue(propertyReference, index, newValue){
+    pushToChangeStack(propertyReference, index, propertyReference[index], Type.Update);
     propertyReference.splice(index, 1, newValue);
-  },
+  }
 
-  pushToChangeStack(propertyReference, index, revertValue, type){
+  function pushToChangeStack(propertyReference, index, revertValue, type){
     var changeRecord = {
       reference: propertyReference,
       index: index,
       type: type,
       revertValue: revertValue
     };
-    this.undoStack.push(changeRecord);
-    this.redoStack = [];
-  },
+    undoStack.push(changeRecord);
+    redoStack = [];
+  }
 
-  undoChange: function(){
-    if(this.undoStack.length !== 0){
-      var toUndo = this.undoStack.pop();
+  function undoChange(){
+    if(undoStack.length !== 0){
+      var toUndo = undoStack.pop();
       switch(toUndo.type){
-        case this.Type.Delete:
+        case Type.Delete:
           toUndo.reference.splice(toUndo.index, 0, toUndo.revertValue);  
           break;
-        case this.Type.Create:
+        case Type.Create:
           toUndo.reference.splice(toUndo.index,1);
           break;
-        case this.Type.Update:
+        case Type.Update:
           var newRevertValue = toUndo.reference[toUndo.index];
           toUndo.reference.splice(toUndo.index, 1, toUndo.revertValue);
           toUndo.revertValue = newRevertValue;
@@ -57,21 +53,21 @@ const ChangeMarshal = {
         default:
           break;
       }
-      this.redoStack.push(toUndo);
+      redoStack.push(toUndo);
     }
-  },
+  }
 
-  redoChange: function(){
-    if(this.redoStack.length !== 0){
-      var toRedo = this.redoStack.pop();
+  function redoChange(){
+    if(redoStack.length !== 0){
+      var toRedo = redoStack.pop();
       switch(toRedo.type){
-        case this.Type.Delete:
+        case Type.Delete:
           toRedo.reference.splice(toRedo.index, 1);
           break;
-        case this.Type.Create:
+        case Type.Create:
           toRedo.reference.splice(toRedo.index, 0, toRedo.revertValue);
           break;
-        case this.Type.Update:
+        case Type.Update:
           var newRevertValue = toRedo.reference[toRedo.index];
           toRedo.reference.splice(toRedo.index, 1, toRedo.revertValue);
           toRedo.revertValue = newRevertValue;
@@ -79,9 +75,16 @@ const ChangeMarshal = {
         default:
           break;
       }
-      this.undoStack.push(toRedo);
+      undoStack.push(toRedo);
     }
   }
-}
+  return {
+    addValue: addValue,
+    removeValue: removeValue,
+    updateValue: updateValue,
+    undoChange: undoChange,
+    redoChange: redoChange
+  }
+}();
 
 export default ChangeMarshal

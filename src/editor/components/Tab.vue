@@ -36,7 +36,6 @@ export default {
     }
   },
   mounted(){
-    var self = this;
     EventBus.$on('undo', this.undo);
     EventBus.$on('redo', this.redo);
   },
