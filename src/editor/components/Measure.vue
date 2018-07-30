@@ -48,7 +48,7 @@ export default {
   methods: {
     deleteBar(bar){
       var indexToDelete = this.bars.indexOf(bar); 
-      ChangeMarshal.removeValue(this.bars, indexToDelete, null);
+      ChangeMarshal.removeValue(this.bars, indexToDelete);
     },
     insertBarAt(index){
       var newBar = {}
@@ -57,6 +57,7 @@ export default {
         newBar.beats.push(['--','--','--','--','--','--']);
       }
       newBar.id = + new Date();
+      ChangeMarshal.addValue(this.bars, index, newBar);
     }
   }
 }

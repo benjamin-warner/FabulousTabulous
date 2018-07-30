@@ -13,19 +13,26 @@ const ChangeMarshal = {
   }),
 
   removeValue: function(propertyReference, index){
-    this.pushChange(propertyReference, index, this.Type.Removal)
-    propertyReference.splice(index, 1);
-  },
-
-  pushChange: function(propertyReference, index, type){
     var changeRecord = {
       reference: propertyReference,
       index: index,
-      type: type,
+      type: this.Type.Removal,
       oldValue: propertyReference[index],
     };
     this.undoStack.push(changeRecord);
     this.redoStack = [];
+    propertyReference.splice(index, 1);
+  },
+
+  addValue: function(propertyReference, index, newValue){
+    var changeRecord = {
+      reference: propertyReference,
+      index: index,
+      type: this.Type.Addition,
+    };
+    this.undoStack.push(changeRecord);
+    this.redoStack = [];
+    propertyReference.splice(index, 0, newValue);
   },
 
   undoChange: function(){
@@ -35,6 +42,9 @@ const ChangeMarshal = {
         case this.Type.Removal:
           toUndo.reference.splice(toUndo.index, 0, toUndo.oldValue);  
           break;
+        case this.Type.Addition:
+          toUndo.oldValue = toUndo.reference[toUndo.index];
+          toUndo.reference.splice(toUndo.index,1);
         default:
           break;
       }
@@ -43,13 +53,14 @@ const ChangeMarshal = {
   },
 
   redoChange: function(){
-    console.log('redoing...')
     if(this.redoStack.length !== 0){
       var toRedo = this.redoStack.pop();
       switch(toRedo.type){
         case this.Type.Removal:
           toRedo.reference.splice(toRedo.index, 1);
           break;
+        case this.Type.Addition:
+          toRedo.reference.splice(toRedo.index, 0, toRedo.oldValue);
         default:
           break;
       }
