@@ -6,7 +6,7 @@
 
 <script>
 /* eslint-disable */
-import TabStore from "./TabStore.js";
+import TabStore from "../../tabStore.js";
 
 export default {
   name: "NoteEditor",
