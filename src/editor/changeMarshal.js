@@ -50,7 +50,9 @@ const ChangeMarshal = {
           toUndo.reference.splice(toUndo.index,1);
           break;
         case this.Type.Update:
+          var newRevertValue = toUndo.reference[toUndo.index];
           toUndo.reference.splice(toUndo.index, 1, toUndo.revertValue);
+          toUndo.revertValue = newRevertValue;
           break;
         default:
           break;
@@ -70,7 +72,9 @@ const ChangeMarshal = {
           toRedo.reference.splice(toRedo.index, 0, toRedo.revertValue);
           break;
         case this.Type.Update:
-          toUndo.reference.splice(toUndo.index, 1, toUndo.revertValue);
+          var newRevertValue = toRedo.reference[toRedo.index];
+          toRedo.reference.splice(toRedo.index, 1, toRedo.revertValue);
+          toRedo.revertValue = newRevertValue;
           break;          
         default:
           break;

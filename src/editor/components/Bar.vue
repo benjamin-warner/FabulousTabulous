@@ -15,6 +15,7 @@
 import TabStore from '../../tabStore.js';
 import NoteEditor from './NoteEditor.vue'
 import EventBus from '../../eventBus.js'
+import ChangeMarshal from '../changeMarshal.js'
 
 export default {
   name: 'Bar',
@@ -40,18 +41,7 @@ export default {
       return this.editing.beatIndex === beatIndex && this.editing.noteIndex === noteIndex;
     },
     changeNote(beatIndex, noteIndex, change){
-      EventBus.$emit('addChange', 
-      {
-        type:'note-replaced', 
-        location: {
-          measure: this.measureIndex,
-          bar: this.barIndex,
-          beat: beatIndex,
-          note: noteIndex
-        },
-        oldState: this.beats[beatIndex][noteIndex]
-      });
-      this.beats[beatIndex][noteIndex] = change;
+      ChangeMarshal.updateValue(this.beats[beatIndex], noteIndex, change);
       this.closeEditor(beatIndex, noteIndex)
     },
     closeEditor(beatIndex, noteIndex){
