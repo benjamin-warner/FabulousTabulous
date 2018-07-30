@@ -22,6 +22,7 @@
 import MeasureComponent from './Measure.vue';
 import TabStore from '../../tabStore.js';
 import EventBus from '../../eventBus.js';
+import ChangeMarshal from '../changeMarshal';
 
 export default {
   name: 'Tab',
@@ -37,7 +38,7 @@ export default {
   mounted(){
     var self = this;
     EventBus.$on('undo', this.undo);
-    EventBus.$on('addChange', (data) => { self.addChange(data) });
+    EventBus.$on('redo', this.redo);
   },
   methods: {
     insertNewMeasure(index){
@@ -71,34 +72,10 @@ export default {
       this.measures.splice(key,1);
     },
     undo(){
-      var lastChange = this.changeStack.pop();
-      if(lastChange != undefined && lastChange != null){
-        var location = lastChange.location;
-        switch(lastChange.type){
-          case 'note-replaced':
-            this.measures[location.measure]
-                .bars[location.bar]
-                .beats[location.beat].splice(location.note, 1,  lastChange.oldState);
-            break;
-          case 'bar-deleted':
-            this.measures[location.measure].bars.splice(location.bar,0, lastChange.oldState);
-            break;
-          case 'bar-added':
-            this.measures[location.measure].bars.splice(location.bar,1);
-            break;
-          case 'measure-deleted':
-            this.measures.splice(location.measure, 0, lastChange.oldState);
-            break
-          case 'measure-added':
-            this.measures.splice(location.measure, 1);
-            break;
-          default:
-            break;
-        }
-      }
+      ChangeMarshal.undoChange();
     },
-    addChange(changeData){
-      this.changeStack.push(changeData);
+    redo(){
+      ChangeMarshal.redoChange();
     }
   }
 }

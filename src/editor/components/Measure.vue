@@ -57,7 +57,6 @@ export default {
         newBar.beats.push(['--','--','--','--','--','--']);
       }
       newBar.id = + new Date();
-      ChangeMarshal.pushChange()
     }
   }
 }
