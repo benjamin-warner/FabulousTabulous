@@ -53,23 +53,10 @@ export default {
         newBar.id = + new Date() + i;
         bars.push(newBar);
       }
-      EventBus.$emit('addChange', {
-        type: 'measure-added',
-        location: {
-          measure: index
-        }
-      })
-      this.measures.splice(index, 0, {bars, id: + new Date()});
+      ChangeMarshal.addValue(this.measures, index, {bars: bars, id: + new Date()});
     },
     deleteMeasure(key){
-      EventBus.$emit('addChange', {
-        type: 'measure-deleted',
-        location: {
-          measure: key
-        },
-        oldState: this.measures[key]
-      })
-      this.measures.splice(key,1);
+      ChangeMarshal.removeValue(this.measures, key);
     },
     undo(){
       ChangeMarshal.undoChange();

@@ -8,43 +8,50 @@ const ChangeMarshal = {
   redoStack: [],
 
   Type: Object.freeze({
-    Removal: 1,
-    Addition: 2,
+    Delete: 1,
+    Create: 2,
+    Update: 3,
   }),
 
   removeValue: function(propertyReference, index){
-    var changeRecord = {
-      reference: propertyReference,
-      index: index,
-      type: this.Type.Removal,
-      oldValue: propertyReference[index],
-    };
-    this.undoStack.push(changeRecord);
-    this.redoStack = [];
+    this.pushToChangeStack(propertyReference, index, propertyReference[index], this.Type.Delete);
     propertyReference.splice(index, 1);
   },
 
   addValue: function(propertyReference, index, newValue){
+    this.pushToChangeStack(propertyReference, index, newValue, this.Type.Create);
+    propertyReference.splice(index, 0, newValue);
+  },
+
+  updateValue: function(propertyReference, index, newValue){
+    this.pushToChangeStack(propertyReference, index, propertyReference[index], this.Type.Update);
+    propertyReference.splice(index, 1, newValue);
+  },
+
+  pushToChangeStack(propertyReference, index, revertValue, type){
     var changeRecord = {
       reference: propertyReference,
       index: index,
-      type: this.Type.Addition,
+      type: type,
+      revertValue: revertValue
     };
     this.undoStack.push(changeRecord);
     this.redoStack = [];
-    propertyReference.splice(index, 0, newValue);
   },
 
   undoChange: function(){
     if(this.undoStack.length !== 0){
       var toUndo = this.undoStack.pop();
       switch(toUndo.type){
-        case this.Type.Removal:
-          toUndo.reference.splice(toUndo.index, 0, toUndo.oldValue);  
+        case this.Type.Delete:
+          toUndo.reference.splice(toUndo.index, 0, toUndo.revertValue);  
           break;
-        case this.Type.Addition:
-          toUndo.oldValue = toUndo.reference[toUndo.index];
+        case this.Type.Create:
           toUndo.reference.splice(toUndo.index,1);
+          break;
+        case this.Type.Update:
+          toUndo.reference.splice(toUndo.index, 1, toUndo.revertValue);
+          break;
         default:
           break;
       }
@@ -56,11 +63,15 @@ const ChangeMarshal = {
     if(this.redoStack.length !== 0){
       var toRedo = this.redoStack.pop();
       switch(toRedo.type){
-        case this.Type.Removal:
+        case this.Type.Delete:
           toRedo.reference.splice(toRedo.index, 1);
           break;
-        case this.Type.Addition:
-          toRedo.reference.splice(toRedo.index, 0, toRedo.oldValue);
+        case this.Type.Create:
+          toRedo.reference.splice(toRedo.index, 0, toRedo.revertValue);
+          break;
+        case this.Type.Update:
+          toUndo.reference.splice(toUndo.index, 1, toUndo.revertValue);
+          break;          
         default:
           break;
       }
