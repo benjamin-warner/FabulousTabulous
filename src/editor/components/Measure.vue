@@ -1,30 +1,22 @@
 <template>
-  <div class="measure">
-    <div class="tuning">
-      <div v-for="(tune, tuneKey) in tuning" :key="tuneKey">
-        <strong>{{tune}}</strong>
-      </div>
-    </div>
-    <button v-if="measureEmpty" v-on:click="insertBarAt(0)">+</button>
-    <div class="bar-block" v-for="(bar, barKey) in bars" :key="bar.id">
-      <div>
-        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey)">+</button>
-        <button v-on:click="deleteBar(bar)">X</button>
-        <button v-if="measureNotFull" v-on:click="insertBarAt(barKey+1)">+</button>
-      </div>
-      <BarComponent :measureIndex="measureIndex" :barIndex="barKey"/>
+  <div id="measure">
+    <svg width="15" height="175" class="measure-block">
+      <text class="measure-text" alignment-baseline="middle" v-for="(tune, tuneKey) in tuning" :key="tuneKey" x="0" :y="25*tuneKey+25" fill="black">{{tune}}</text>
+    </svg>
+    <div class="measure measure-block" v-for="(bar, barKey) in bars" :key="bar.id">
+      <BarComponent :measureIndex="measureIndex" :barIndex="barKey" :tuning="tuning"/>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import BarComponent from './Bar.vue';
-import TabStore from '../../tabStore.js';
-import ChangeMarshal from '../changeMarshal.js';
+import BarComponent from "./Bar.vue";
+import TabStore from "../../tabStore.js";
+import ChangeMarshal from "../changeMarshal.js";
 
 export default {
-  name: 'Measure',
+  name: "Measure",
   props: {
     measureIndex: Number
   },
@@ -35,48 +27,52 @@ export default {
     return {
       tuning: TabStore.tab.tuning,
       bars: TabStore.tab.measures[this.measureIndex].bars
-    }
+    };
   },
   computed: {
-    measureNotFull(){
+    measureNotFull() {
       return this.bars.length < 4;
     },
-    measureEmpty(){
+    measureEmpty() {
       return this.bars.length === 0;
     }
   },
   methods: {
-    deleteBar(bar){
-      var indexToDelete = this.bars.indexOf(bar); 
+    deleteBar(bar) {
+      var indexToDelete = this.bars.indexOf(bar);
       ChangeMarshal.removeValue(this.bars, indexToDelete);
     },
-    insertBarAt(index){
-      var newBar = {}
+    insertBarAt(index) {
+      var newBar = {};
       newBar.beats = [];
-      for(var i = 0; i < 4; i++){
-        newBar.beats.push(['--','--','--','--','--','--']);
+      for (var i = 0; i < 4; i++) {
+        newBar.beats.push(["--", "--", "--", "--", "--", "--"]);
       }
-      newBar.id = + new Date();
+      newBar.id = +new Date();
       ChangeMarshal.addValue(this.bars, index, newBar);
     }
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.tuning {
-  display: inline-block;
+#measure{
+  display: table;
 }
 
-.bar-block{
-  display: inline-block;
+.measure-text{
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
 }
 
-.measure {
-  font-size: 14pt;
-  font-family: 'Courier New', Courier, monospace;
+.measure-block {
+  display: table-cell;
+  vertical-align: middle;
 }
-
 </style>

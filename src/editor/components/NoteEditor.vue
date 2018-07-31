@@ -1,6 +1,6 @@
 <template>
   <span class="note-editor bar-block noselect">
-      <input id="note-input" type="text" size="2" v-model="changes" @blur="closeEditor" v-on:keyup.esc="closeEditor" onfocus="this.select()" v-on:keyup.enter="addChange">
+      
   </span>
 </template>
 
@@ -22,6 +22,10 @@ export default {
   },
   mounted(){
     document.getElementById("note-input").focus();
+    EventBus.$on('nav-up', this.saveAndMove);
+    EventBus.$on('nav-down', );
+    EventBus.$on('nav-left', );
+    EventBus.$on('nav-right', );
   },
   created() {
     this.changes = this.note;

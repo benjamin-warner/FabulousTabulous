@@ -1,86 +1,71 @@
 <template>
-  <div class="bar bar-block noselect">
-    <div class="bar-block" v-for="(beat, beatKey) in beats" :key="beatKey">
-      <div v-for="(note, noteKey) in beat" :key="noteKey">
-        <span v-if="beatKey === 0"><strong>|--</strong></span>
-        <NoteEditor v-if="isBeingEdited(beatKey,noteKey)" :note="note" :beatIndex="beatKey" :noteIndex="noteKey"/>
-        <strong v-else v-on:click="editNote(beatKey,noteKey)">{{note}}</strong>--
-      </div>
-    </div>
+  <div id="bar" class="bar-block">
+    <svg width="250" height="224">
+      <defs>
+        <filter x="0" y="0" width="1" height="1" id="note-bg">
+          <feFlood flood-color="white"/>
+          <feComposite in="SourceGraphic"/>
+        </filter>
+      </defs>
+      <g>
+        <line x1="0" y1="32" x2="0" y2="192" stroke="black"/>
+        <g v-for="(string, stringKey) in tuning" :key="string">
+          <line x1="0" :y1="32+stringKey*32" x2="250" :y2="32+stringKey*32" stroke="black"/>
+        </g>
+        <g v-for="(beat, beatKey) in beats" :key="beatKey">
+          <text filter="url(#note-bg)" class="note" v-for="(note, noteKey) in beat" :key="noteKey" alignment-baseline="middle" :x="(200/beats.length)*beatKey+(200/beats.length)" :y="32+noteKey*32">{{note}}</text>
+        </g>
+        <line x1="250" y1="32" x2="250" y2="192" stroke="black"/>
+      </g>
+    </svg>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import TabStore from '../../tabStore.js';
-import NoteEditor from './NoteEditor.vue'
-import EventBus from '../../eventBus.js'
-import ChangeMarshal from '../changeMarshal.js'
+import TabStore from "../../tabStore.js";
+import EventBus from "../../eventBus.js";
+import ChangeMarshal from "../changeMarshal.js";
 
 export default {
-  name: 'Bar',
-  components: {
-    NoteEditor
-  },
+  name: "Bar",
   props: {
     measureIndex: Number,
     barIndex: Number,
+    tuning: undefined
   },
-  data: function(){
-    return{
-      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats,
-      editing: {beatIndex : null, noteIndex : null}
-    }
+  data: function() {
+    return {
+      beats: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats
+    };
   },
-  methods: {  
-    editNote(beatIndex, noteIndex){
-      this.editing.beatIndex = beatIndex;
-      this.editing.noteIndex = noteIndex;
-    },
-    isBeingEdited(beatIndex, noteIndex){
-      return this.editing.beatIndex === beatIndex && this.editing.noteIndex === noteIndex;
-    },
-    changeNote(beatIndex, noteIndex, change){
+  mounted() {
+    EventBus.$on("nav-up", this.saveAndMove);
+    EventBus.$on("nav-down");
+    EventBus.$on("nav-left");
+    EventBus.$on("nav-right");
+  },
+  methods: {
+    changeNote(beatIndex, noteIndex, change) {
       ChangeMarshal.updateValue(this.beats[beatIndex], noteIndex, change);
-      this.closeEditor(beatIndex, noteIndex)
-    },
-    closeEditor(beatIndex, noteIndex){
-      this.editing.beatIndex = null;
-      this.editing.noteIndex = null;      
     }
   }
-}
-
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.bar {
+input {
+  border: 1px;
+  border-color: white;
   font-size: 14pt;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: bold;
 }
 
-.bar-block{
-  display: inline-block;
+.note {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14pt;
+  background: white;
+  font-weight: bold;
 }
-
-.bar:hover{
-  background: yellowgreen;
-}
-
-.note:hover{
-  background: powderblue;
-}
-
-.noselect {
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
-}
-
 </style>
