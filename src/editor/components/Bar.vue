@@ -1,6 +1,6 @@
 <template>
   <div id="bar" class="bar-block">
-    <svg width="240" height="170">
+    <svg width="320" height="145">
       <defs>
         <filter x="0" y="0" width="1" height="1" id="note-bg">
           <feFlood flood-color="white"/>
@@ -8,9 +8,9 @@
         </filter>
       </defs>
       <g>
-        <rect x="0" y="10" width="1" height="150" style="fill: black"/>
+        <rect x="0" y="10" width="1" height="125" style="fill: black"/>
         <g v-for="(string, stringKey) in tuning" :key="string">
-          <rect x="0" :y="stringKey*30+10" width="240" height="1" style="fill: black"/>
+          <rect x="0" :y="stringKey*25+10" width="320" height="1" style="fill: black"/>
         </g>
         <BeatComponent v-for="(beat, beatKey) in beats" :measureIndex="measureIndex" :barIndex="barIndex" :beatIndex="beatKey" :key="beatKey"/>
       </g>

@@ -25,10 +25,10 @@ export default {
   },
   computed:{
     xPos(){
-      return 48*this.beatIndex+48;
+      return 64*this.beatIndex+64;
     },
     yPos(){
-      return 30*this.noteIndex+10;
+      return 25*this.noteIndex+10;
     }
   }
 };
@@ -36,8 +36,8 @@ export default {
 
 <style scoped>
 .note {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 14pt;
+  font-family: 'Roboto Mono';
+  font-size: 10pt;
   background: white;
   font-weight: bold;
 }

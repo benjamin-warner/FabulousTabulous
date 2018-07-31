@@ -1,13 +1,13 @@
 <template>
   <div id="measure">
-    <svg width="15" height="175" class="measure-block">
-      <text class="measure-text" alignment-baseline="middle" v-for="(tune, tuneKey) in tuning" :key="tuneKey" x="0" :y="25*tuneKey+25" fill="black">{{tune}}</text>
+    <svg width="15" height="145" class="measure-block">
+      <text class="measure-text" alignment-baseline="middle" v-for="(tune, tuneKey) in tuning" :key="tuneKey" x="0" :y="25*tuneKey+10" fill="black">{{tune}}</text>
     </svg>
     <div class="measure measure-block" v-for="(bar, barKey) in bars" :key="bar.id">
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey" :tuning="tuning"/>
     </div>
-    <svg width="4" height="170" class="measure measure-block">
-      <rect x="0" y="5" width="4" height="151" style="fill: black"/>
+    <svg width="4" height="145">
+      <rect x="0" y="10" width="4" height="126" style="fill: black"/>
     </svg>
   </div>
 </template>
@@ -72,6 +72,8 @@ export default {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome and Opera */
+  font-family: 'Roboto Mono';
+  font-size: 10pt;
 }
 
 .measure-block {
