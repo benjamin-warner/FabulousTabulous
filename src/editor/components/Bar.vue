@@ -1,6 +1,6 @@
 <template>
   <div id="bar" class="bar-block">
-    <svg width="250" height="224">
+    <svg width="240" height="170">
       <defs>
         <filter x="0" y="0" width="1" height="1" id="note-bg">
           <feFlood flood-color="white"/>
@@ -8,14 +8,11 @@
         </filter>
       </defs>
       <g>
-        <line x1="0" y1="32" x2="0" y2="192" stroke="black"/>
+        <rect x="0" y="10" width="1" height="150" style="fill: black"/>
         <g v-for="(string, stringKey) in tuning" :key="string">
-          <line x1="0" :y1="32+stringKey*32" x2="250" :y2="32+stringKey*32" stroke="black"/>
+          <rect x="0" :y="stringKey*30+10" width="240" height="1" style="fill: black"/>
         </g>
-        <g v-for="(beat, beatKey) in beats" :key="beatKey">
-          <text filter="url(#note-bg)" class="note" v-for="(note, noteKey) in beat" :key="noteKey" alignment-baseline="middle" :x="(200/beats.length)*beatKey+(200/beats.length)" :y="32+noteKey*32">{{note}}</text>
-        </g>
-        <line x1="250" y1="32" x2="250" y2="192" stroke="black"/>
+        <BeatComponent v-for="(beat, beatKey) in beats" :measureIndex="measureIndex" :barIndex="barIndex" :beatIndex="beatKey" :key="beatKey"/>
       </g>
     </svg>
   </div>
@@ -23,12 +20,16 @@
 
 <script>
 /* eslint-disable */
-import TabStore from "../../tabStore.js";
-import EventBus from "../../eventBus.js";
-import ChangeMarshal from "../changeMarshal.js";
+import TabStore from '../../tabStore.js';
+import EventBus from '../../eventBus.js';
+import ChangeMarshal from '../changeMarshal.js';
+import BeatComponent from './Beat.vue';
 
 export default {
   name: "Bar",
+  components: {
+    BeatComponent
+  },
   props: {
     measureIndex: Number,
     barIndex: Number,
@@ -54,18 +55,5 @@ export default {
 </script>
 
 <style scoped>
-input {
-  border: 1px;
-  border-color: white;
-  font-size: 14pt;
-  font-family: "Courier New", Courier, monospace;
-  font-weight: bold;
-}
 
-.note {
-  font-family: "Courier New", Courier, monospace;
-  font-size: 14pt;
-  background: white;
-  font-weight: bold;
-}
 </style>

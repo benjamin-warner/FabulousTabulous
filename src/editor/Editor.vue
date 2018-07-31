@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="editor">
     <TabComponent/>
   </div>
 </template>
@@ -8,7 +8,7 @@
 import TabComponent from './components/Tab.vue'
 
 export default {
-  name: 'app',
+  name: 'Editor',
   components: {
     TabComponent,
   },
