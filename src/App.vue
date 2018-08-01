@@ -14,6 +14,10 @@ export default {
     EditorComponent,
   },
   mounted(){
+    document.onclick= function(event) {
+      let target = 'target' in event? event.target : event.srcElement;
+      EventBus.$emit('mouse-click', target);
+    }
     document.onkeydown = function(evt) {
       evt = evt || window.event;
       // Because Steve Jobs.

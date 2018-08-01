@@ -46,7 +46,7 @@ export default {
       var newBar = {};
       newBar.beats = [];
       for (var i = 0; i < 4; i++) {
-        newBar.beats.push(["--", "--", "--", "--", "--", "--"]);
+        newBar.beats.push(['','','','','','']);
       }
       newBar.id = +new Date();
       ChangeMarshal.addValue(this.bars, index, newBar);

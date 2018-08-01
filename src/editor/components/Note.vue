@@ -1,7 +1,7 @@
 <template>
-  <g id="note" v-on:click="edit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
-    <rect :x="xPos-9" :y="yPos-9" width="18" height="18" rx="5" ry="5" :class="{hover: hovering}" :style="opacity" :fill="rectColor"/>
-    <text text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="xPos" :y="yPos">{{note}}</text>
+  <g id="note" @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
+    <rect id="note-rect" :x="rectX" :y="rectY" width="18" height="18" rx="5" ry="5" :class="{hover: hovering}" :style="opacity" :fill="rectColor"/>
+    <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{note}}</text>
   </g>
 </template>
 
@@ -21,8 +21,10 @@ export default {
   },
   mounted(){
     let self = this;
+    EventBus.$on('clear-editing-flags', this.disableEditing)
     EventBus.$on('numerical-keypress', (number) => self.editNote(number));
     EventBus.$on('delete-keypress', this.deleteNoteChar);
+    EventBus.$on('mouse-click', (target) => self.handleClick(target));
   },
   data: function() {
     return {
@@ -32,11 +34,17 @@ export default {
     };
   },
   computed:{
-    xPos(){
+    textX(){
       return 64*this.beatIndex+64;
     },
-    yPos(){
+    textY(){
       return 25*this.noteIndex+10;
+    },
+    rectX(){
+      return 64*this.beatIndex+64 -9;
+    },
+    rectY(){
+      return 25*this.noteIndex+10 -9;
     },
     rectColor(){
       if(this.editing){
@@ -58,8 +66,12 @@ export default {
     }
   },
   methods: {
-    edit(){
+    toggleMultiEdit(){
       this.editing = !this.editing;
+    },
+    toggleSingleEdit(){
+      EventBus.$emit('clear-editing-flags');
+      this.editing = true;
     },
     onHover(state){
       this.hovering = state;
@@ -73,6 +85,14 @@ export default {
       if(this.editing && this.note.length > 0){
         this.note = this.note.slice(0, -1);
       }
+    },
+    handleClick(target){
+      if(target.id !== 'note-text' && target.id !== 'note-rect'){
+        this.editing = false;
+      }
+    },
+    disableEditing(){
+      this.editing = false;
     }
   }
 };
