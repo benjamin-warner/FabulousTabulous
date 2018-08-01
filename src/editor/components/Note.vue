@@ -1,7 +1,7 @@
 <template>
-  <g id="Note">
-    <text text-anchor="middle" filter="url(#note-bg)" class="note" alignment-baseline="middle" :x="xPos" :y="yPos">{{note}}</text>
-    <!-- <line :x1="xPos" y1="0" :x2="xPos" y2="150" stroke="black"/> -->
+  <g id="note" v-on:click="edit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
+    <rect :x="xPos-9" :y="yPos-9" width="18" height="18" rx="5" ry="5" :class="{hover: hovering}" :style="opacity" :fill="rectColor"/>
+    <text text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="xPos" :y="yPos">{{note}}</text>
   </g>
 </template>
 
@@ -20,7 +20,9 @@ export default {
   },
   data: function() {
     return {
-      note: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex][this.noteIndex]
+      note: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex][this.noteIndex],
+      editing: false,
+      hovering: false
     };
   },
   computed:{
@@ -29,16 +31,55 @@ export default {
     },
     yPos(){
       return 25*this.noteIndex+10;
+    },
+    rectColor(){
+      if(this.editing){
+        return 'aqua';
+      }
+      return 'white';
+    },
+    textColor(){
+      if(this.editing){
+        return 'white';
+      }
+      return 'black';
+    },      
+    opacity(){
+      if(this.note.length === 0 && !this.editing){
+        return 'fill-opacity: 0.00'
+      }
+      return 'fill-opacity: 1'
+    }
+  },
+  methods: {
+    edit(){
+      this.editing = !this.editing;
+    },
+    onHover(state){
+      this.hovering = state;
     }
   }
 };
 </script>
 
 <style scoped>
-.note {
+.hover {
+  stroke-width: 2;
+  stroke: aqua;
+  stroke-opacity: 0.5;
+}
+
+.tab-text {
   font-family: 'Roboto Mono';
   font-size: 10pt;
   background: white;
   font-weight: bold;
+
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
+
 </style>

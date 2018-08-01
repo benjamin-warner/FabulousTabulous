@@ -1,12 +1,6 @@
 <template>
   <div id="bar" class="bar-block">
     <svg width="320" height="145">
-      <defs>
-        <filter x="0" y="0" width="1" height="1" id="note-bg">
-          <feFlood flood-color="white"/>
-          <feComposite in="SourceGraphic"/>
-        </filter>
-      </defs>
       <g>
         <rect x="0" y="10" width="1" height="125" style="fill: black"/>
         <g v-for="(string, stringKey) in tuning" :key="string">
