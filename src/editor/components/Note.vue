@@ -8,6 +8,7 @@
 <script>
 /* eslint-disable */
 import TabStore from '../../tabStore.js'
+import EventBus from '../../eventBus.js'
 
 export default {
   name: "Note",
@@ -17,6 +18,11 @@ export default {
     beatIndex: Number,
     noteIndex: Number,
     tuning: undefined
+  },
+  mounted(){
+    let self = this;
+    EventBus.$on('numerical-keypress', (number) => self.editNote(number));
+    EventBus.$on('delete-keypress', this.deleteNoteChar);
   },
   data: function() {
     return {
@@ -57,12 +63,23 @@ export default {
     },
     onHover(state){
       this.hovering = state;
+    },
+    editNote(numberInput){
+      if(this.editing && this.note.length < 2){
+        this.note += numberInput;
+      }
+    },
+    deleteNoteChar(){
+      if(this.editing && this.note.length > 0){
+        this.note = this.note.slice(0, -1);
+      }
     }
   }
 };
 </script>
 
 <style scoped>
+
 .hover {
   stroke-width: 2;
   stroke: aqua;

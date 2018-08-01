@@ -57,7 +57,14 @@ export default {
         evt.preventDefault();
         EventBus.$emit('nav-down');
       }
-
+      if(evt.keyCode >= 48 && evt.keyCode <= 57){
+        evt.preventDefault();
+        EventBus.$emit('numerical-keypress', evt.keyCode - 48);
+      }
+      if(evt.keyCode === 8){
+        evt.preventDefault();
+        EventBus.$emit('delete-keypress');
+      }
     };
   },
 }
