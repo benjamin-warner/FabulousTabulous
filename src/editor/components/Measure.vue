@@ -36,16 +36,20 @@ export default {
   },
   methods: {
     deleteBar(bar) {
-      ChangeMarshal.removeValue(this.bars, bar);
+      if(this.bars.length > 1){
+        ChangeMarshal.removeValue(this.bars, bar);
+      }
     },
     insertBarAt(index) {
-      var newBar = {};
-      newBar.beats = [];
-      for (var i = 0; i < 4; i++) {
-        newBar.beats.push(['','','','','','']);
+      if(this.bars.length < 4){
+        var newBar = {};
+        newBar.beats = [];
+        for (var i = 0; i < 4; i++) {
+          newBar.beats.push(['','','','','','']);
+        }
+        newBar.id = +new Date();
+        ChangeMarshal.addValue(this.bars, index, newBar);
       }
-      newBar.id = +new Date();
-      ChangeMarshal.addValue(this.bars, index, newBar);
     }
   }
 };

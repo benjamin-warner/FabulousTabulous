@@ -1,7 +1,9 @@
 <template>
   <div id="bar" class="bar-block" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <div :class="{hidden: !hovered}">
+      <Button v-on:click="insert(barIndex)"></Button>
       <Button v-on:click="removeSelf">X</Button>
+      <Button v-on:click="insert(barIndex+1)"></Button>
     </div>
     <svg width="320" height="145">
       <g>
@@ -65,6 +67,9 @@ export default {
     },
     removeSelf(){
       this.$parent.deleteBar(this.barIndex);
+    },
+    insert(index){
+      this.$parent.insertBarAt(index);
     }
   }
 };
