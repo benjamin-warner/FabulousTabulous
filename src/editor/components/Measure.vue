@@ -39,8 +39,7 @@ export default {
   },
   methods: {
     deleteBar(bar) {
-      var indexToDelete = this.bars.indexOf(bar);
-      ChangeMarshal.removeValue(this.bars, indexToDelete);
+      ChangeMarshal.removeValue(this.bars, bar);
     },
     insertBarAt(index) {
       var newBar = {};
