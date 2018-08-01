@@ -3,9 +3,6 @@
     <div class="measure measure-block" v-for="(bar, barKey) in bars" :key="bar.id">
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey" :tuning="tuning"/>
     </div>
-    <svg width="4" height="145">
-      <rect x="0" y="10" width="4" height="126" style="fill: black"/>
-    </svg>
   </div>
 </template>
 
