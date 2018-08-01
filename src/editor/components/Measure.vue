@@ -1,8 +1,5 @@
 <template>
   <div id="measure">
-    <svg width="15" height="145" class="measure-block">
-      <text class="measure-text" alignment-baseline="middle" v-for="(tune, tuneKey) in tuning" :key="tuneKey" x="0" :y="25*tuneKey+10" fill="black">{{tune}}</text>
-    </svg>
     <div class="measure measure-block" v-for="(bar, barKey) in bars" :key="bar.id">
       <BarComponent :measureIndex="measureIndex" :barIndex="barKey" :tuning="tuning"/>
     </div>
@@ -49,7 +46,7 @@ export default {
       var newBar = {};
       newBar.beats = [];
       for (var i = 0; i < 4; i++) {
-        newBar.beats.push(["--", "--", "--", "--", "--", "--"]);
+        newBar.beats.push(['','','','','','']);
       }
       newBar.id = +new Date();
       ChangeMarshal.addValue(this.bars, index, newBar);
@@ -65,15 +62,14 @@ export default {
 }
 
 .measure-text{
-  -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Safari */
-     -khtml-user-select: none; /* Konqueror HTML */
-       -moz-user-select: none; /* Firefox */
-        -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome and Opera */
   font-family: 'Roboto Mono';
   font-size: 10pt;
+  
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .measure-block {

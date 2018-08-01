@@ -47,7 +47,7 @@ export default {
         newBar.beats = [];
         
         for(var j = 0; j < 4; j++){
-          newBar.beats.push(['--','--','--','--','--','--']);
+          newBar.beats.push(['','','','','','']);
         }
         newBar.id = + new Date() + i;
         bars.push(newBar);
