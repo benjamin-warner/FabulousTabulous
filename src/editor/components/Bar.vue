@@ -23,7 +23,6 @@
 
 <script>
 /* eslint-disable */
-import TabStore from '../../tabStore.js';
 import EventBus from '../../eventBus.js';
 import ChangeMarshal from '../changeMarshal.js';
 import BeatComponent from './Beat.vue';

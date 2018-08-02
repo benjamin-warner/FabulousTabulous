@@ -20,9 +20,9 @@
 <script>
 /* eslint-disable */
 import MeasureComponent from './Measure.vue';
-import TabStore from '../../tabStore.js';
 import EventBus from '../../eventBus.js';
 import ChangeMarshal from '../changeMarshal';
+import { mapState } from 'vuex';
 
 export default {
   name: 'Tab',

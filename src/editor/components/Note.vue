@@ -7,7 +7,6 @@
 
 <script>
 /* eslint-disable */
-import TabStore from '../../tabStore.js'
 import EventBus from '../../eventBus.js'
 
 export default {

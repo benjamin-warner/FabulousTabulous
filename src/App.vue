@@ -7,11 +7,41 @@
 <script>
 import EditorComponent from './editor/Editor.vue'
 import EventBus from './eventBus.js'
+import { mapState } from 'vuex';
 
 export default {
   name: 'app',
   components: {
     EditorComponent,
+  },
+  data(){
+    return {
+      excitement: '!'
+    }
+  },
+  computed: {
+    doThing(){
+      return 'pomato'
+    },
+    ...mapState({
+      test: state => state.test,
+      stateAlias: 'potato',
+      withExcitement(state){
+        return state.test + this.excitement;
+      }
+    }),
+  },
+  methods:{
+    applyExcitement(add){
+      if(add){
+        this.excitement += '!';
+      }
+      else{
+        if(this.excitement.length > 0){
+          this.excitement.slice(0, -1);
+        }
+      }
+    }
   },
   mounted(){
     document.onclick= function(event) {

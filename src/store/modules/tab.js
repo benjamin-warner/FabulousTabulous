@@ -1,22 +1,19 @@
-/* eslint-disable */
-const TabStore = {
-  tab:{
-    spacer: '--',
-    tuning: [
-      'e',
-      'B',
-      'G',
-      'D',
-      'A',
-      'E'
-    ],
-    measures: [
-      {
+const state = {
+  tuning: [
+    'e',
+    'B',
+    'G',
+    'D',
+    'A',
+    'E'
+  ],
+  measures: [
+    {
       id: 0,
       bars: [
         {
           id: 0,
-          beats:[
+          beats: [
             [
               '00',
               '01',
@@ -85,12 +82,12 @@ const TabStore = {
               '17',
               '09',
               '91'
-            ]  
+            ]
           ],
         },
         {
           id: 2,
-          beats:[ 
+          beats: [
             [
               '13',
               '21',
@@ -127,7 +124,7 @@ const TabStore = {
         },
         {
           id: 3,
-          beats:[
+          beats: [
             [
               '17',
               '31',
@@ -163,8 +160,20 @@ const TabStore = {
           ]
         } // bar's beats
       ]// bars
-    }] //measures
-  }
+    }
+  ] //measures
 }
 
-export default TabStore
+const getters = {
+
+}
+
+const mutations = {
+
+}
+
+export default {
+  state,
+  getters,
+  mutations
+}

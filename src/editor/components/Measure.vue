@@ -9,7 +9,6 @@
 <script>
 /* eslint-disable */
 import BarComponent from "./Bar.vue";
-import TabStore from "../../tabStore.js";
 import ChangeMarshal from "../changeMarshal.js";
 
 export default {

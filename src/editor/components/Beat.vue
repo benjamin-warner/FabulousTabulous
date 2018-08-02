@@ -6,7 +6,6 @@
 
 <script>
 /* eslint-disable */
-import TabStore from '../../tabStore.js'
 import NoteComponent from './Note.vue'
 
 export default {
