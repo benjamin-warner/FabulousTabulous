@@ -165,7 +165,9 @@ const state = {
 }
 
 const getters = {
-
+  getMeasures: (state ) => {
+    return state.measures;
+  }
 }
 
 const mutations = {
@@ -173,6 +175,7 @@ const mutations = {
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations

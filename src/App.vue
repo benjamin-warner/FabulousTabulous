@@ -1,13 +1,15 @@
 <template>
   <div id="app">
-    <EditorComponent/>
+    {{doThing}}
+    <!-- <EditorComponent/> -->
+    {{measure}}
   </div>
 </template>
 
 <script>
 import EditorComponent from './editor/Editor.vue'
 import EventBus from './eventBus.js'
-import { mapState } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'app',
@@ -23,12 +25,8 @@ export default {
     doThing(){
       return 'pomato'
     },
-    ...mapState({
-      test: state => state.test,
-      stateAlias: 'potato',
-      withExcitement(state){
-        return state.test + this.excitement;
-      }
+    ...mapGetters('tab', {
+      measure: 'getMeasures'
     }),
   },
   methods:{
