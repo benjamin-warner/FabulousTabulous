@@ -1,33 +1,17 @@
 <template>
   <div id="app">
-    {{doThing}}
-    <!-- <EditorComponent/> -->
-    {{measure}}
+    <EditorComponent/>
   </div>
 </template>
 
 <script>
 import EditorComponent from './editor/Editor.vue'
 import EventBus from './eventBus.js'
-import { mapGetters } from 'vuex';
 
 export default {
   name: 'app',
   components: {
     EditorComponent,
-  },
-  data(){
-    return {
-      excitement: '!'
-    }
-  },
-  computed: {
-    doThing(){
-      return 'pomato'
-    },
-    ...mapGetters('tab', {
-      measure: 'getMeasures'
-    }),
   },
   methods:{
     applyExcitement(add){

@@ -1,5 +1,5 @@
 <template>
-  <g id="note" @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
+  <g @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <rect id="note-rect" :x="rectX" :y="rectY" width="18" height="18" rx="5" ry="5" :class="{hover: hovering}" :style="opacity" :fill="rectColor"/>
     <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{note}}</text>
   </g>
@@ -8,15 +8,12 @@
 <script>
 /* eslint-disable */
 import EventBus from '../../eventBus.js'
+import { mapGetters } from 'vuex';
 
 export default {
   name: "Note",
   props: {
-    measureIndex: Number,
-    barIndex: Number,
-    beatIndex: Number,
-    noteIndex: Number,
-    tuning: undefined
+    id: Number
   },
   mounted(){
     let self = this;
@@ -27,23 +24,25 @@ export default {
   },
   data: function() {
     return {
-      note: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex][this.noteIndex],
       editing: false,
       hovering: false
     };
   },
   computed:{
+    ...mapGetters('tab',{
+      note: 'getNote'
+    }),
     textX(){
-      return 64*this.beatIndex+64;
+      return 64*this.id+64;
     },
     textY(){
-      return 25*this.noteIndex+10;
+      return 25*this.id+10;
     },
     rectX(){
-      return 64*this.beatIndex+64 -9;
+      return 64*this.id+64 -9;
     },
     rectY(){
-      return 25*this.noteIndex+10 -9;
+      return 25*this.id+10 -9;
     },
     rectColor(){
       if(this.editing){
@@ -65,34 +64,34 @@ export default {
     }
   },
   methods: {
-    toggleMultiEdit(){
-      this.editing = !this.editing;
-    },
-    toggleSingleEdit(){
-      EventBus.$emit('clear-editing-flags');
-      this.editing = true;
-    },
-    onHover(state){
-      this.hovering = state;
-    },
-    editNote(numberInput){
-      if(this.editing && this.note.length < 2){
-        this.note += numberInput;
-      }
-    },
-    deleteNoteChar(){
-      if(this.editing && this.note.length > 0){
-        this.note = this.note.slice(0, -1);
-      }
-    },
-    handleClick(target){
-      if(target.id !== 'note-text' && target.id !== 'note-rect'){
-        this.editing = false;
-      }
-    },
-    disableEditing(){
-      this.editing = false;
-    }
+    // toggleMultiEdit(){
+    //   this.editing = !this.editing;
+    // },
+    // toggleSingleEdit(){
+    //   EventBus.$emit('clear-editing-flags');
+    //   this.editing = true;
+    // },
+    // onHover(state){
+    //   this.hovering = state;
+    // },
+    // editNote(numberInput){
+    //   if(this.editing && this.note.length < 2){
+    //     this.note += numberInput;
+    //   }
+    // },
+    // deleteNoteChar(){
+    //   if(this.editing && this.note.length > 0){
+    //     this.note = this.note.slice(0, -1);
+    //   }
+    // },
+    // handleClick(target){
+    //   if(target.id !== 'note-text' && target.id !== 'note-rect'){
+    //     this.editing = false;
+    //   }
+    // },
+    // disableEditing(){
+    //   this.editing = false;
+    // }
   }
 };
 </script>

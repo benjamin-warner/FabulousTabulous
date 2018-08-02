@@ -1,12 +1,17 @@
 <template>
   <g id="beat">
-    <NoteComponent v-for="(note, noteKey) in beat" :key="noteKey" :measureIndex="measureIndex" :barIndex="barIndex" :beatIndex="beatIndex" :noteIndex="noteKey"/>
+    <g id="note" v-for="(note, noteKey) in getChord(id)" :key="noteKey">
+    <!-- <NoteComponent v-for="(note, noteKey) in getChord(id)" :key="noteKey" :id="noteKey"/> -->>
+      <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" fill="white"/>
+      <text id="note-text" text-anchor="middle" class="tab-text" fill="black" alignment-baseline="middle" :x="textX(noteKey)" :y="textY(noteKey)">{{note}}</text>
+    </g>
   </g>
 </template>
 
 <script>
 /* eslint-disable */
 import NoteComponent from './Note.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: "Beat",
@@ -14,15 +19,28 @@ export default {
     NoteComponent
   },
   props: {
-    measureIndex: Number,
-    barIndex: Number,
-    beatIndex: Number,
-    tuning: undefined
+    id: Number,
+    position: Number
+
   },
-  data: function() {
-    return {
-      beat: TabStore.tab.measures[this.measureIndex].bars[this.barIndex].beats[this.beatIndex]
-    };
+  computed: {
+    ...mapGetters('tab', {
+        getChord: 'getChord'
+    }),
+  },
+  methods: {
+    textX(index){
+      return 64*this.position+64;
+    },
+    textY(index){
+      return 25*index+10;
+    },
+    rectX(index){
+      return 64*this.position+64 -9;
+    },
+    rectY(index){
+      return 25*index+10 -9;
+    },
   }
 };
 </script>
