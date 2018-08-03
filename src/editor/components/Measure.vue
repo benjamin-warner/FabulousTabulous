@@ -1,32 +1,28 @@
 <template>
   <div id="measure">
-    <div class="measure measure-block" v-for="(bar, barKey) in bars" :key="bar.id">
-      <BarComponent :measureIndex="measureIndex" :barIndex="barKey" :tuning="tuning"/>
+    <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
+      <BarComponent :id="id" :beats="bar.beats"/>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import BarComponent from "./Bar.vue";
-import TabStore from "../../tabStore.js";
-import ChangeMarshal from "../changeMarshal.js";
+import BarComponent from './Bar.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: "Measure",
   props: {
-    measureIndex: Number
+    id: String
   },
   components: {
     BarComponent
   },
-  data: function() {
-    return {
-      tuning: TabStore.tab.tuning,
-      bars: TabStore.tab.measures[this.measureIndex].bars
-    };
-  },
   computed: {
+    ...mapGetters('tab', {
+      getBars: 'getBars'
+    }),
     measureNotFull() {
       return this.bars.length < 4;
     },

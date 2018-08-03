@@ -13,6 +13,18 @@ export default {
   components: {
     EditorComponent,
   },
+  methods:{
+    applyExcitement(add){
+      if(add){
+        this.excitement += '!';
+      }
+      else{
+        if(this.excitement.length > 0){
+          this.excitement.slice(0, -1);
+        }
+      }
+    }
+  },
   mounted(){
     document.onclick= function(event) {
       let target = 'target' in event? event.target : event.srcElement;

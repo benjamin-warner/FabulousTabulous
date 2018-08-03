@@ -1,6 +1,6 @@
 <template>
-  <div class="tab" >
-    <div v-for="(measure, measureKey) in measures" :key="measure.id">
+  <div class="tab">
+    <div v-for="(measure, measureKey) in measures" :key="measureKey">
       <div class="measure-block">
         <div>
           <button v-on:click="insertNewMeasure(measureKey)">+</button>
@@ -12,27 +12,29 @@
           <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
         </div>
       </div>
-      <MeasureComponent class="measure-block" :measureIndex="measureKey"/>
+      <MeasureComponent class="measure-block" :id="measureKey"/>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import MeasureComponent from './Measure.vue';
-import TabStore from '../../tabStore.js';
-import EventBus from '../../eventBus.js';
-import ChangeMarshal from '../changeMarshal';
+import MeasureComponent from './Measure.vue'
+import EventBus from '../../eventBus.js'
+import { mapState } from 'vuex'
 
 export default {
   name: 'Tab',
   components: {
     MeasureComponent
   },
+  computed: {
+    ...mapState('tab', {
+      measures: 'measures'
+    }),
+  },
   data: function(){
     return {
-      measures: TabStore.tab.measures,
-      changeStack: []
     }
   },
   mounted(){
@@ -52,16 +54,13 @@ export default {
         newBar.id = + new Date() + i;
         bars.push(newBar);
       }
-      ChangeMarshal.addValue(this.measures, index, {bars: bars, id: + new Date()});
+      //add...
     },
     deleteMeasure(key){
-      ChangeMarshal.removeValue(this.measures, key);
     },
     undo(){
-      ChangeMarshal.undoChange();
     },
     redo(){
-      ChangeMarshal.redoChange();
     }
   }
 }
