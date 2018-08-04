@@ -6,7 +6,7 @@
         <g v-for="(string, stringIndex) in tuning" :key="string">
           <rect x="0" :y="stringY(stringIndex)" width="320" height="1" :class="{hover: hovered}" style="fill: black"/>
         </g>
-        <BeatComponent v-for="(beat, beatKey) in getBeats(id)" :key="beatKey" :id="beatKey" :parentId="id"/>
+        <BeatComponent v-for="(beat, beatKey) in beatsOfBar(id)" :key="beatKey" :id="beatKey" :parentId="id"/>
         <rect x="319" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
       </g>
     </svg>
@@ -29,11 +29,10 @@ export default {
   },
   props: {
     id: String,
-    beats: undefined
   },
   computed: {
     ...mapState('tab', ['tuning']),
-    ...mapGetters('tab', ['getBeats', 'isLastBar']),
+    ...mapGetters('tab', ['beatsOfBar', 'isLastBar']),
     isLast(){
       let measureId = this.$parent.revealId();
       return this.isLastBar({

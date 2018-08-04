@@ -135,21 +135,24 @@ const state = {
 }
 
 const getters = {
-  getMeasures: (state) => {
+  measures: (state) => {
     return state.measures;
   },
-  getBars: (state) => (id) => {
-    return state.measures[id].bars.map(barId => state.bars[barId]);
+  measureCount: (state) => {
+    return Object.keys(state.measures).length;
   },
-  getBeats: (state) => (barId) => {
-    return state.bars[barId].beats;
-  },
-  getChord: (state) => (payload) => {
-    return state.bars[payload.barId].beats[payload.beatId];
+  barsOfMeasure: (state) => (measureId) => {
+    return state.measures[measureId].bars.map(barId => state.bars[barId]);
   },
   isLastBar: (state) => (payload) => {
     let measure = state.measures[payload.measureId];
     return measure.bars[measure.bars.length-1] === payload.barId;
+  },
+  beatsOfBar: (state) => (barId) => {
+    return state.bars[barId].beats;
+  },
+  chordOfBeat: (state) => (payload) => {
+    return state.bars[payload.barId].beats[payload.beatId];
   }
 }
 

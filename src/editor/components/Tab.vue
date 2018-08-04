@@ -6,8 +6,7 @@
           <button v-on:click="insertNewMeasure(measureKey)">+</button>
         </div>
         <div>
-          <button v-on:click="removeMeasure(measure.id)">x</button>
-          <!-- v-if="measures.length > 1"  -->
+          <button v-if="measureCount > 1" v-on:click="deleteMeasure(measure.id)">x</button>
         </div>
         <div>
           <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
@@ -22,7 +21,7 @@
 /* eslint-disable */
 import MeasureComponent from './Measure.vue'
 import EventBus from '../../eventBus.js'
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'Tab',
@@ -30,9 +29,12 @@ export default {
     MeasureComponent
   },
   computed: {
-    ...mapState('tab', {
-      measures: 'measures'
-    }),
+    ...mapState('tab', [
+      'measures',
+    ]),
+    ...mapGetters('tab',[
+      'measureCount'
+    ])
   },
   data: function(){
     return {
@@ -59,13 +61,6 @@ export default {
         bars.push(newBar);
       }
       //add...
-    },
-    removeMeasure(id){
-      this.deleteMeasure(id)
-    },
-    undo(){
-    },
-    redo(){
     }
   }
 }

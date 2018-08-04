@@ -1,6 +1,6 @@
 <template>
   <div id="measure" class="measure-block">
-    <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
+    <div class="measure measure-block" v-for="(bar, barKey) in barsOfMeasure(id)" :key="barKey">
     <div>
       <Button v-on:click="insertBar(barKey)">+</Button>      
       <Button v-on:click="removeBar(bar.id)">X</Button>
@@ -25,9 +25,9 @@ export default {
     BarComponent
   },
   computed: {
-    ...mapGetters('tab', {
-      getBars: 'getBars'
-    }),
+    ...mapGetters('tab', [
+     'barsOfMeasure'
+    ]),
     measureNotFull() {
       return this.bars.length < 4;
     },

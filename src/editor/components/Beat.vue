@@ -1,6 +1,6 @@
 <template>
   <g id="beat">
-    <g id="note" v-for="(note, noteKey) in getChord({barId: parentId, beatId: id})" :key="noteKey">
+    <g id="note" v-for="(note, noteKey) in chordOfBeat({barId: parentId, beatId: id})" :key="noteKey">
     <!-- <NoteComponent v-for="(note, noteKey) in getChord(id)" :key="noteKey" :id="noteKey"/> -->
       <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" fill="white"/>
       <text id="note-text" text-anchor="middle" class="tab-text" fill="black" alignment-baseline="middle" :x="textX(noteKey)" :y="textY(noteKey)">{{note}}</text>
@@ -23,9 +23,9 @@ export default {
     parentId: String
   },
   computed: {
-    ...mapGetters('tab', {
-        getChord: 'getChord'
-    }),
+    ...mapGetters('tab', [
+      'chordOfBeat'
+    ]),
   },
   methods: {
     textX(index){
