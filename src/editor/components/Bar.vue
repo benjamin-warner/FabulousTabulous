@@ -1,5 +1,5 @@
 <template>
-  <div id="bar" class="bar-block" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
+  <div id="bar" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <svg width="320" height="145">
       <g>
         <rect x="0" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
@@ -10,7 +10,7 @@
         <rect x="320" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
       </g>
     </svg>
-    <svg width="4" height="145" v-if="isLast">
+    <svg class="end-block" width="4" height="145" v-if="isLast">
       <rect x="0" y="10" width="4" height="126" style="fill: black"/>
     </svg>
   </div>
@@ -61,10 +61,7 @@ export default {
 <style scoped>
 #bar{
   padding-top: 4px;
-}
-
-.hidden{
-  visibility: hidden;
+  white-space:nowrap;
 }
 
 .hover{
