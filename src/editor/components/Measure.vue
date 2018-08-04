@@ -1,7 +1,12 @@
 <template>
   <div id="measure">
     <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
-      <BarComponent :id="bar.id" :beats="bar.beats"/>
+    <div>
+      <Button v-on:click="insertBar(barKey)">+</Button>      
+      <Button v-on:click="removeBar(bar.id)">X</Button>
+      <Button v-on:click="insertBar(barKey+1)">+</Button>
+    </div>
+    <BarComponent :id="bar.id" :beats="bar.beats"/>
     </div>
   </div>
 </template>
@@ -31,23 +36,28 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('tab', ['deleteBarAndReferences']),
-    removeBar(id){
-      this.deleteBarAndReferences({
+    ...mapMutations('tab',
+      ['deleteBar','addBar']
+    ),
+    removeBar(index){
+      this.deleteBar({
         measureId: this.id,
-        barId: id
-      });
+        barId: index
+      })
     },
-    insertBarAt(index) {
-      if(this.bars.length < 4){
-        var newBar = {};
-        newBar.beats = [];
-        for (var i = 0; i < 4; i++) {
-          newBar.beats.push(['','','','','','']);
-        }
-        newBar.id = +new Date();
-        ChangeMarshal.addValue(this.bars, index, newBar);
+    insertBar(index){
+      let newBar = {};
+      newBar.beats = [];
+      for (let i = 0; i < 4; i++) {
+        newBar.beats.push(['','','','','','']);
       }
+      let unixTimestamp = + new Date();
+      newBar.id = unixTimestamp.toString();
+      this.addBar({
+        measureId: this.id,
+        barId: index,
+        newBar: newBar
+      })
     },
     revealId(){
       return this.id;

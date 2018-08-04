@@ -1,8 +1,5 @@
 <template>
   <div id="bar" class="bar-block" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
-    <div :class="{hidden: !hovered}">
-      <Button v-on:click="deleteSelf">X</Button>
-    </div>
     <svg width="320" height="145">
       <g>
         <rect x="0" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
@@ -23,7 +20,7 @@
 /* eslint-disable */
 import EventBus from '../../eventBus.js'
 import BeatComponent from './Beat.vue'
-import { mapState, mapGetters, mapMutations } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   name: "Bar",
@@ -51,20 +48,12 @@ export default {
     };
   },
   methods: {
-    ...mapMutations('tab',['deleteBar']),
     stringY(index){
       return index*25+10
     },
     onHover(state){
       this.hovered = state;
     },
-    deleteSelf(){
-      let measureId = this.$parent.revealId();
-      this.deleteBar({
-        measureId: measureId,
-        barId: this.id
-      })
-    }
   }
 };
 </script>

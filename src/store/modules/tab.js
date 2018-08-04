@@ -148,6 +148,7 @@ const getters = {
   },
   isLastBar: (state) => (payload) => {
     let measure = state.measures[payload.measureId];
+    console.log(payload.measureId,measure.bars[measure.bars.length-1])
     return measure.bars[measure.bars.length-1] === payload.barId;
   }
 }
@@ -157,6 +158,13 @@ const mutations = {
     let barReferences = state.measures[payload.measureId].bars;
     let referenceToDelete = barReferences.indexOf(payload.barId);
     barReferences.splice(referenceToDelete, 1);
+  },
+  addBar(state, payload){
+    let barReferences = state.measures[payload.measureId].bars;
+    if(barReferences.length < 4){
+      barReferences.splice(payload.barId, 0, payload.newBar.id);
+      state.bars[payload.newBar.id] = payload.newBar;
+    }
   }
 }
 
