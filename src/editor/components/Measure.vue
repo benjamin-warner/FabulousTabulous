@@ -1,5 +1,5 @@
 <template>
-  <div id="measure">
+  <div id="measure" class="measure-block">
     <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
     <div>
       <Button v-on:click="insertBar(barKey)">+</Button>      
@@ -68,9 +68,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#measure{
-  display: table;
-}
 
 .measure-text{
   font-family: 'Roboto Mono';
@@ -84,7 +81,7 @@ export default {
 }
 
 .measure-block {
-  display: table-cell;
+  display: inline-block;
   vertical-align: middle;
 }
 </style>

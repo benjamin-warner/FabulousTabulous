@@ -1,4 +1,5 @@
 /* eslint-disable */
+import Vue from 'vue'
 const state = {
   tuning: [
     'e',
@@ -148,12 +149,18 @@ const getters = {
   },
   isLastBar: (state) => (payload) => {
     let measure = state.measures[payload.measureId];
-    console.log(payload.measureId,measure.bars[measure.bars.length-1])
     return measure.bars[measure.bars.length-1] === payload.barId;
   }
 }
 
 const mutations = {
+  deleteMeasure(state, measureId){
+    let barReferences = state.measures[measureId].bars;
+    for(let reference of barReferences){
+      Vue.delete(state.bars, reference);
+    }
+    Vue.delete(state.measures, measureId)
+  },
   deleteBar(state, payload){
     let barReferences = state.measures[payload.measureId].bars;
     let referenceToDelete = barReferences.indexOf(payload.barId);

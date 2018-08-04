@@ -6,13 +6,14 @@
           <button v-on:click="insertNewMeasure(measureKey)">+</button>
         </div>
         <div>
-          <button v-if="measures.length > 1" v-on:click="deleteMeasure(measureKey)">x</button>
+          <button v-on:click="removeMeasure(measure.id)">x</button>
+          <!-- v-if="measures.length > 1"  -->
         </div>
         <div>
           <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
         </div>
       </div>
-      <MeasureComponent class="measure-block" :id="measureKey"/>
+      <MeasureComponent class="measure-block" :id="measure.id"/>
     </div>
   </div>
 </template>
@@ -21,7 +22,7 @@
 /* eslint-disable */
 import MeasureComponent from './Measure.vue'
 import EventBus from '../../eventBus.js'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'Tab',
@@ -42,6 +43,9 @@ export default {
     EventBus.$on('redo', this.redo);
   },
   methods: {
+    ...mapMutations('tab',[
+      'deleteMeasure'
+    ]),
     insertNewMeasure(index){
       var bars = []
       for(var i = 0; i < 4; i++){ //bars
@@ -56,7 +60,8 @@ export default {
       }
       //add...
     },
-    deleteMeasure(key){
+    removeMeasure(id){
+      this.deleteMeasure(id)
     },
     undo(){
     },
