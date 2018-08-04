@@ -1,23 +1,18 @@
 <template>
-  <div id="bar" class="bar-block" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
-    <div :class="{hidden: !hovered}">
-      <!-- <Button v-on:click="insert(barIndex)"></Button>
-      <Button v-on:click="removeSelf">X</Button>
-      <Button v-on:click="insert(barIndex+1)"></Button> -->
-    </div>
+  <div id="bar" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <svg width="320" height="145">
       <g>
         <rect x="0" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
         <g v-for="(string, stringIndex) in tuning" :key="string">
           <rect x="0" :y="stringY(stringIndex)" width="320" height="1" :class="{hover: hovered}" style="fill: black"/>
         </g>
-        <BeatComponent v-for="(beat, beatKey) in getBeats(id)" :position="beatKey" :id="beats[beatKey]" :key="beatKey"/>
+        <BeatComponent v-for="(beat, beatKey) in getBeats(id)" :key="beatKey" :id="beatKey" :parentId="id"/>
         <rect x="320" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
       </g>
     </svg>
-    <!-- <svg width="4" height="145" v-if="isLast">
+    <svg class="end-block" width="4" height="145" v-if="isLast">
       <rect x="0" y="10" width="4" height="126" style="fill: black"/>
-    </svg> -->
+    </svg>
   </div>
 </template>
 
@@ -38,23 +33,19 @@ export default {
   },
   computed: {
     ...mapState('tab', ['tuning']),
-    ...mapGetters('tab', {
-      getBeats: 'getBeats'
-    })
+    ...mapGetters('tab', ['getBeats', 'isLastBar']),
+    isLast(){
+      let measureId = this.$parent.revealId();
+      return this.isLastBar({
+        measureId: measureId, 
+        barId:this.id
+      });
+    }
   },
   data: function() {
     return {
       hovered: false
     };
-  },
-  mounted() {
-    EventBus.$on("nav-up", this.saveAndMove);
-    EventBus.$on("nav-down");
-    EventBus.$on("nav-left");
-    EventBus.$on("nav-right");
-  },
-  created(){
-    console.log()
   },
   methods: {
     stringY(index){
@@ -70,10 +61,7 @@ export default {
 <style scoped>
 #bar{
   padding-top: 4px;
-}
-
-.hidden{
-  visibility: hidden;
+  white-space:nowrap;
 }
 
 .hover{
