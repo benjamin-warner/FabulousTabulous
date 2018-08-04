@@ -3,7 +3,7 @@
     <div class="measure measure-block" v-for="(bar, barKey) in barsOfMeasure(id)" :key="barKey">
     <div>
       <Button v-on:click="insertBar(barKey)">+</Button>      
-      <Button v-on:click="removeBar(bar.id)">X</Button>
+      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar({measureId: id, barId: bar.id})">X</Button>
       <Button v-on:click="insertBar(barKey+1)">+</Button>
     </div>
     <BarComponent :id="bar.id" :beats="bar.beats"/>
@@ -26,7 +26,8 @@ export default {
   },
   computed: {
     ...mapGetters('tab', [
-     'barsOfMeasure'
+     'barsOfMeasure',
+     'barCountForMeasure'
     ]),
     measureNotFull() {
       return this.bars.length < 4;
@@ -39,12 +40,6 @@ export default {
     ...mapMutations('tab',
       ['deleteBar','addBar']
     ),
-    removeBar(index){
-      this.deleteBar({
-        measureId: this.id,
-        barId: index
-      })
-    },
     insertBar(index){
       let newBar = {};
       newBar.beats = [];

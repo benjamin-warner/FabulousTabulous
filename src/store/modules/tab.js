@@ -144,6 +144,10 @@ const getters = {
   barsOfMeasure: (state) => (measureId) => {
     return state.measures[measureId].bars.map(barId => state.bars[barId]);
   },
+  barCountForMeasure: (state) => (measureId) => {
+    let barReferences = state.measures[measureId].bars;
+    return Object.keys(barReferences).length;
+  },
   isLastBar: (state) => (payload) => {
     let measure = state.measures[payload.measureId];
     return measure.bars[measure.bars.length-1] === payload.barId;
