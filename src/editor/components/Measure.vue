@@ -1,7 +1,7 @@
 <template>
   <div id="measure">
     <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
-      <BarComponent :id="id" :beats="bar.beats"/>
+      <BarComponent :id="bar.id" :beats="bar.beats"/>
     </div>
   </div>
 </template>
@@ -9,7 +9,7 @@
 <script>
 /* eslint-disable */
 import BarComponent from './Bar.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   name: "Measure",
@@ -31,10 +31,12 @@ export default {
     }
   },
   methods: {
-    deleteBar(bar) {
-      if(this.bars.length > 1){
-        ChangeMarshal.removeValue(this.bars, bar);
-      }
+    ...mapMutations('tab', ['deleteBarAndReferences']),
+    removeBar(id){
+      this.deleteBarAndReferences({
+        measureId: this.id,
+        barId: id
+      });
     },
     insertBarAt(index) {
       if(this.bars.length < 4){
@@ -46,6 +48,9 @@ export default {
         newBar.id = +new Date();
         ChangeMarshal.addValue(this.bars, index, newBar);
       }
+    },
+    revealId(){
+      return this.id;
     }
   }
 };
