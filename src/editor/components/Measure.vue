@@ -19,7 +19,7 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: "Measure",
   props: {
-    id: String
+    id: Number
   },
   components: {
     BarComponent
@@ -41,17 +41,9 @@ export default {
       ['deleteBar','addBar']
     ),
     insertBar(index){
-      let newBar = {};
-      newBar.beats = [];
-      for (let i = 0; i < 4; i++) {
-        newBar.beats.push(['','','','','','']);
-      }
-      let unixTimestamp = + new Date();
-      newBar.id = unixTimestamp.toString();
       this.addBar({
-        measureId: this.id,
-        barId: index,
-        newBar: newBar
+        toMeasure: this.id,
+        atIndex: index
       })
     },
     revealId(){

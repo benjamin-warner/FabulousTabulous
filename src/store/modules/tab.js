@@ -9,16 +9,14 @@ const state = {
     'A',
     'E'
   ],
-  measures: {
-    0: {
-      id: '0',
+  measures: [
+    {
       bars: ['0','1']
     },
-    1: {
-      id: '1',
+    {
       bars: ['2']
     }
-  },
+  ],
   bars: {
     0: {
       id:'0',
@@ -161,24 +159,39 @@ const getters = {
 }
 
 const mutations = {
+  addMeasure(state, index){
+    state.measures.splice( index, 0, {
+      id: index,
+      bars: []
+    });
+    console.log(state.measures);
+  },
   deleteMeasure(state, measureId){
     let barReferences = state.measures[measureId].bars;
     for(let reference of barReferences){
       Vue.delete(state.bars, reference);
     }
-    Vue.delete(state.measures, measureId)
+    state.measures.splice(measureId, 1);
+  },
+  addBar(state, payload){
+    let barReferences = state.measures[payload.toMeasure].bars;
+    if(barReferences.length < 4){
+      let newBar = {};
+      newBar.beats = [];
+      for (let i = 0; i < 4; i++) {
+        newBar.beats.push(['','','','','','']);
+      }
+      let unixTimestamp = + new Date();
+      newBar.id = unixTimestamp.toString();
+
+      barReferences.splice(payload.atIndex, 0, newBar.id);
+      state.bars[newBar.id] = newBar;
+    }
   },
   deleteBar(state, payload){
     let barReferences = state.measures[payload.measureId].bars;
     let referenceToDelete = barReferences.indexOf(payload.barId);
     barReferences.splice(referenceToDelete, 1);
-  },
-  addBar(state, payload){
-    let barReferences = state.measures[payload.measureId].bars;
-    if(barReferences.length < 4){
-      barReferences.splice(payload.barId, 0, payload.newBar.id);
-      state.bars[payload.newBar.id] = payload.newBar;
-    }
   }
 }
 

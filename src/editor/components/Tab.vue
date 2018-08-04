@@ -6,13 +6,13 @@
           <button v-on:click="insertNewMeasure(measureKey)">+</button>
         </div>
         <div>
-          <button v-if="measureCount > 1" v-on:click="deleteMeasure(measure.id)">x</button>
+          <button v-if="measureCount > 1" v-on:click="deleteMeasure(measureKey)">x</button>
         </div>
         <div>
           <button v-on:click="insertNewMeasure(measureKey+1)">+</button>
         </div>
       </div>
-      <MeasureComponent class="measure-block" :id="measure.id"/>
+      <MeasureComponent class="measure-block" :id="measureKey"/>
     </div>
   </div>
 </template>
@@ -46,21 +46,18 @@ export default {
   },
   methods: {
     ...mapMutations('tab',[
-      'deleteMeasure'
+      'deleteMeasure',
+      'addMeasure',
+      'addBar'
     ]),
     insertNewMeasure(index){
-      var bars = []
-      for(var i = 0; i < 4; i++){ //bars
-        var newBar = {}
-        newBar.beats = [];
-        
-        for(var j = 0; j < 4; j++){
-          newBar.beats.push(['','','','','','']);
-        }
-        newBar.id = + new Date() + i;
-        bars.push(newBar);
+      this.addMeasure(index);
+      for(let i = 0; i < 4; i++){
+        this.addBar({
+          toMeasure: index,
+          atIndex: i
+        });
       }
-      //add...
     }
   }
 }
