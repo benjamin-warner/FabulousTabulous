@@ -114,7 +114,7 @@ const state = {
       ]
     },
     '7':{
-      id: '07',
+      id: '7',
       chord: [
         '16',
         '25',
@@ -146,13 +146,16 @@ const getters = {
     return measure.bars[measure.bars.length-1] === payload.barId;
   },
   beatsOfBar: (state) => (barId) => {
-    return state.bars[barId].map(beatId => state.beats[beatId]);
+    return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
-  chordOfBeat: (state) => (payload) => {
-    return state.bars[payload.barId].beats[payload.beatId];
+  chordOfBeat: (state) => (beatId) => {
+    return state.beats[beatId].chord;
+  },
+  indexOfBeat: (state) => (payload) => {
+    return state.bars[payload.parentId].beats.indexOf(payload.beatId);
   },
   noteOfChord: (state) => (payload) => {
-    return state.bars[payload.barId].beats[payload.beatId][payload.noteId];
+    return state.beats[payload.parentId].chord[payload.noteIndex];
   }
 }
 
@@ -207,6 +210,20 @@ const mutations = {
     }
     Vue.delete(state.bars, barId);
     state.measures[parentId].bars.splice(index, 1);
+  },
+  backspaceNote(state, payload){
+    let parentId = payload.parentId;
+    let index = payload.noteIndex;
+    let chord = state.beats[parentId].chord;
+    let note = chord[index].slice(0, -1);
+    Vue.set(chord, index, note);
+  },
+  appendNote(state, payload){
+    let parentId = payload.parentId;
+    let index = payload.noteIndex;
+    let chord = state.beats[parentId].chord;
+    let note = chord[index] + payload.input;
+    Vue.set(chord, index, note);
   }
 }
 
