@@ -28,7 +28,7 @@ export default {
     BeatComponent
   },
   props: {
-    id: Number,
+    id: String,
   },
   computed: {
     ...mapState('tab', ['tuning']),

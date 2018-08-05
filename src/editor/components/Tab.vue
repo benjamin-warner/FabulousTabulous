@@ -12,8 +12,7 @@
           <button v-on:click="insertMeasure(measureKey+1)">+</button>
         </div>
       </div>
-      {{measure}}
-      <!-- <MeasureComponent class="measure-block" :id="measureKey"/> -->
+      <MeasureComponent class="measure-block" :id="measure.id"/>
     </div>
   </div>
 </template>
@@ -45,7 +44,6 @@ export default {
   },
   methods: {
     ...mapMutations('tab',[
-      'deleteMeasure',
       'insertMeasure',
       'deleteMeasure'
     ]),
