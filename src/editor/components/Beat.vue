@@ -2,7 +2,7 @@
   <g id="beat">
     <g id="note" v-for="(note, noteKey) in chordOfBeat({barId: parentId, beatId: id})" :key="noteKey">
     <!-- <NoteComponent v-for="(note, noteKey) in getChord(id)" :key="noteKey" :id="noteKey"/> -->
-      <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" fill="white"/>
+      <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" :fill="fill(noteKey)"/>
       <text id="note-text" text-anchor="middle" class="tab-text" fill="black" alignment-baseline="middle" :x="textX(noteKey)" :y="textY(noteKey)">{{note}}</text>
     </g>
   </g>
@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     ...mapGetters('tab', [
-      'chordOfBeat'
+      'chordOfBeat','noteOfChord'
     ]),
   },
   methods: {
@@ -40,6 +40,17 @@ export default {
     rectY(index){
       return 25*index+10 -9;
     },
+    fill(index){
+      let note = this.noteOfChord({
+        barId: this.parentId,
+        beatId: this.id,
+        noteId: index
+      });
+      if(note.length > 0){
+        return 'white';
+      }
+      return 'none';
+    }
   }
 };
 </script>

@@ -157,6 +157,9 @@ const getters = {
   },
   chordOfBeat: (state) => (payload) => {
     return state.bars[payload.barId].beats[payload.beatId];
+  },
+  noteOfChord: (state) => (payload) => {
+    return state.bars[payload.barId].beats[payload.beatId][payload.noteId];
   }
 }
 
