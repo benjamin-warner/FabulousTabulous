@@ -1,9 +1,9 @@
 <template>
-  <div id="measure">
-    <div class="measure measure-block" v-for="(bar, barKey) in getBars(id)" :key="barKey">
+  <div id="measure" class="measure-block">
+    <div class="measure measure-block" v-for="(bar, barKey) in barsOfMeasure(id)" :key="barKey">
     <div>
       <Button v-on:click="insertBar(barKey)">+</Button>      
-      <Button v-on:click="removeBar(bar.id)">X</Button>
+      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar({measureId: id, barId: bar.id})">X</Button>
       <Button v-on:click="insertBar(barKey+1)">+</Button>
     </div>
     <BarComponent :id="bar.id" :beats="bar.beats"/>
@@ -19,15 +19,16 @@ import { mapGetters, mapMutations } from 'vuex'
 export default {
   name: "Measure",
   props: {
-    id: String
+    id: Number
   },
   components: {
     BarComponent
   },
   computed: {
-    ...mapGetters('tab', {
-      getBars: 'getBars'
-    }),
+    ...mapGetters('tab', [
+     'barsOfMeasure',
+     'barCountForMeasure'
+    ]),
     measureNotFull() {
       return this.bars.length < 4;
     },
@@ -39,24 +40,10 @@ export default {
     ...mapMutations('tab',
       ['deleteBar','addBar']
     ),
-    removeBar(index){
-      this.deleteBar({
-        measureId: this.id,
-        barId: index
-      })
-    },
     insertBar(index){
-      let newBar = {};
-      newBar.beats = [];
-      for (let i = 0; i < 4; i++) {
-        newBar.beats.push(['','','','','','']);
-      }
-      let unixTimestamp = + new Date();
-      newBar.id = unixTimestamp.toString();
       this.addBar({
-        measureId: this.id,
-        barId: index,
-        newBar: newBar
+        toMeasure: this.id,
+        atIndex: index
       })
     },
     revealId(){
@@ -68,9 +55,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#measure{
-  display: table;
-}
 
 .measure-text{
   font-family: 'Roboto Mono';
@@ -84,7 +68,7 @@ export default {
 }
 
 .measure-block {
-  display: table-cell;
+  display: inline-block;
   vertical-align: middle;
 }
 </style>
