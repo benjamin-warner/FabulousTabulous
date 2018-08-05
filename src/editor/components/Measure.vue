@@ -2,11 +2,11 @@
   <div id="measure" class="measure-block">
     <div class="measure measure-block" v-for="(bar, barKey) in barsOfMeasure(id)" :key="barKey">
     <div>
-      <Button v-on:click="insertBar(barKey)">+</Button>      
-      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar({measureId: id, barId: bar.id})">X</Button>
+      <Button v-on:click="insertBar(barKey)">+</Button>
+      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar({measureId: id, barId: bar.id })">X</Button>
       <Button v-on:click="insertBar(barKey+1)">+</Button>
     </div>
-    <BarComponent :id="bar.id" :beats="bar.beats"/>
+    <BarComponent :id="barKey"/>
     </div>
   </div>
 </template>

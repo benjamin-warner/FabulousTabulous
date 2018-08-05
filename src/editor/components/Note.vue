@@ -30,7 +30,7 @@ export default {
   },
   computed:{
     ...mapGetters('tab',{
-      note: 'getNote'
+      note: 'noteOfChord'
     }),
     textX(){
       return 64*this.id+64;
@@ -64,34 +64,7 @@ export default {
     }
   },
   methods: {
-    // toggleMultiEdit(){
-    //   this.editing = !this.editing;
-    // },
-    // toggleSingleEdit(){
-    //   EventBus.$emit('clear-editing-flags');
-    //   this.editing = true;
-    // },
-    // onHover(state){
-    //   this.hovering = state;
-    // },
-    // editNote(numberInput){
-    //   if(this.editing && this.note.length < 2){
-    //     this.note += numberInput;
-    //   }
-    // },
-    // deleteNoteChar(){
-    //   if(this.editing && this.note.length > 0){
-    //     this.note = this.note.slice(0, -1);
-    //   }
-    // },
-    // handleClick(target){
-    //   if(target.id !== 'note-text' && target.id !== 'note-rect'){
-    //     this.editing = false;
-    //   }
-    // },
-    // disableEditing(){
-    //   this.editing = false;
-    // }
+
   }
 };
 </script>

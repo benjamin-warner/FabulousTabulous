@@ -1,9 +1,9 @@
 <template>
   <g id="beat">
     <g id="note" v-for="(note, noteKey) in chordOfBeat({barId: parentId, beatId: id})" :key="noteKey">
-    <!-- <NoteComponent v-for="(note, noteKey) in getChord(id)" :key="noteKey" :id="noteKey"/> -->
-      <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" :fill="fill(note)"/>
-      <text id="note-text" text-anchor="middle" class="tab-text" fill="black" alignment-baseline="middle" :x="textX(noteKey)" :y="textY(noteKey)">{{note}}</text>
+    <NoteComponent v-for="(note, noteKey) in getChord(id)" :key="noteKey" :id="noteKey"/>
+      <!-- <rect id="note-rect" :x="rectX(noteKey)" :y="rectY(noteKey)" width="18" height="18" rx="5" ry="5" :fill="fill(note)"/>
+      <text id="note-text" text-anchor="middle" class="tab-text" fill="black" alignment-baseline="middle" :x="textX(noteKey)" :y="textY(noteKey)">{{note}}</text> -->
     </g>
   </g>
 </template>
@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     ...mapGetters('tab', [
-      'chordOfBeat','noteOfChord'
+      'chord'
     ]),
   },
   methods: {
@@ -51,5 +51,15 @@ export default {
 </script>
 
 <style scoped>
+#note-text{
+  font-family: 'Roboto Mono';
+  font-size: 10pt;
+  
+  -webkit-touch-callout: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
 
 </style>

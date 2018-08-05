@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Vue from 'vue'
 import StoreHelpers from '../storeHelpers'
+import storeHelpers from '../storeHelpers';
 
 const state = {
   tuning: [
@@ -11,124 +12,116 @@ const state = {
     'A',
     'E'
   ],
-  measures: [
-    {
-      bars: ['0','1']
+  tab: {
+    measures: ['0', '1']
+  },
+  measures: {
+    '0':{
+      id: '0',
+      bars: ['0']
     },
-    {
-      bars: ['2']
-    }
-  ],
-  bars: {
-    0: {
-      id:'0',
-      beats:[
-        [
-          '00',
-          '01',
-          '02',
-          '03',
-          '04',
-          '84'
-        ],
-        [
-          '23',
-          '05',
-          '06',
-          '07',
-          '09',
-          '85'
-        ],
-        [
-          '45',
-          '01',
-          '02',
-          '03',
-          '09',
-          '86'
-        ],
-        [
-          '67',
-          '05',
-          '06',
-          '07',
-          '09',
-          '87'
-        ]
-      ]
-    },
-    1: {
+    '1':{
       id: '1',
-      beats: [
-        [
-          '89',
-          '11',
-          '12',
-          '13',
-          '09',
-          '88'
-        ],
-        [
-          '10',
-          '15',
-          '16',
-          '17',
-          '09',
-          '89'
-        ],
-        [
-          '11',
-          '11',
-          '12',
-          '13',
-          '09',
-          '90'
-        ],
-        [
-          '12',
-          '15',
-          '16',
-          '17',
-          '09',
-          '91'
-        ]  
+      bars: ['1']
+    }
+  },
+  bars: {
+    '0':{
+      id: '0',
+      beats: ['0', '1', '2', '3']
+    },
+    '1':{
+      id: '1',
+      beats: ['4', '5', '6', '7']
+    }
+  },
+  beats: {
+    '0':{
+      id: '0',
+      chord: [
+        '00',
+        '01',
+        '02',
+        '03',
+        '04',
+        '84'
       ]
     },
-    2:{
+    '1':{
+      id: '1',
+      chord: [
+        '23',
+        '05',
+        '06',
+        '07',
+        '09',
+        '85'
+      ]
+    },
+    '2':{
       id: '2',
-      beats:[ 
-        [
-          '13',
-          '21',
-          '22',
-          '23',
-          '09',
-          '92'
-        ],
-        [
-          '14',
-          '25',
-          '26',
-          '27',
-          '09',
-          '93'
-        ],
-        [
-          '15',
-          '21',
-          '22',
-          '23',
-          '09',
-          '94'
-        ],
-        [
-          '16',
-          '25',
-          '26',
-          '27',
-          '09',
-          '95'
-        ]
+      chord: [
+        '45',
+        '01',
+        '02',
+        '03',
+        '09',
+        '86'
+      ]
+    },
+    '3':{
+      id: '3',
+      chord: [
+        '67',
+        '05',
+        '06',
+        '07',
+        '09',
+        '87'
+      ]
+    },
+    '4':{
+      id: '4',
+      chord: [
+        '13',
+        '21',
+        '22',
+        '23',
+        '09',
+        '92'
+      ]
+    },
+    '5':{
+      id: '5',
+      chord: [
+        '14',
+        '25',
+        '26',
+        '27',
+        '09',
+        '93'
+      ]
+    },
+    '6':{
+      id: '6',
+      chord: [
+        '15',
+        '21',
+        '22',
+        '23',
+        '09',
+        '94'
+      ]
+    },
+    '7':{
+      id: '07',
+      chord: [
+        '16',
+        '25',
+        '26',
+        '27',
+        '09',
+        '95'
       ]
     }
   }
@@ -136,7 +129,7 @@ const state = {
 
 const getters = {
   measures: (state) => {
-    return state.measures;
+    return state.tab.measures.map(measureId => state.measures[measureId]);
   },
   measureCount: (state) => {
     return Object.keys(state.measures).length;
@@ -153,45 +146,67 @@ const getters = {
     return measure.bars[measure.bars.length-1] === payload.barId;
   },
   beatsOfBar: (state) => (barId) => {
-    return state.bars[barId].beats;
+    return state.bars[barId].map(beatId => state.beats[beatId]);
   },
   chordOfBeat: (state) => (payload) => {
     return state.bars[payload.barId].beats[payload.beatId];
+  },
+  noteOfChord: (state) => (payload) => {
+    return state.bars[payload.barId].beats[payload.beatId][payload.noteId];
   }
 }
 
 const mutations = {
-  addMeasure(state, index){
-    state.measures.splice( index, 0, {
-      id: index,
-      bars: []
-    });
-  },
-  deleteMeasure(state, measureId){
-    let barReferences = state.measures[measureId].bars;
-    for(let reference of barReferences){
-      Vue.delete(state.bars, reference);
+  insertMeasure(state, index){
+    let measureId = StoreHelpers.makeGUID();
+    state.tab.measures.splice(index, 0, measureId);
+    Vue.set(state.measures, measureId, { id: measureId, bars: []});
+
+    while(state.measures[measureId].bars.length < storeHelpers.MAX_BARS){
+      let barId = StoreHelpers.makeGUID();
+      state.measures[measureId].bars.push(barId);
+      Vue.set(state.bars, barId, { id: barId, beats: []});
+
+      while(state.bars[barId].beats.length < 4){
+        let beatId = StoreHelpers.makeGUID();
+        state.bars[barId].beats.push(beatId);
+        Vue.set(state.beats, beatId, {id: beatId, chord: ['','','','','','']});
+      }
     }
-    state.measures.splice(measureId, 1);
+  },
+  deleteMeasure(state, index){
+    let measureId = state.tab.measures[index];
+    console.log(measureId)
+    for(let barId of state.measures[measureId].bars){
+      for(let beatId of state.bars[barId].beats){
+        Vue.delete(state.beats, beatId);
+      }
+      Vue.delete(state.bars, barId);
+    }
+    Vue.delete(state.measures, measureId)
+    state.tab.measures.splice(index, 1);
   },
   addBar(state, payload){
-    let barReferences = state.measures[payload.toMeasure].bars;
-    if(barReferences.length < 4){
+    let measureBars = state.measures[payload.toMeasure].bars;
+    if(measureBars.length < 4){
       let newBar = {};
       newBar.beats = [];
       for (let i = 0; i < 4; i++) {
         newBar.beats.push(['','','','','','']);
       }
-      newBar.id = StoreHelpers.GUID();
-
-      barReferences.splice(payload.atIndex, 0, newBar.id);
+      newBar.id = StoreHelpers.makeGUID();
       state.bars[newBar.id] = newBar;
+      measureBars.splice(payload.atIndex, 0, newBar.id);
     }
   },
   deleteBar(state, payload){
-    let barReferences = state.measures[payload.measureId].bars;
-    let referenceToDelete = barReferences.indexOf(payload.barId);
-    barReferences.splice(referenceToDelete, 1);
+    let barRefIndex = state.measures[payload.measureId].bars.indexOf(payload.barId);
+    state.measures[payload.measureId].bars.splice(barRefIndex, 1);
+    let barsBeats = state.bars[payload.barId].beats;
+    for(let beatId of barBeats){
+      Vue.delete(state.beats, beatId)
+    }
+    // Vue.$delete(state.bars, payload.barId)
   }
 }
 
