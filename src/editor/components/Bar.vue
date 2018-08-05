@@ -37,7 +37,7 @@ export default {
       let measureId = this.$parent.revealId();
       return this.isLastBar({
         measureId: measureId, 
-        barId:this.id
+        barId: this.id
       });
     }
   },

@@ -1,5 +1,7 @@
 /* eslint-disable */
 import Vue from 'vue'
+import StoreHelpers from '../storeHelpers'
+
 const state = {
   tuning: [
     'e',
@@ -164,7 +166,6 @@ const mutations = {
       id: index,
       bars: []
     });
-    console.log(state.measures);
   },
   deleteMeasure(state, measureId){
     let barReferences = state.measures[measureId].bars;
@@ -181,8 +182,7 @@ const mutations = {
       for (let i = 0; i < 4; i++) {
         newBar.beats.push(['','','','','','']);
       }
-      let unixTimestamp = + new Date();
-      newBar.id = unixTimestamp.toString();
+      newBar.id = StoreHelpers.GUID();
 
       barReferences.splice(payload.atIndex, 0, newBar.id);
       state.bars[newBar.id] = newBar;
