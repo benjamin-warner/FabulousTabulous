@@ -1,6 +1,6 @@
 <template>
   <g id="beat">
-    <NoteComponent v-for="(note, noteKey) in chordOfBeat(id)" :key="noteKey" :index="noteKey" :parentId="id"/>
+    <NoteComponent v-for="(note, noteKey) in notesOfBeat(id)" :key="noteKey" :id="note.id" :yIndex="noteKey"/>
   </g>
 </template>
 
@@ -19,13 +19,14 @@ export default {
   },
   computed: {
     ...mapGetters('tab', [
-      'chordOfBeat',
+      'notesOfBeat',
       'indexOfBeat'
     ]),
   },
   methods: {
     revealIndex(){
-      return this.indexOfBeat({parentId: this.$parent.revealId(), beatId: this.id});
+      let barId = this.$parent.revealId();
+      return this.indexOfBeat({ barId: barId, beatId: this.id});
     }
   }
 };

@@ -1,7 +1,8 @@
 <template>
-  <g @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
+  <g @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit"
+     @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <rect id="note-rect" :x="rectX" :y="rectY" width="18" height="18" rx="5" ry="5" :style="rectOpacity" :class="{hover: hovering}" :fill="rectColor"/>
-    <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{ note }}</text>
+    <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{ note(id) }}</text>
   </g>
 </template>
 
@@ -13,8 +14,8 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   name: "Note",
   props: {
-    index: Number,
-    parentId: String
+    id: String,
+    yIndex: Number,
   },
   mounted(){
     let self = this;
@@ -31,20 +32,20 @@ export default {
   },
   computed:{
     ...mapGetters('tab',[
-      'noteOfChord',
+      'note',
       'beatIndex'
     ]),
     textX(){
       return 64*this.$parent.revealIndex()+64;
     },
     textY(){
-      return 25*this.index+10;
+      return 25*this.yIndex+10;
     },
     rectX(){
       return 64*this.$parent.revealIndex()+64 -9;
     },
     rectY(){
-      return 25*this.index+10 -9;
+      return 25*this.yIndex+10 -9;
     },
     rectColor(){
       if(this.editing){
@@ -53,7 +54,7 @@ export default {
       return 'white';
     },
     rectOpacity(){
-      if(this.note.length === 0 && !this.editing){
+      if(this.note(this.id).length === 0 && !this.editing){
         return 'fill-opacity: 0.00'
       }
       return 'fill-opacity: 1'
@@ -63,9 +64,6 @@ export default {
         return 'white';
       }
       return 'black';
-    },
-    note(){
-      return this.noteOfChord({parentId: this.parentId, noteIndex: this.index});
     }
   },
   methods: {
@@ -84,13 +82,13 @@ export default {
       this.editing = true;
     },
     editNote(numberInput){
-      if(this.editing && this.note.length < 2){
-        this.appendNote({parentId: this.parentId, noteIndex: this.index, input: numberInput});
+      if(this.editing && this.note(this.id).length < 2){
+        this.appendNote({noteId: this.id, addition: numberInput});
       }
     },
     onBackspace(){
-      if(this.editing && this.note.length > 0){
-        this.backspaceNote({parentId: this.parentId, noteIndex: this.index})
+      if(this.editing && this.note(this.id).length > 0){
+        this.backspaceNote(this.id);
       }
     },
     handleClick(target){
