@@ -80,15 +80,15 @@ const getters = {
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
+  indexOfBeat: (state) => (payload) => {
+    return state.bars[payload.barId].beats.indexOf(payload.beatId);
+  },
   notesOfBeat: (state) => (beatId) => {
     return state.beats[beatId].notes.map(noteId => state.notes[noteId]);
   },
   note: (state) => (noteId) => {
     return state.notes[noteId].note;
-  },
-  indexOfBeat: (state) => (payload) => {
-    return state.bars[payload.parentId].beats.indexOf(payload.beatId);
-  },
+  }
 }
 
 const Helpers = {
@@ -98,7 +98,6 @@ const Helpers = {
     )
   },
   createMeasure(state, index){
-    let start = + new Date();
     let measureId = this.makeGUID();
     state.tab.measures.splice(index, 0, measureId);
     Vue.set(state.measures, measureId, { id: measureId, bars: [] });
@@ -107,7 +106,6 @@ const Helpers = {
       this.createBar(state, barId);
       state.measures[measureId].bars.push(barId);
     }
-    console.log(new Date() - start);
   },
   createBar(state, barId){
     Vue.set(state.bars, barId, { id: barId, beats: [] });
