@@ -16,7 +16,6 @@ export default {
   props: {
     id: String,
     yIndex: Number,
-    xIndex: Number
   },
   mounted(){
     let self = this;
@@ -55,7 +54,7 @@ export default {
       return 'white';
     },
     rectOpacity(){
-      if(this.note.length === 0 && !this.editing){
+      if(this.note(this.id).length === 0 && !this.editing){
         return 'fill-opacity: 0.00'
       }
       return 'fill-opacity: 1'
@@ -83,13 +82,13 @@ export default {
       this.editing = true;
     },
     editNote(numberInput){
-      if(this.editing && this.note.length < 2){
-        this.appendNote({parentId: this.parentId, noteIndex: this.index, input: numberInput});
+      if(this.editing && this.note(this.id).length < 2){
+        this.appendNote({noteId: this.id, addition: numberInput});
       }
     },
     onBackspace(){
-      if(this.editing && this.note.length > 0){
-        this.backspaceNote({parentId: this.parentId, noteIndex: this.index})
+      if(this.editing && this.note(this.id).length > 0){
+        this.backspaceNote(this.id);
       }
     },
     handleClick(target){

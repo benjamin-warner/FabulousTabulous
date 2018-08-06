@@ -98,6 +98,7 @@ const Helpers = {
     )
   },
   createMeasure(state, index){
+    let start =+new Date();
     let measureId = this.makeGUID();
     state.tab.measures.splice(index, 0, measureId);
     Vue.set(state.measures, measureId, { id: measureId, bars: [] });
@@ -106,6 +107,7 @@ const Helpers = {
       this.createBar(state, barId);
       state.measures[measureId].bars.push(barId);
     }
+    console.log(new Date() - start)
   },
   createBar(state, barId){
     Vue.set(state.bars, barId, { id: barId, beats: [] });
@@ -113,7 +115,7 @@ const Helpers = {
       let beatId = this.makeGUID();
       Vue.set(state.beats, beatId, { id: beatId, notes: [] });
       // This will never be refactored because the overhead of func calls.
-      while(state.beats[beatId].notes < 6){
+      while(state.beats[beatId].notes.length < 6){
         let noteId = this.makeGUID();
         Vue.set(state.notes, noteId, {id: noteId, note: ''});
         state.beats[beatId].notes.push(noteId);
@@ -147,7 +149,9 @@ const mutations = {
     Helpers.createMeasure(state, index);
   },
   addBar(state, payload){
-    Helpers.addBar(state, payload.index)
+    let barId = Helpers.makeGUID();
+    state.measures[payload.parentId].bars.splice(payload.index, 0, barId);
+    Helpers.createBar(state, barId);
   },
   deleteMeasure(state, index){
     Helpers.deleteMeasure(state, index);
@@ -162,20 +166,13 @@ const mutations = {
     Vue.delete(state.bars, barId);
     state.measures[parentId].bars.splice(index, 1);
   },
-
-  backspaceNote(state, payload){
-    let parentId = payload.parentId;
-    let index = payload.noteIndex;
-    let chord = state.beats[parentId].chord;
-    let note = chord[index].slice(0, -1);
-    Vue.set(chord, index, note);
+  backspaceNote(state, noteId){
+    let newValue = state.notes[noteId].note.slice(0, -1);
+    Vue.set(state.notes[noteId], 'note', newValue);
   },
   appendNote(state, payload){
-    let parentId = payload.parentId;
-    let index = payload.noteIndex;
-    let chord = state.beats[parentId].chord;
-    let note = chord[index] + payload.input;
-    Vue.set(chord, index, note);
+    let newValue = state.notes[payload.noteId].note + payload.addition;
+    Vue.set(state.notes[payload.noteId], 'note', newValue);
   }
 }
 
