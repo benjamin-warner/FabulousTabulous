@@ -1,6 +1,6 @@
 <template>
   <g id="beat">
-    <NoteComponent v-for="(note, noteKey) in chordOfBeat(id)" :key="noteKey" :index="noteKey" :parentId="id"/>
+    <NoteComponent v-for="(note, noteKey) in notesOfBeat(id)" :key="noteKey" :id="note.id"/>
   </g>
 </template>
 
@@ -19,7 +19,7 @@ export default {
   },
   computed: {
     ...mapGetters('tab', [
-      'chordOfBeat',
+      'notesOfBeat',
       'indexOfBeat'
     ]),
   },

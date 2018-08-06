@@ -3,13 +3,13 @@
     <div v-for="(measure, measureKey) in measures" :key="measureKey">
       <div class="measure-block">
         <div>
-          <button v-on:click="insertMeasure(measureKey)">+</button>
+          <button v-on:click="addMeasure(measureKey)">+</button>
         </div>
         <div>
           <button v-if="measureCount > 1" v-on:click="deleteMeasure(measureKey)">x</button>
         </div>
         <div>
-          <button v-on:click="insertMeasure(measureKey+1)">+</button>
+          <button v-on:click="addMeasure(measureKey+1)">+</button>
         </div>
       </div>
       <MeasureComponent class="measure-block" :id="measure.id"/>
@@ -44,7 +44,7 @@ export default {
   },
   methods: {
     ...mapMutations('tab',[
-      'insertMeasure',
+      'addMeasure',
       'deleteMeasure'
     ]),
   }

@@ -1,7 +1,7 @@
 <template>
   <g @click.meta.exact="toggleMultiEdit" @click.ctrl.exact="toggleMultiEdit" @click.exact="toggleSingleEdit" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
     <rect id="note-rect" :x="rectX" :y="rectY" width="18" height="18" rx="5" ry="5" :style="rectOpacity" :class="{hover: hovering}" :fill="rectColor"/>
-    <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{ note }}</text>
+    <text id="note-text" text-anchor="middle" class="tab-text" :fill="textColor" alignment-baseline="middle" :x="textX" :y="textY">{{ note(id) }}</text>
   </g>
 </template>
 
@@ -13,8 +13,7 @@ import { mapGetters, mapMutations } from 'vuex';
 export default {
   name: "Note",
   props: {
-    index: Number,
-    parentId: String
+    id: String
   },
   mounted(){
     let self = this;
@@ -31,20 +30,20 @@ export default {
   },
   computed:{
     ...mapGetters('tab',[
-      'noteOfChord',
+      'note',
       'beatIndex'
     ]),
     textX(){
-      return 64*this.$parent.revealIndex()+64;
+      return 64//*this.$parent.revealIndex()+64;
     },
     textY(){
-      return 25*this.index+10;
+      return 25//*this.index+10;
     },
     rectX(){
-      return 64*this.$parent.revealIndex()+64 -9;
+      return 64//*this.$parent.revealIndex()+64 -9;
     },
     rectY(){
-      return 25*this.index+10 -9;
+      return 25//*this.index+10 -9;
     },
     rectColor(){
       if(this.editing){
@@ -63,9 +62,6 @@ export default {
         return 'white';
       }
       return 'black';
-    },
-    note(){
-      return this.noteOfChord({parentId: this.parentId, noteIndex: this.index});
     }
   },
   methods: {
