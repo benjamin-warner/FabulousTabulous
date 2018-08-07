@@ -35,7 +35,7 @@ const state = {
     '1':{
       id: '1',
       parentId: '0',
-      notes: ['','','','','','','']
+      notes: ['','','','','','']
     },
     '2':{
       id: '2',
@@ -45,7 +45,7 @@ const state = {
     '3':{
       id: '3',
       parentId: '0',
-      notes: ['','','','','','','']
+      notes: ['','','','','','']
     }
   }
 }
@@ -136,13 +136,13 @@ const mutations = {
     Vue.delete(parent.bars, barIndex);
     Helpers.deleteBar(state, barId);
   },
-  backspaceNote(state, noteId){
-    let newValue = state.notes[noteId].note.slice(0, -1);
-    Vue.set(state.notes[noteId], 'note', newValue);
-  },
   appendNote(state, payload){
-    let newValue = state.notes[payload.noteId].note + payload.addition;
-    Vue.set(state.notes[payload.noteId], 'note', newValue);
+    let notes = state.beats[payload.beatId].notes;
+    Vue.set(notes, payload.index, notes[payload.index] + payload.value);
+  },
+  backspaceNote(state, payload){
+    let newNote = state.beats[payload.beatId].notes[payload.index].slice(0, -1);
+    Vue.set(state.beats[payload.beatId].notes, payload.index, newNote);
   }
 }
 

@@ -13,18 +13,6 @@ export default {
   components: {
     EditorComponent,
   },
-  methods:{
-    applyExcitement(add){
-      if(add){
-        this.excitement += '!';
-      }
-      else{
-        if(this.excitement.length > 0){
-          this.excitement.slice(0, -1);
-        }
-      }
-    }
-  },
   mounted(){
     document.onclick= function(event) {
       let target = 'target' in event? event.target : event.srcElement;
@@ -72,14 +60,6 @@ export default {
       else if(evt.keyCode === 13){
         evt.preventDefault();
         EventBus.$emit('nav-down');
-      }
-      if(evt.keyCode >= 48 && evt.keyCode <= 57){
-        evt.preventDefault();
-        EventBus.$emit('numerical-keypress', evt.keyCode - 48);
-      }
-      if(evt.keyCode === 8){
-        evt.preventDefault();
-        EventBus.$emit('delete-keypress');
       }
     };
   },
