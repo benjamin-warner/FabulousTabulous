@@ -11,28 +11,19 @@ const state = {
     'E'
   ],
   tab: {
-    measures: ['0', '1']
+    measures: ['0']
   },
   measures: {
     '0':{
       id: '0',
       bars: ['0']
     },
-    '1':{
-      id: '1',
-      bars: ['1']
-    }
   },
   bars: {
     '0':{
       id: '0',
       parentId: '0',
-      beats: ['0']
-    },
-    '1':{
-      id: '1',
-      parentId: '1',
-      beats: ['1']
+      beats: ['0', '1', '2', '3']
     }
   },
   beats: {
@@ -43,8 +34,18 @@ const state = {
     },
     '1':{
       id: '1',
-      parentId: '1',
+      parentId: '0',
+      notes: ['','','','','','','']
+    },
+    '2':{
+      id: '2',
+      parentId: '0',
       notes: ['6','7','8','9','10','11']
+    },
+    '3':{
+      id: '3',
+      parentId: '0',
+      notes: ['','','','','','','']
     }
   },
   notes: {
@@ -64,6 +65,9 @@ const state = {
 }
 
 const getters = {
+  tuning: (state) => {
+    return state.tuning;
+  },
   measures: (state) => {
     return state.tab.measures.map(measureId => state.measures[measureId]);
   },
@@ -72,6 +76,9 @@ const getters = {
   },
   barsOfMeasure: (state) => (measureId) => {
     return state.measures[measureId].bars.map(barId => state.bars[barId]);
+  },
+  bar: (state) => (barId) => {
+    return state.bars[barId];
   },
   barCountForMeasure: (state) => (measureId) => {
     let barReferences = state.measures[measureId].bars;
@@ -85,11 +92,13 @@ const getters = {
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
-  indexOfBeat: (state) => (payload) => {
-    return state.bars[payload.barId].beats.indexOf(payload.beatId);
+  indexOfBeat: (state) => (beatId) => {
+    let parentId = state.beats[beatId].parentId;
+    let parent = state.bars[parentId]
+    return parent.beats.indexOf(beatId);
   },
   notesOfBeat: (state) => (beatId) => {
-    return state.beats[beatId].notes.map(noteId => state.notes[noteId]);
+    return state.beats[beatId].notes
   },
   note: (state) => (noteId) => {
     return state.notes[noteId].note;
@@ -116,13 +125,7 @@ const Helpers = {
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
     while(state.bars[barId].beats.length < 4){
       let beatId = this.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
-      // This will never be refactored because the overhead of func calls.
-      while(state.beats[beatId].notes.length < 6){
-        let noteId = this.makeGUID();
-        Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
-        state.beats[beatId].notes.push(noteId);
-      }
+      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: ['','','','','','',] });
       state.bars[barId].beats.push(beatId);
     }
   },
@@ -144,7 +147,7 @@ const Helpers = {
     for(let noteId of state.beats[beatId].notes){
       Vue.delete(state.notes, noteId);
     }
-    Vue.delete(state.beats, beatId);
+    
   }
 }
 

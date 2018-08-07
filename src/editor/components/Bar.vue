@@ -1,19 +1,12 @@
 <template>
-  <div id="bar" @mouseenter="onHover(true)" @mouseleave="onHover(false)">
-    <svg width="320" height="145">
-      <g>
-        <rect x="0" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
-        <g v-for="(string, stringIndex) in tuning" :key="string">
-          <rect x="0" :y="stringY(stringIndex)" width="320" height="1" :class="{hover: hovered}" style="fill: black"/>
-        </g>
-        <BeatComponent v-for="(beat, beatKey) in beatsOfBar(id)" :key="beatKey" :id="beat.id"/>
-        <rect x="319" y="10" width="1" height="125" :class="{hover: hovered}" style="fill: black"/>
-      </g>
-    </svg>
-    <svg class="end-block" width="4" height="145" v-if="isLastBar(id)">
-      <rect x="0" y="10" width="4" height="126" style="fill: black"/>
-    </svg>
-  </div>
+  <svg width="320" height="145">
+    <rect x="0" y="10" width="1" height="125" style="fill: black"/>
+    <g v-for="(string, stringIndex) in tuning" :key="string">
+      <rect x="0" :y="stringIndex*25+10" width="320" height="1" style="fill: black"/>
+    </g>
+    <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :index="beatIndex"/>
+    <rect x="319" y="10" width="1" height="125" style="fill: black"/>
+  </svg>
 </template>
 
 <script>
@@ -38,19 +31,8 @@ export default {
     return {
       hovered: false
     };
-  },
-  methods: {
-    stringY(index){
-      return index*25+10
-    },
-    onHover(state){
-      this.hovered = state;
-    },
-    revealId(){
-      return this.id;
-    }
   }
-};
+}
 </script>
 
 <style scoped>
