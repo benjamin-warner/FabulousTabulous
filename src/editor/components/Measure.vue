@@ -3,7 +3,7 @@
     <div class="measure measure-block" v-for="(bar, barKey) in barsOfMeasure(id)" :key="barKey">
     <div>
       <Button v-if="barCountForMeasure(id) < 4" v-on:click="addBar({parentId: id, index: barKey})">+</Button>
-      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar({parentId: id, index: barKey})">X</Button>
+      <Button v-if="barCountForMeasure(id) > 1" v-on:click="deleteBar(bar.id)">X</Button>
       <Button v-if="barCountForMeasure(id) < 4" v-on:click="addBar({parentId: id, index: barKey+1})">+</Button>
     </div>
     <BarComponent :id="bar.id"/>
@@ -29,23 +29,14 @@ export default {
      'barsOfMeasure',
      'barCountForMeasure'
     ]),
-    measureNotFull() {
-      return this.bars.length < 4;
-    },
-    measureEmpty() {
-      return this.bars.length === 0;
-    }
   },
   methods: {
     ...mapMutations('tab',[
       'deleteBar',
       'addBar'
-      ]),
-    revealId(){
-      return this.id;
-    }
+    ])
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
