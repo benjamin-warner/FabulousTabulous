@@ -19,6 +19,12 @@ export default {
   components:{
     NoteComponent
   },
+  mounted(){
+    // Keystroke listeners!
+  },
+  destroyed(){
+    // Kill the listeners!
+  },
   props: {
     id: String,
     string: Number,

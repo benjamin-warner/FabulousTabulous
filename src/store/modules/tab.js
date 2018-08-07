@@ -47,27 +47,10 @@ const state = {
       parentId: '0',
       notes: ['','','','','','','']
     }
-  },
-  notes: {
-    '0':{id: '0', parentId: '0', note: '0'},
-    '1':{id: '1', parentId: '0', note: '1'},
-    '2':{id: '2', parentId: '0', note: '2'},
-    '3':{id: '3', parentId: '0', note: '3'},
-    '4':{id: '4', parentId: '0', note: '4'},
-    '5':{id: '5', parentId: '0', note: '5'},
-    '6':{id: '6', parentId: '1', note: '6'},
-    '7':{id: '7', parentId: '1', note: '7'},
-    '8':{id: '8', parentId: '1', note: '8'},
-    '9':{id: '9', parentId: '1', note: '9'},
-    '10':{id: '10', parentId: '1', note: '10'},
-    '11':{id: '11', parentId: '2', note: '11'}
   }
 }
 
 const getters = {
-  tuning: (state) => {
-    return state.tuning;
-  },
   measures: (state) => {
     return state.tab.measures.map(measureId => state.measures[measureId]);
   },
@@ -76,9 +59,6 @@ const getters = {
   },
   barsOfMeasure: (state) => (measureId) => {
     return state.measures[measureId].bars.map(barId => state.bars[barId]);
-  },
-  bar: (state) => (barId) => {
-    return state.bars[barId];
   },
   barCountForMeasure: (state) => (measureId) => {
     let barReferences = state.measures[measureId].bars;
@@ -92,17 +72,9 @@ const getters = {
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
-  indexOfBeat: (state) => (beatId) => {
-    let parentId = state.beats[beatId].parentId;
-    let parent = state.bars[parentId]
-    return parent.beats.indexOf(beatId);
-  },
   notesOfBeat: (state) => (beatId) => {
     return state.beats[beatId].notes
   },
-  note: (state) => (noteId) => {
-    return state.notes[noteId].note;
-  }
 }
 
 const Helpers = {
@@ -139,15 +111,9 @@ const Helpers = {
   },
   deleteBar(state, barId){
     for(let beatId of state.bars[barId].beats){
-      this.deleteBeat(state, beatId);
+      Vue.delete(state.beats, beatId);
     }
     Vue.delete(state.bars, barId);
-  },
-  deleteBeat(state, beatId){
-    for(let noteId of state.beats[beatId].notes){
-      Vue.delete(state.notes, noteId);
-    }
-    
   }
 }
 
@@ -160,15 +126,15 @@ const mutations = {
     state.measures[payload.parentId].bars.splice(payload.index, 0, barId);
     Helpers.createBar(state, barId, payload.parentId);
   },
-  deleteMeasure(state, id){
-    Helpers.deleteMeasure(state, id);
+  deleteMeasure(state, measureId){
+    Helpers.deleteMeasure(state, measureId);
   },
-  deleteBar(state, id){
-    let parentId = state.bars[id].parentId;
+  deleteBar(state, barId){
+    let parentId = state.bars[barId].parentId;
     let parent = state.measures[parentId];
-    let barIndex = parent.bars.indexOf(id);
+    let barIndex = parent.bars.indexOf(barId);
     Vue.delete(parent.bars, barIndex);
-    Helpers.deleteBar(state, id);
+    Helpers.deleteBar(state, barId);
   },
   backspaceNote(state, noteId){
     let newValue = state.notes[noteId].note.slice(0, -1);
