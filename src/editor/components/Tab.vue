@@ -1,37 +1,37 @@
 <template>
   <div class="tab">
-    <div v-for="(measure, measureKey) in measures" :key="measureKey">
-      <div class="measure-block">
+    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+      <div class="tab-block">
         <div>
-          <button v-on:click="addMeasure(measureKey)">+</button>
+          <button v-on:click="addSection(sectionIndex)">+</button>
         </div>
         <div>
-          <button v-if="measureCount > 1" v-on:click="deleteMeasure(measure.id)">x</button>
+          <button v-if="sectionCount > 1" v-on:click="deleteSection(section.id)">x</button>
         </div>
         <div>
-          <button v-on:click="addMeasure(measureKey+1)">+</button>
+          <button v-on:click="addSection(sectionIndex+1)">+</button>
         </div>
       </div>
-      <MeasureComponent class="measure-block" :id="measure.id"/>
+      <SectionComponent class="tab-block" :id="section.id"/>
     </div>
   </div>
 </template>
 
 <script>
 /* eslint-disable */
-import MeasureComponent from './Measure.vue'
+import SectionComponent from './Section.vue'
 import EventBus from '../../eventBus.js'
 import { mapMutations, mapGetters } from 'vuex'
 
 export default {
   name: 'Tab',
   components: {
-    MeasureComponent
+    SectionComponent
   },
   computed: {
     ...mapGetters('tab', [
-      'measures',
-      'measureCount'
+      'sections',
+      'sectionCount'
     ])
   },
   data: function(){
@@ -44,8 +44,8 @@ export default {
   },
   methods: {
     ...mapMutations('tab',[
-      'addMeasure',
-      'deleteMeasure'
+      'addSection',
+      'deleteSection'
     ]),
   }
 }
@@ -54,7 +54,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
-.measure-block{
+.tab-block{
   display: inline-block;
 }
 

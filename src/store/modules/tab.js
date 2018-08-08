@@ -11,9 +11,9 @@ const state = {
     'E'
   ],
   tab: {
-    measures: ['0']
+    sections: ['0']
   },
-  measures: {
+  sections: {
     '0':{
       id: '0',
       bars: ['0']
@@ -51,22 +51,22 @@ const state = {
 }
 
 const getters = {
-  measures: (state) => {
-    return state.tab.measures.map(measureId => state.measures[measureId]);
+  sections: (state) => {
+    return state.tab.sections.map(sectionId => state.sections[sectionId]);
   },
-  measureCount: (state) => {
-    return state.tab.measures.length;
+  sectionCount: (state) => {
+    return state.tab.sections.length;
   },
-  barsOfMeasure: (state) => (measureId) => {
-    return state.measures[measureId].bars.map(barId => state.bars[barId]);
+  barsOfSection: (state) => (sectionId) => {
+    return state.sections[sectionId].bars.map(barId => state.bars[barId]);
   },
-  barCountForMeasure: (state) => (measureId) => {
-    let barReferences = state.measures[measureId].bars;
+  barCountOfSection: (state) => (sectionId) => {
+    let barReferences = state.sections[sectionId].bars;
     return Object.keys(barReferences).length;
   },
   isLastBar: (state) => (barId) => {
     let parentId = state.bars[barId].parentId;
-    let barReferences = state.measures[parentId].bars;
+    let barReferences = state.sections[parentId].bars;
     return barReferences[barReferences.length-1] === barId;
   },
   beatsOfBar: (state) => (barId) => {
@@ -83,15 +83,14 @@ const Helpers = {
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     )
   },
-  createMeasure(state, index){
-    let measureId = this.makeGUID();
-    state.tab.measures.splice(index, 0, measureId);
-    Vue.set(state.measures, measureId, { id: measureId, bars: [] });
-    while(state.measures[measureId].bars.length < 4){
-      let barId = this.makeGUID();
-      this.createBar(state, barId, measureId);
-      state.measures[measureId].bars.push(barId);
-    }
+  createSection(state, index){
+    let sectionId = this.makeGUID();
+    state.tab.sections.splice(index, 0, sectionId);
+    Vue.set(state.sections, sectionId, { id: sectionId, bars: [] });
+    
+    let barId = this.makeGUID();
+    this.createBar(state, barId, sectionId);
+    state.sections[sectionId].bars.push(barId);
   },
   createBar(state, barId, parentId){
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
@@ -101,13 +100,13 @@ const Helpers = {
       state.bars[barId].beats.push(beatId);
     }
   },
-  deleteMeasure(state, measureId){
-    let measureIndex = state.tab.measures.indexOf(measureId);
-    state.tab.measures.splice(measureIndex, 1);
-    for(let barId of state.measures[measureId].bars){
+  deleteSection(state, sectionId){
+    let sectionIndex = state.tab.sections.indexOf(sectionId);
+    state.tab.sections.splice(sectionIndex, 1);
+    for(let barId of state.sections[sectionId].bars){
       this.deleteBar(state, barId)
     }
-    Vue.delete(state.measures, measureId)
+    Vue.delete(state.sections, sectionId)
   },
   deleteBar(state, barId){
     for(let beatId of state.bars[barId].beats){
@@ -118,20 +117,20 @@ const Helpers = {
 }
 
 const mutations = {
-  addMeasure(state, index){
-    Helpers.createMeasure(state, index);
+  addSection(state, index){
+    Helpers.createSection(state, index);
   },
   addBar(state, payload){
     let barId = Helpers.makeGUID();
-    state.measures[payload.parentId].bars.splice(payload.index, 0, barId);
+    state.sections[payload.parentId].bars.splice(payload.index, 0, barId);
     Helpers.createBar(state, barId, payload.parentId);
   },
-  deleteMeasure(state, measureId){
-    Helpers.deleteMeasure(state, measureId);
+  deleteSection(state, sectionId){
+    Helpers.deleteSection(state, sectionId);
   },
   deleteBar(state, barId){
     let parentId = state.bars[barId].parentId;
-    let parent = state.measures[parentId];
+    let parent = state.sections[parentId];
     let barIndex = parent.bars.indexOf(barId);
     Vue.delete(parent.bars, barIndex);
     Helpers.deleteBar(state, barId);
