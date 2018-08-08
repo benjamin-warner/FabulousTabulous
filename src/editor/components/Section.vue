@@ -55,18 +55,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
-.section-text{
-  font-family: 'Roboto Mono';
-  font-size: 10pt;
-  
-  -webkit-touch-callout: none; 
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
 .section-block {
   display: inline-block;
   vertical-align: middle;

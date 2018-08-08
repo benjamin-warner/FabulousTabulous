@@ -3,7 +3,7 @@
     <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(yIndex)" 
     @click.ctrl.exact="selectMulti(yIndex)" @click.meta.exact="selectMulti(yIndex)" 
       @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
-      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white"/>
+      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" v-bind:class="{ selected: selections[yIndex], empty: note.length === 0 && !selections[yIndex] }"/>
       <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" alignment-baseline="middle">
         {{ note }}
       </text>
@@ -27,12 +27,12 @@ export default {
       'tuning'
     ]),
     ...mapGetters('tab', [
-      'notesOfBeat'
+      'notesOfBeat',
     ]),
   },
   data() {
     return {
-      selections: []
+      selections: [false, false, false, false, false, false]
     }
   },
   created() {
@@ -40,6 +40,7 @@ export default {
     document.addEventListener('keydown', this.onKeyPress);
   },
   destroyed() {
+    EventBus.$off('clear-selections', this.clearSelections);
     document.removeEventListener('keydown', this.onKeyPress);
   },
   methods: {
@@ -59,31 +60,42 @@ export default {
         evt.preventDefault();
         this.backspaceSelections();
       }
+      // escape
+      if(evt.keyCode === 27){
+        evt.preventDefault();
+        this.clearSelections();
+      }
     },
     selectMulti(index){
       //if editorMode === editorstore.byNote ??
-      this.selections.push(index);
+      this.$set(this.selections, index, true);
     },
     selectSingle(index){
       EventBus.$emit('clear-selections');
-      this.selections.push(index);
+      this.$set(this.selections, index, true);
     },
     clearSelections(){
-      this.selections = [];
+      for(let index in this.selections){
+        this.$set(this.selections, index, false);
+      }
     },
     appendSelections(character){
-      for(let index of this.selections){
-        let notes = this.notesOfBeat(this.id);
-        if(notes[index].length < 2){
-          this.appendNote({ beatId: this.id, index: index, value: character });
+      for(let index in this.selections){
+        if(this.selections[index]){
+          let notes = this.notesOfBeat(this.id);
+          if(notes[index].length < 2){
+            this.appendNote({ beatId: this.id, index: index, value: character });
+          }
         }
       }
     },
     backspaceSelections(){
-      for(let index of this.selections){
-        let notes = this.notesOfBeat(this.id);
-        if(notes[index].length > 0){
-          this.backspaceNote({ beatId: this.id, index: index });
+      for(let index in this.selections){
+        if(this.selections[index]){
+          let notes = this.notesOfBeat(this.id);
+          if(notes[index].length > 0){
+            this.backspaceNote({ beatId: this.id, index: index });
+          }
         }
       }
     }
@@ -107,7 +119,16 @@ export default {
   user-select: none;
 }
 
+.selected {
+  fill: aqua;
+}
+
+.empty {
+  fill-opacity: 0;
+}
+
 .hovered{
   fill: aqua;
+  fill-opacity: 1;
 }
 </style>
