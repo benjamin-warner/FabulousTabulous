@@ -2,9 +2,9 @@
   <g id="beat">
     <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(yIndex)" 
     @click.ctrl.exact="selectMulti(yIndex)" @click.meta.exact="selectMulti(yIndex)" 
-      @mouseover="$event.target.classList.add('derp')" @mouseout="$event.target.classList.remove('derp')">
+      @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
       <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white"/>
-      <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" text-anchor="middle" alignment-baseline="middle" fill="black">
+      <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" alignment-baseline="middle">
         {{ note }}
       </text>
     </g>
@@ -65,7 +65,6 @@ export default {
       this.selections.push(index);
     },
     selectSingle(index){
-      console.log('selecting ', index)
       EventBus.$emit('clear-selections');
       this.selections.push(index);
     },
@@ -98,6 +97,8 @@ export default {
   font-size: 10pt;
   font-weight: bold;
   pointer-events: none;
+  text-anchor: middle;
+  fill: black;
 
   -webkit-touch-callout: none; 
   -webkit-user-select: none;
@@ -106,7 +107,7 @@ export default {
   user-select: none;
 }
 
-.derp{
+.hovered{
   fill: aqua;
 }
 </style>
