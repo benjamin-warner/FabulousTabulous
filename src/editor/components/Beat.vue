@@ -44,7 +44,7 @@ export default {
       'deselectNote',
       'clearNoteSelections'
     ]),
-    ...mapActions('tab', ['queueChange']),
+    ...mapActions('tab', ['queueNote']),
     onKeyPress(evt) {
       if(this.getNoteSelectionsOfBeat(this.id).length !== 0){
         // 0 through 9
@@ -80,11 +80,11 @@ export default {
       let notes = this.getNoteSelectionsOfBeat(this.id)
       for(let id of notes){
         let currentNote = this.note(id).note;
-        this.queueChange({ 
+        this.queueNote({ 
           mutation: 'replaceNote', 
           payload: { 
             id: id, 
-            newValue: currentNote.length < 2 ? currentNote + character : currentNote 
+            value: currentNote.length < 2 ? currentNote + character : currentNote 
           }
         });
       }

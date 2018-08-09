@@ -31,20 +31,22 @@ const mutations = {
 }
 
 const Helpers = {
-  commitChanges(commit, state){
-    state.undoStack.push(state.changes);
+  commitNotes(commit, state, getters){
     for(let change of state.changes){
+      let oldValue = getters.note(change.payload.id).note;
       commit(change.mutation, change.payload);
+      change.payload.value = oldValue;
     }
+    state.undoStack.push(state.changes);
     state.changes = [];
   }
 }
 
 const actions = {
-  queueChange({commit, state}, entity){
+  queueNote({commit, state, getters}, entity){
     state.changes.push(entity);
     if(state.changes.length === Object.keys(state.noteSelections).length){
-      Helpers.commitChanges(commit, state)
+      Helpers.commitNotes(commit, state, getters)
     }
   }
 }

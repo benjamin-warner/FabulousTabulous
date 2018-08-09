@@ -157,7 +157,7 @@ const mutations = {
     state.beats[payload.id].notes = payload.notes;
   },
   replaceNote(state, payload){
-    Vue.set(state.notes[payload.id], 'note', payload.newValue);
+    Vue.set(state.notes[payload.id], 'note', payload.value);
   }
 }
 
