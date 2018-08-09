@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Vue from 'vue'
+import Editor from './editor.js'
 
 const state = {
   tuning: [
@@ -149,5 +150,8 @@ export default {
   namespaced: true,
   state,
   getters,
-  mutations
+  mutations,
+  modules: {
+    Editor
+  }
 }

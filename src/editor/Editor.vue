@@ -11,7 +11,7 @@ export default {
   name: 'Editor',
   components: {
     TabComponent,
-  },
+  }
 }
 </script>
 

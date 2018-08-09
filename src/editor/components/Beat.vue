@@ -3,7 +3,8 @@
     <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(yIndex)" 
     @click.ctrl.exact="selectMulti(yIndex)" @click.meta.exact="selectMulti(yIndex)" 
       @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
-      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" v-bind:class="{ selected: selections[yIndex], empty: note.length === 0 && !selections[yIndex] }"/>
+      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" 
+      v-bind:class="{ selected: selections[yIndex], empty: note.length === 0 && !selections[yIndex] }"/>
       <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" alignment-baseline="middle">
         {{ note }}
       </text>
@@ -13,7 +14,7 @@
 
 <script>
 /* eslint-disable */
-import { mapGetters, mapState, mapMutations } from 'vuex'
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex'
 import EventBus from '../../eventBus';
 
 export default {
@@ -45,9 +46,11 @@ export default {
   },
   methods: {
     ...mapMutations('tab', [
-      'appendNote',
-      'backspaceNote'
+      'incrementSelections',
+      'decrementSelections',
+      'resetSelections'
     ]),
+    ...mapActions('tab', ['queueChange']),
     onKeyPress(evt) {
       // 0 through 9
       if(evt.keyCode >= 48 && evt.keyCode <= 57){
@@ -68,15 +71,26 @@ export default {
     },
     selectMulti(index){
       //if editorMode === editorstore.byNote ??
-      this.$set(this.selections, index, true);
+      if(this.selections[index]){
+        this.$set(this.selections, index, false);
+        this.decrementSelections(1);
+      }
+      else{
+        this.$set(this.selections, index, true);
+        this.incrementSelections(1);
+      }
     },
     selectSingle(index){
       EventBus.$emit('clear-selections');
       this.$set(this.selections, index, true);
+      this.incrementSelections(1);
     },
     clearSelections(){
       for(let index in this.selections){
-        this.$set(this.selections, index, false);
+        if(this.selections[index]){
+          this.$set(this.selections, index, false);
+          this.decrementSelections(1);
+        }
       }
     },
     appendSelections(character){
@@ -84,7 +98,14 @@ export default {
         if(this.selections[index]){
           let notes = this.notesOfBeat(this.id);
           if(notes[index].length < 2){
-            this.appendNote({ beatId: this.id, index: index, value: character });
+            this.queueChange({ 
+              type: 'appendNote',
+              content: {
+                beatId: this.id, 
+                index: index, 
+                value: character
+              }
+            });
           }
         }
       }
@@ -94,7 +115,13 @@ export default {
         if(this.selections[index]){
           let notes = this.notesOfBeat(this.id);
           if(notes[index].length > 0){
-            this.backspaceNote({ beatId: this.id, index: index });
+            this.queueChange({ 
+              type: 'backspaceNote',
+              content: {
+                beatId: this.id,
+                index: index 
+              }
+            });
           }
         }
       }
