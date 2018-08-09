@@ -1,12 +1,12 @@
 <template>
   <g id="beat">
-    <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(yIndex)" 
-    @click.ctrl.exact="selectMulti(yIndex)" @click.meta.exact="selectMulti(yIndex)" 
+    <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(note.id)" 
+    @click.ctrl.exact="selectMulti(note.id)" @click.meta.exact="selectMulti(note.id)" 
       @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
       <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" 
-      v-bind:class="{ selected: isNoteSelected({parentId: id, index: yIndex }) }"/>
+      v-bind:class="{ selected: isNoteSelected(note.id) }"/>
       <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" alignment-baseline="middle">
-        {{ note }}
+        {{ note.note }}
       </text>
     </g>
   </g>
@@ -26,13 +26,11 @@ export default {
   computed: {
     ...mapState('tab', ['tuning']),
     ...mapGetters('tab', [
-      'notesOfBeat', 
-      'hasSelections',
-      'isNoteSelected'
+      'notesOfBeat',
+      'note',
+      'isNoteSelected',
+      'getNoteSelectionsOfBeat'
     ])
-  },
-  data() {
-    return {};
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
@@ -42,13 +40,13 @@ export default {
   },
   methods: {
     ...mapMutations('tab', [
-      'addNoteSelection', 
-      'removeNoteSelection',
+      'selectNote', 
+      'deselectNote',
       'clearNoteSelections'
     ]),
     ...mapActions('tab', ['queueChange']),
     onKeyPress(evt) {
-      if(this.hasSelections(this.id)){
+      if(this.getNoteSelectionsOfBeat(this.id).length !== 0){
         // 0 through 9
         if (evt.keyCode >= 48 && evt.keyCode <= 57) {
           evt.preventDefault();
@@ -67,43 +65,29 @@ export default {
         }
       }
     },
-    selectSingle(index) {
+    selectSingle(id) {
       this.clearNoteSelections();
-      this.addNoteSelection({
-        parentId: this.id,
-        index: index
-      });
+      this.selectNote(id);
     },
-    selectMulti(index) {
-      if(this.isNoteSelected({parentId: this.id, index: index})){
-        this.removeNoteSelection({
-          parentId: this.id,
-          index: index
-        })        
+    selectMulti(id) {
+      if(this.isNoteSelected(id)){
+        this.deselectNote(id)        
       } else {
-        this.addNoteSelection({
-          parentId: this.id,
-          index: index
-        });
+        this.selectNote(id);
       }
     },
     appendSelections(character) {
-      let notes = this.notesOfBeat(this.id);
-      let newValues = [];
-      notes.forEach((note, index) => {
-        if (note.length < 2 && this.isNoteSelected({ parentId: this.id, index: index })) {
-          newValues.push(note + character);
-        } else {
-          newValues.push(note);
-        }
-      });
-      this.queueChange({
-        mutationType: 'replaceBeat',
-        payload: {
-          id: this.id,
-          notes: newValues
-        }
-      });
+      let notes = this.getNoteSelectionsOfBeat(this.id)
+      for(let id of notes){
+        let currentNote = this.note(id).note;
+        this.queueChange({ 
+          mutation: 'replaceNote', 
+          payload: { 
+            id: id, 
+            newValue: currentNote.length < 2 ? currentNote + character : currentNote 
+          }
+        });
+      }
     }
   }
 };

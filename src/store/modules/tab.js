@@ -38,7 +38,21 @@ const state = {
       parentId: '0',
       notes: ['6','7','8','9','10','11']
     },
+  },
+  notes: {
+    '0': { parentId: '0', id: '0', note: '0'},
+    '1': { id: '1', parentId: '0', note: '1'},
+    '2': { id: '2', parentId: '0', note: '2'},
+    '3': { id: '3', parentId: '0', note: '3'},
+    '4': { id: '4', parentId: '0', note: '4'},
+    '5': { id: '5', parentId: '0', note: '5'},
 
+    '6': { id: '6', parentId: '1', note: '6'},
+    '7': { id: '7', parentId: '1', note: '7'},
+    '8': { id: '8', parentId: '1', note: '8'},
+    '9': { id: '9', parentId: '1', note: '9'},
+    '10': { id: '10', parentId: '1', note: '10'},
+    '11': { id: '11', parentId: '1', note: '11'}
   }
 }
 
@@ -64,9 +78,15 @@ const getters = {
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
-  notesOfBeat: (state) => (beatId) => {
-    return state.beats[beatId].notes
+  beat: (state) => (beatId) => {
+    return state.beats[beatId];
   },
+  notesOfBeat: (state) => (beatId) => {
+    return state.beats[beatId].notes.map(noteId => state.notes[noteId]);
+  },
+  note: (state) => (noteId) => {
+    return state.notes[noteId];
+  }
 }
 
 const Helpers = {
@@ -134,8 +154,10 @@ const mutations = {
     Vue.set(state, payload.barId, payload.newBar);
   },
   replaceBeat(state, payload){
-    console.log(payload)
     state.beats[payload.id].notes = payload.notes;
+  },
+  replaceNote(state, payload){
+    Vue.set(state.notes[payload.id], 'note', payload.newValue);
   }
 }
 
