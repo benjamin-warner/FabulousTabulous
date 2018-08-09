@@ -136,13 +136,14 @@ const mutations = {
     Vue.delete(parent.bars, barIndex);
     Helpers.deleteBar(state, barId);
   },
-  appendNote(state, payload){
-    let notes = state.beats[payload.beatId].notes;
-    Vue.set(notes, payload.index, notes[payload.index] + payload.value);
+  replaceSection(state, payload){
+    Vue.set(state, payload.sectionId, payload.newSection);
   },
-  backspaceNote(state, payload){
-    let newNote = state.beats[payload.beatId].notes[payload.index].slice(0, -1);
-    Vue.set(state.beats[payload.beatId].notes, payload.index, newNote);
+  replaceBar(state, payload){
+    Vue.set(state, payload.barId, payload.newBar);
+  },
+  replaceNote(state, payload){
+    Vue.set(state, payload.barId, payloa.newBar);
   }
 }
 

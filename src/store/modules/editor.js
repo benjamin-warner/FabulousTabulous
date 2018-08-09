@@ -5,24 +5,44 @@ const state = {
   undoStack: [],
   redoStack: [],
   
-  selections: 0,
-  changes: []
+  changes: [],
+  
+  noteSelections: {},
 }
 
 const getters = {
+  getNoteSelections: (state) => {
+    return state.noteSelections;
+  },
+  hasSelections: (state) => (beatId) => {
+    if(state.noteSelections[beatId] !== undefined){
+      return true;
+    }
+  },
+  isNoteSelected: (state) => (payload) => {
+    if(state.noteSelections[payload.parentId] === undefined){
+      return false;
+    }
+    if(state.noteSelections[payload.parentId].indices.includes(payload.index)){
+      return true;
+    }
+    return false;
+  }
 }
 
 const mutations = {
-  incrementSelections(state, count) {
-    state.selections += count;
+  addNoteSelection(state, payload){
+    console.log(payload.parentId)
+    if(state.noteSelections[payload.parentId] === undefined){
+      Vue.set(state.noteSelections, payload.parentId, { indices: [] } );
+    }
+    state.noteSelections[payload.parentId].indices.push(payload.index);
   },
-  decrementSelections(state, count) {
-    state.selections -= count;
-  },
-  resetSelections(state){
-    state.selections = 0;
-  },
+  clearNoteSelections(state){
+    state.noteSelections = {};
+  }
 }
+
 const actions = {
   queueChange({commit, state}, payload){
     state.changes.push(payload);
