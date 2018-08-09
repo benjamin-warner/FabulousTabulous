@@ -24,7 +24,7 @@ const state = {
     '0':{
       id: '0',
       parentId: '0',
-      beats: ['0', '1', '2', '3']
+      beats: ['0', '1']
     }
   },
   beats: {
@@ -36,18 +36,9 @@ const state = {
     '1':{
       id: '1',
       parentId: '0',
-      notes: ['','','','','','']
-    },
-    '2':{
-      id: '2',
-      parentId: '0',
       notes: ['6','7','8','9','10','11']
     },
-    '3':{
-      id: '3',
-      parentId: '0',
-      notes: ['','','','','','']
-    }
+
   }
 }
 
@@ -142,8 +133,9 @@ const mutations = {
   replaceBar(state, payload){
     Vue.set(state, payload.barId, payload.newBar);
   },
-  replaceNote(state, payload){
-    Vue.set(state, payload.barId, payloa.newBar);
+  replaceBeat(state, payload){
+    console.log(payload)
+    state.beats[payload.id].notes = payload.notes;
   }
 }
 

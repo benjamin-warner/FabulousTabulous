@@ -43,6 +43,7 @@ export default {
   methods: {
     ...mapMutations('tab', [
       'addNoteSelection', 
+      'removeNoteSelection',
       'clearNoteSelections'
     ]),
     ...mapActions('tab', ['queueChange']),
@@ -74,38 +75,35 @@ export default {
       });
     },
     selectMulti(index) {
-      this.addNoteSelection({
-        parentId: this.id,
-        index: index
-      });
+      if(this.isNoteSelected({parentId: this.id, index: index})){
+        this.removeNoteSelection({
+          parentId: this.id,
+          index: index
+        })        
+      } else {
+        this.addNoteSelection({
+          parentId: this.id,
+          index: index
+        });
+      }
     },
     appendSelections(character) {
       let notes = this.notesOfBeat(this.id);
       let newValues = [];
       notes.forEach((note, index) => {
-        if (note.length < 2 && this.isNoteSelected({parentId: this.id, index: index })) {
+        if (note.length < 2 && this.isNoteSelected({ parentId: this.id, index: index })) {
           newValues.push(note + character);
         } else {
           newValues.push(note);
         }
       });
-      console.log(newValues)
-    },
-    backspaceSelections() {
-      for (let index in this.selections) {
-        if (this.selections[index]) {
-          let notes = this.notesOfBeat(this.id);
-          if (notes[index].length > 0) {
-            this.queueChange({
-              type: "backspaceNote",
-              content: {
-                beatId: this.id,
-                index: index
-              }
-            });
-          }
+      this.queueChange({
+        mutationType: 'replaceBeat',
+        payload: {
+          id: this.id,
+          notes: newValues
         }
-      }
+      });
     }
   }
 };
