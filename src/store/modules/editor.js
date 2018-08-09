@@ -15,6 +15,12 @@ const getters = {
   },
   getNoteSelectionsOfBeat: (state, getters) => (beatId) =>{
     return getters.beat(beatId).notes.filter(noteId => state.noteSelections[noteId])
+  },
+  canUndo: (state) => {
+    return state.undoStack.length !== 0;
+  },
+  canRedo: (state) =>  {
+    return state.redoStack.length !== 0;
   }
 }
 
@@ -38,6 +44,7 @@ const Helpers = {
       change.payload.value = oldValue;
     }
     state.undoStack.push(state.changes);
+    state.redoStack = [];
     state.changes = [];
   }
 }
@@ -48,7 +55,25 @@ const actions = {
     if(state.changes.length === Object.keys(state.noteSelections).length){
       Helpers.commitNotes(commit, state, getters)
     }
-  }
+  },
+  undo({commit, state, getters}){
+    let changesToUndo = state.undoStack.pop();
+    for(let change of changesToUndo){
+      let oldValue = getters.note(change.payload.id).note;
+      commit(change.mutation, change.payload);
+      change.payload.value = oldValue;
+    }
+    state.redoStack.push(changesToUndo);
+  },
+  redo({commit, state, getters}){
+    let changesToRedo = state.redoStack.pop();
+    for(let change of changesToRedo){
+      let oldValue = getters.note(change.payload.id).note;
+      commit(change.mutation, change.payload);
+      change.payload.value = oldValue;
+    }
+    state.undoStack.push(changesToRedo);
+  },  
 }
 
 export default {
