@@ -60,11 +60,24 @@ const getters = {
   sections: (state) => {
     return state.tab.sections.map(sectionId => state.sections[sectionId]);
   },
+  sectionIdViaTabIndex: (state) => (index) => {
+    return state.tab.sections[index];
+  },
+  sectionIndex: (state) => (sectionId) => {
+    return state.tab.sections.indexOf(sectionId);
+  },
   sectionCount: (state) => {
     return state.tab.sections.length;
   },
   barsOfSection: (state) => (sectionId) => {
     return state.sections[sectionId].bars.map(barId => state.bars[barId]);
+  },
+  barIdViaSectionIndex: (state) => (payload) => {
+    return state.sections[payload.parentId].bars[payload.index];
+  },
+  barParent: (state) => (barId) => {
+    let parentId = state.bars[barId].parentId;
+    return state.sections[parentId];
   },
   barCountOfSection: (state) => (sectionId) => {
     let barReferences = state.sections[sectionId].bars;
@@ -108,7 +121,12 @@ const Helpers = {
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
     while(state.bars[barId].beats.length < 4){
       let beatId = this.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: ['','','','','','',] });
+      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
+      while(state.beats[beatId].notes.length < 6){
+        let noteId = this.makeGUID();
+        Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
+        state.beats[beatId].notes.push(noteId);
+      }
       state.bars[barId].beats.push(beatId);
     }
   },
@@ -122,6 +140,9 @@ const Helpers = {
   },
   deleteBar(state, barId){
     for(let beatId of state.bars[barId].beats){
+      for(let noteId of state.beats[beatId].notes){
+        Vue.delete(state.notes, noteId)
+      }
       Vue.delete(state.beats, beatId);
     }
     Vue.delete(state.bars, barId);
@@ -132,13 +153,27 @@ const mutations = {
   addSection(state, index){
     Helpers.createSection(state, index);
   },
+  addSectionReference(state, payload){
+    state.tab.sections.splice(payload.index, 0, payload.sectionId);
+  },
+  removeSectionReference(state, index){
+    state.tab.sections.splice(index, 1);
+  },
+  deleteSection(state, sectionId){
+    Helpers.deleteSection(state, sectionId);
+  },
   addBar(state, payload){
     let barId = Helpers.makeGUID();
     state.sections[payload.parentId].bars.splice(payload.index, 0, barId);
     Helpers.createBar(state, barId, payload.parentId);
   },
-  deleteSection(state, sectionId){
-    Helpers.deleteSection(state, sectionId);
+  addBarReference(state, payload){
+    let barRefs = state.sections[payload.parentId].bars;
+    barRefs.splice(payload.index, 0, payload.barId);
+  },
+  removeBarReference(state, payload){
+    let barRefs = state.sections[payload.parentId].bars;
+    barRefs.splice(payload.index, 1,);
   },
   deleteBar(state, barId){
     let parentId = state.bars[barId].parentId;
@@ -146,15 +181,6 @@ const mutations = {
     let barIndex = parent.bars.indexOf(barId);
     Vue.delete(parent.bars, barIndex);
     Helpers.deleteBar(state, barId);
-  },
-  replaceSection(state, payload){
-    Vue.set(state, payload.sectionId, payload.newSection);
-  },
-  replaceBar(state, payload){
-    Vue.set(state, payload.barId, payload.newBar);
-  },
-  replaceBeat(state, payload){
-    state.beats[payload.id].notes = payload.notes;
   },
   replaceNote(state, payload){
     Vue.set(state.notes[payload.id], 'note', payload.value);

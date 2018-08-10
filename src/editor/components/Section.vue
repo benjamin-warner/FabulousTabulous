@@ -2,9 +2,9 @@
   <div id="section" class="-block">
     <div class="section-block" v-for="(bar, barKey) in barsOfSection(id)" :key="barKey">
       <div id="bar-control">
-        <Button v-on:click="addBar({parentId: id, index: barKey})">+</Button>
+        <Button v-on:click="queueAddBar({parentId: id, index: barKey})">+</Button>
         <Button v-if="sectionCount > 1 || barCountOfSection(id) > 1" v-on:click="handleDeletion(bar.id)">X</Button>
-        <Button v-on:click="addBar({parentId: id, index: barKey+1})">+</Button>
+        <Button v-on:click="queueAddBar({parentId: id, index: barKey+1})">+</Button>
       </div>
       <BarComponent :id="bar.id" class="section-block" />
       <svg v-if="isLastBar(bar.id)" width="4" height="145" class="section-block" >
@@ -17,7 +17,7 @@
 <script>
 /* eslint-disable */
 import BarComponent from './Bar.vue'
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: "Section",
@@ -36,17 +36,17 @@ export default {
     ]),
   },
   methods: {
-    ...mapMutations('tab',[
-      'deleteBar',
-      'deleteSection',
-      'addBar'
+    ...mapActions('tab', [
+      'queueAddBar',
+      'queueRemoveBar',
+      'queueRemoveSection'
     ]),
     handleDeletion(barId){
       if(this.barCountOfSection(this.id) === 1){
-        this.deleteSection(this.id);
+        this.queueRemoveSection(this.id);
       }
       else{
-        this.deleteBar(barId);
+        this.queueRemoveBar(barId);
       }
     }
   }
