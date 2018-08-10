@@ -88,6 +88,19 @@ export default {
           }
         });
       }
+    },
+    backspaceSelections(){
+      let notes = this.getNoteSelectionsOfBeat(this.id)
+      for(let id of notes){
+        let currentNote = this.note(id).note;
+        this.queueNote({ 
+          mutation: 'replaceNote', 
+          payload: { 
+            id: id, 
+            value: currentNote.length > 0 ? currentNote.slice(0, -1) : currentNote 
+          }
+        });
+      }
     }
   }
 };

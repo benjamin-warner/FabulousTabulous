@@ -6,15 +6,17 @@ const state = {
   redoStack: [],  
   changes: [],
   
-  noteSelections: {},
+  noteSelections: [],
+  selectionPointer: 0
 }
 
 const getters = {
   isNoteSelected: (state) => (noteId) => {
-    return state.noteSelections[noteId] !== undefined;
+    return state.noteSelections.includes(noteId);
   },
   getNoteSelectionsOfBeat: (state, getters) => (beatId) =>{
-    return getters.beat(beatId).notes.filter(noteId => state.noteSelections[noteId])
+    let beatNotes = getters.beat(beatId).notes;
+    return state.noteSelections.filter(selection => beatNotes.includes(selection));
   },
   canUndo: (state) => {
     return state.undoStack.length !== 0;
@@ -26,13 +28,14 @@ const getters = {
 
 const mutations = {
   selectNote(state, id){
-    Vue.set(state.noteSelections, id, id);
+    state.noteSelections.push(id);
   },
   deselectNote(state, id){
-    Vue.delete(state.noteSelections, id);
+    let toDelete = state.noteSelections.indexOf(id);
+    Vue.delete(state.noteSelections, toDelete);
   },
   clearNoteSelections(state){
-    state.noteSelections = {};
+    state.noteSelections = [];
   }
 }
 
@@ -43,17 +46,23 @@ const Helpers = {
       commit(change.mutation, change.payload);
       change.payload.value = oldValue;
     }
-    state.undoStack.push(state.changes);
-    state.redoStack = [];
-    state.changes = [];
+    if(state.changes.length !== 0){
+      state.undoStack.push(state.changes);
+      state.redoStack = [];
+      state.changes = [];
+    }
   }
 }
 
 const actions = {
   queueNote({commit, state, getters}, entity){
-    state.changes.push(entity);
-    if(state.changes.length === Object.keys(state.noteSelections).length){
-      Helpers.commitNotes(commit, state, getters)
+    if(entity.payload.value !== getters.note(entity.payload.id).note){
+      state.changes.push(entity);
+    }
+    state.selectionPointer++;
+    if(state.selectionPointer === state.noteSelections.length){
+      Helpers.commitNotes(commit, state, getters);
+      state.selectionPointer = 0;
     }
   },
   undo({commit, state, getters}){
