@@ -64,9 +64,38 @@ const Helpers = {
       change.payload.value = oldValue;
     }
     if(state.changes.length !== 0){
-      commit('pushToUndoStack', { type: 'noteAltration', notes: state.changes });
+      commit('pushToUndoStack', { type: 'noteEdited', notes: state.changes });
       commit('clearRedoStack', commit)
       state.changes = [];
+    }
+  },
+  revertChange(commit, getters, reversion){
+    switch(reversion.type){
+      case 'removeBar':
+        commit('addBarReference', { parentId: reversion.parentId, index: reversion.index , barId: reversion.id });
+        reversion.type = 'addBar'
+        break;      
+      case 'addBar':
+        commit('removeBarReference', { parentId: reversion.parentId, index: reversion.index });
+        reversion.type = 'removeBar';
+        break;
+      case 'addSection':
+        commit('removeSectionReference', reversion.index);
+        reversion.type = 'removeSection';
+        break;
+      case 'removeSection':
+        commit('addSectionReference', { index: reversion.index, sectionId: reversion.id });
+        reversion.type = 'addSection';
+        break;
+      case 'noteEdited':
+        for(let change of reversion.notes){
+          let oldValue = getters.note(change.payload.id).note;
+          commit(change.mutation, change.payload);
+          change.payload.value = oldValue;
+        }
+        break;
+      default:
+        break;
     }
   }
 }
@@ -87,106 +116,38 @@ const actions = {
     // Actions can return this id. Look into it later.
     let id = getters.barIdViaSectionIndex({ parentId: payload.parentId, index: payload.index });
     commit('pushToUndoStack', { type: 'addBar', parentId: payload.parentId, index: payload.index, id: id });
+    commit('clearRedoStack', commit);
   },
   queueRemoveBar({commit, getters}, barId){
     let parent = getters.barParent(barId);
     let index = parent.bars.indexOf(barId);
     commit('removeBarReference', { parentId: parent.id, index: index });
-    commit('pushToUndoStack', { type: 'removeBar', parentId: parent.id, index: index, id: barId })
+    commit('pushToUndoStack', { type: 'removeBar', parentId: parent.id, index: index, id: barId });
+    commit('clearRedoStack', commit);
   },
   queueAddSection({commit, getters}, index){
     // Actions can return this id. Look into it later.
     commit('addSection', index);
     let id = getters.sectionIdViaTabIndex(index);
-    console.log(index, id)
-    commit('pushToUndoStack', { type: 'addSection', id: id, index: index });    
+    commit('pushToUndoStack', { type: 'addSection', id: id, index: index });  
+    commit('clearRedoStack', commit);  
   },
   queueRemoveSection({commit, getters}, sectionId){
     let index = getters.sectionIndex(sectionId);
-    console.log('remove', sectionId, index)
     commit('removeSectionReference', index);
-    commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId })
+    commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId });
+    commit('clearRedoStack', commit);
   },
   undo({commit, state, getters}){
     let changeToUndo = state.undoStack.pop();
-    switch(changeToUndo.type){
-      case 'removeBar':
-        commit('addBarReference', { 
-          parentId: changeToUndo.parentId, 
-          index: changeToUndo.index , 
-          barId: changeToUndo.id 
-        });
-        changeToUndo.type = 'addBar'
-        break;      
-      case 'addBar':
-        commit('removeBarReference', { 
-          parentId: changeToUndo.parentId, 
-          index: changeToUndo.index 
-        });
-        changeToUndo.type = 'removeBar';
-        break;
-      case 'addSection':
-        commit('removeSectionReference', changeToUndo.index);
-        changeToUndo.type = 'removeSection';
-        break;
-      case 'removeSection':
-        commit('addSectionReference', {
-          index: changeToUndo.index,
-          sectionId: changeToUndo.id
-        });
-        changeToUndo.type = 'addSection';
-        break;
-      case 'noteAltration':
-        for(let change of changeToUndo.notes){
-          let oldValue = getters.note(change.payload.id).note;
-          commit(change.mutation, change.payload);
-          change.payload.value = oldValue;
-        }
-        break;
-    }
+    Helpers.revertChange(commit, getters, changeToUndo);
     commit('pushToRedoStack', changeToUndo);
   },
   redo({commit, state, getters}){
     let changeToRedo = state.redoStack.pop();
-    switch(changeToRedo.type){
-      case 'removeBar':
-        commit('addBarReference', { 
-          parentId: changeToRedo.parentId, 
-          index: changeToRedo.index , 
-          barId: changeToRedo.id 
-        });
-        changeToRedo.type = 'addBar'
-        break;      
-      case 'addBar':
-        commit('removeBarReference', { 
-          parentId: changeToRedo.parentId, 
-          index: changeToRedo.index 
-        });
-        changeToRedo.type = 'removeBar';
-        break;
-      case 'addSection':
-        commit('removeSectionReference', changeToRedo.index);
-        changeToRedo.type = 'removeSection';
-        break;
-      case 'removeSection':
-        commit('addSectionReference', {
-          index: changeToRedo.index,
-          sectionId: changeToRedo.id
-        });
-        changeToRedo.type = 'addSection';
-        break;     
-      case 'noteAltration':
-        for(let change of changeToRedo.notes){
-          let oldValue = getters.note(change.payload.id).note;
-          commit(change.mutation, change.payload);
-          change.payload.value = oldValue;
-        }
-        break;
-      default:
-        break;
-    }
+    Helpers.revertChange(commit, getters, changeToRedo);
     commit('pushToUndoStack', changeToRedo);
-  },  
+  }
 }
 
 export default {

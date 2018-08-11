@@ -131,8 +131,6 @@ const Helpers = {
     }
   },
   deleteSection(state, sectionId){
-    let sectionIndex = state.tab.sections.indexOf(sectionId);
-    state.tab.sections.splice(sectionIndex, 1);
     for(let barId of state.sections[sectionId].bars){
       this.deleteBar(state, barId)
     }

@@ -24,7 +24,6 @@ export default {
     xIndex: Number
   },
   computed: {
-    ...mapState('tab', ['tuning']),
     ...mapGetters('tab', [
       'notesOfBeat',
       'note',
