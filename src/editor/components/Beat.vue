@@ -13,9 +13,7 @@
 </template>
 
 <script>
-/* eslint-disable */
-import { mapGetters, mapState, mapMutations, mapActions } from 'vuex';
-import EventBus from '../../eventBus';
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
   name: 'Beat',

@@ -15,12 +15,11 @@
 </template>
 
 <script>
-/* eslint-disable */
 import BarComponent from './Bar.vue'
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: "Section",
+  name: 'Section',
   props: {
     id: String
   },

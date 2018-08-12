@@ -10,13 +10,11 @@
 </template>
 
 <script>
-/* eslint-disable */
-import EventBus from '../../eventBus.js'
 import BeatComponent from './Beat.vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
-  name: "Bar",
+  name: 'Bar',
   components: {
     BeatComponent
   },

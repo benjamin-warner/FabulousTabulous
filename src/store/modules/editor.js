@@ -1,4 +1,3 @@
-/* eslint-disable */
 import Vue from 'vue'
 import Tab from './tab.js'
 import Utils from './utils.js'

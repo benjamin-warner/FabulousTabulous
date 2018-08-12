@@ -18,10 +18,8 @@
 </template>
 
 <script>
-/* eslint-disable */
 import SectionComponent from './Section.vue'
-import EventBus from '../../eventBus.js'
-import { mapGetters, mapActions, mapState, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Tab',

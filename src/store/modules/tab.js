@@ -1,9 +1,7 @@
-/* eslint-disable */
 import Vue from 'vue'
 import Utils from './utils.js'
 
-const state = {
-}
+const state = {}
 
 const getters = {
   tuning: (state) => {
