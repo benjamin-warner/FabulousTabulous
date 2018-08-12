@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Vue from 'vue'
+import Editor from './editor.js'
 
 const state = {
   tuning: [
@@ -35,18 +36,47 @@ const state = {
     '1':{
       id: '1',
       parentId: '0',
-      notes: ['','','','','','']
-    },
-    '2':{
-      id: '2',
-      parentId: '0',
       notes: ['6','7','8','9','10','11']
     },
+    '2':{
+      id:'2',
+      parentId:'0',
+      notes: ['12','13','14','15','16','17']
+    },
     '3':{
-      id: '3',
+      id:'3',
       parentId: '0',
-      notes: ['','','','','','']
+      notes: ['18','19','20','21','22','23']
     }
+  },
+  notes: {
+    '0': { parentId: '0', id: '0', note: ''},
+    '1': { id: '1', parentId: '0', note: ''},
+    '2': { id: '2', parentId: '0', note: ''},
+    '3': { id: '3', parentId: '0', note: ''},
+    '4': { id: '4', parentId: '0', note: ''},
+    '5': { id: '5', parentId: '0', note: ''},
+
+    '6': { id: '6', parentId: '1', note: ''},
+    '7': { id: '7', parentId: '1', note: ''},
+    '8': { id: '8', parentId: '1', note: ''},
+    '9': { id: '9', parentId: '1', note: ''},
+    '10': { id: '10', parentId: '1', note: ''},
+    '11': { id: '11', parentId: '1', note: ''},
+
+    '12': { id: '12', parentId: '2', note: ''},
+    '13': { id: '13', parentId: '2', note: ''},
+    '14': { id: '14', parentId: '2', note: ''},
+    '15': { id: '15', parentId: '2', note: ''},
+    '16': { id: '16', parentId: '2', note: ''},
+    '17': { id: '17', parentId: '2', note: ''},
+
+    '18': { id: '18', parentId: '3', note: ''},
+    '19': { id: '19', parentId: '3', note: ''},
+    '20': { id: '20', parentId: '3', note: ''},
+    '21': { id: '21', parentId: '3', note: ''},
+    '22': { id: '22', parentId: '3', note: ''},
+    '23': { id: '23', parentId: '3', note: ''}
   }
 }
 
@@ -54,11 +84,24 @@ const getters = {
   sections: (state) => {
     return state.tab.sections.map(sectionId => state.sections[sectionId]);
   },
+  sectionIdViaTabIndex: (state) => (index) => {
+    return state.tab.sections[index];
+  },
+  sectionIndex: (state) => (sectionId) => {
+    return state.tab.sections.indexOf(sectionId);
+  },
   sectionCount: (state) => {
     return state.tab.sections.length;
   },
   barsOfSection: (state) => (sectionId) => {
     return state.sections[sectionId].bars.map(barId => state.bars[barId]);
+  },
+  barIdViaSectionIndex: (state) => (payload) => {
+    return state.sections[payload.parentId].bars[payload.index];
+  },
+  barParent: (state) => (barId) => {
+    let parentId = state.bars[barId].parentId;
+    return state.sections[parentId];
   },
   barCountOfSection: (state) => (sectionId) => {
     let barReferences = state.sections[sectionId].bars;
@@ -72,9 +115,15 @@ const getters = {
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
   },
-  notesOfBeat: (state) => (beatId) => {
-    return state.beats[beatId].notes
+  beat: (state) => (beatId) => {
+    return state.beats[beatId];
   },
+  notesOfBeat: (state) => (beatId) => {
+    return state.beats[beatId].notes.map(noteId => state.notes[noteId]);
+  },
+  note: (state) => (noteId) => {
+    return state.notes[noteId];
+  }
 }
 
 const Helpers = {
@@ -96,13 +145,16 @@ const Helpers = {
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
     while(state.bars[barId].beats.length < 4){
       let beatId = this.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: ['','','','','','',] });
+      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
+      while(state.beats[beatId].notes.length < 6){
+        let noteId = this.makeGUID();
+        Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
+        state.beats[beatId].notes.push(noteId);
+      }
       state.bars[barId].beats.push(beatId);
     }
   },
   deleteSection(state, sectionId){
-    let sectionIndex = state.tab.sections.indexOf(sectionId);
-    state.tab.sections.splice(sectionIndex, 1);
     for(let barId of state.sections[sectionId].bars){
       this.deleteBar(state, barId)
     }
@@ -110,6 +162,9 @@ const Helpers = {
   },
   deleteBar(state, barId){
     for(let beatId of state.bars[barId].beats){
+      for(let noteId of state.beats[beatId].notes){
+        Vue.delete(state.notes, noteId)
+      }
       Vue.delete(state.beats, beatId);
     }
     Vue.delete(state.bars, barId);
@@ -120,13 +175,27 @@ const mutations = {
   addSection(state, index){
     Helpers.createSection(state, index);
   },
+  addSectionReference(state, payload){
+    state.tab.sections.splice(payload.index, 0, payload.sectionId);
+  },
+  removeSectionReference(state, index){
+    state.tab.sections.splice(index, 1);
+  },
+  deleteSection(state, sectionId){
+    Helpers.deleteSection(state, sectionId);
+  },
   addBar(state, payload){
     let barId = Helpers.makeGUID();
     state.sections[payload.parentId].bars.splice(payload.index, 0, barId);
     Helpers.createBar(state, barId, payload.parentId);
   },
-  deleteSection(state, sectionId){
-    Helpers.deleteSection(state, sectionId);
+  addBarReference(state, payload){
+    let barRefs = state.sections[payload.parentId].bars;
+    barRefs.splice(payload.index, 0, payload.barId);
+  },
+  removeBarReference(state, payload){
+    let barRefs = state.sections[payload.parentId].bars;
+    barRefs.splice(payload.index, 1,);
   },
   deleteBar(state, barId){
     let parentId = state.bars[barId].parentId;
@@ -135,13 +204,8 @@ const mutations = {
     Vue.delete(parent.bars, barIndex);
     Helpers.deleteBar(state, barId);
   },
-  appendNote(state, payload){
-    let notes = state.beats[payload.beatId].notes;
-    Vue.set(notes, payload.index, notes[payload.index] + payload.value);
-  },
-  backspaceNote(state, payload){
-    let newNote = state.beats[payload.beatId].notes[payload.index].slice(0, -1);
-    Vue.set(state.beats[payload.beatId].notes, payload.index, newNote);
+  replaceNote(state, payload){
+    Vue.set(state.notes[payload.id], 'note', payload.value);
   }
 }
 
@@ -149,5 +213,8 @@ export default {
   namespaced: true,
   state,
   getters,
-  mutations
+  mutations,
+  modules: {
+    Editor
+  }
 }

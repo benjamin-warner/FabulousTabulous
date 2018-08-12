@@ -3,13 +3,13 @@
     <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
       <div class="tab-block">
         <div>
-          <button v-on:click="addSection(sectionIndex)">+</button>
+          <button v-on:click="queueAddSection(sectionIndex)">+</button>
         </div>
         <div>
-          <button v-if="sectionCount > 1" v-on:click="deleteSection(section.id)">x</button>
+          <button v-if="sectionCount > 1" v-on:click="queueRemoveSection(section.id)">x</button>
         </div>
         <div>
-          <button v-on:click="addSection(sectionIndex+1)">+</button>
+          <button v-on:click="queueAddSection(sectionIndex+1)">+</button>
         </div>
       </div>
       <SectionComponent class="tab-block" :id="section.id"/>
@@ -21,7 +21,7 @@
 /* eslint-disable */
 import SectionComponent from './Section.vue'
 import EventBus from '../../eventBus.js'
-import { mapMutations, mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Tab',
@@ -43,9 +43,9 @@ export default {
     EventBus.$on('redo', this.redo);
   },
   methods: {
-    ...mapMutations('tab',[
-      'addSection',
-      'deleteSection'
+    ...mapActions('tab',[
+      'queueAddSection',
+      'queueRemoveSection'
     ]),
   }
 }

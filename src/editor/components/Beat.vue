@@ -1,11 +1,12 @@
 <template>
   <g id="beat">
-    <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(yIndex)" 
-    @click.ctrl.exact="selectMulti(yIndex)" @click.meta.exact="selectMulti(yIndex)" 
+    <g v-for="(note, yIndex) in notesOfBeat(id)" :key="yIndex" @click.exact="selectSingle(note.id)" 
+    @click.ctrl.exact="selectMulti(note.id)" @click.meta.exact="selectMulti(note.id)" 
       @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
-      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" v-bind:class="{ selected: selections[yIndex], empty: note.length === 0 && !selections[yIndex] }"/>
+      <rect :x="64*xIndex+64-9" :y="25*yIndex+10 -9" width="18" height="18" rx="5" ry="5" fill="white" 
+      v-bind:class="{ selected: isNoteSelected(note.id) }"/>
       <text :x="64*xIndex+64" :y="25*yIndex+10" class="tab-text" alignment-baseline="middle">
-        {{ note }}
+        {{ note.note }}
       </text>
     </g>
   </g>
@@ -13,106 +14,107 @@
 
 <script>
 /* eslint-disable */
-import { mapGetters, mapState, mapMutations } from 'vuex'
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex';
 import EventBus from '../../eventBus';
 
 export default {
-  name: "Beat",
+  name: 'Beat',
   props: {
     id: String,
     xIndex: Number
   },
   computed: {
-    ...mapState('tab', [
-      'tuning'
-    ]),
     ...mapGetters('tab', [
       'notesOfBeat',
-    ]),
-  },
-  data() {
-    return {
-      selections: [false, false, false, false, false, false]
-    }
+      'note',
+      'isNoteSelected',
+      'getNoteSelectionsOfBeat'
+    ])
   },
   created() {
-    EventBus.$on('clear-selections', this.clearSelections);
     document.addEventListener('keydown', this.onKeyPress);
   },
   destroyed() {
-    EventBus.$off('clear-selections', this.clearSelections);
     document.removeEventListener('keydown', this.onKeyPress);
   },
   methods: {
     ...mapMutations('tab', [
-      'appendNote',
-      'backspaceNote'
+      'selectNote', 
+      'deselectNote',
+      'clearNoteSelections'
     ]),
+    ...mapActions('tab', ['queueNote']),
     onKeyPress(evt) {
-      // 0 through 9
-      if(evt.keyCode >= 48 && evt.keyCode <= 57){
-        evt.preventDefault();
-        let character = evt.keyCode - 48;
-        this.appendSelections(character);
-      }
-      // backspace || delete
-      if(evt.keyCode === 8 || evt.keyCode === 46){
-        evt.preventDefault();
-        this.backspaceSelections();
-      }
-      // escape
-      if(evt.keyCode === 27){
-        evt.preventDefault();
-        this.clearSelections();
-      }
-    },
-    selectMulti(index){
-      //if editorMode === editorstore.byNote ??
-      this.$set(this.selections, index, true);
-    },
-    selectSingle(index){
-      EventBus.$emit('clear-selections');
-      this.$set(this.selections, index, true);
-    },
-    clearSelections(){
-      for(let index in this.selections){
-        this.$set(this.selections, index, false);
-      }
-    },
-    appendSelections(character){
-      for(let index in this.selections){
-        if(this.selections[index]){
-          let notes = this.notesOfBeat(this.id);
-          if(notes[index].length < 2){
-            this.appendNote({ beatId: this.id, index: index, value: character });
-          }
+      if(this.getNoteSelectionsOfBeat(this.id).length !== 0){
+        // 0 through 9
+        if (evt.keyCode >= 48 && evt.keyCode <= 57) {
+          evt.preventDefault();
+          let character = evt.keyCode - 48;
+          this.appendSelections(character);
         }
+        // backspace || delete
+        if (evt.keyCode === 8 || evt.keyCode === 46) {
+          evt.preventDefault();
+          this.backspaceSelections();
+        }
+        // escape
+        if (evt.keyCode === 27) {
+          evt.preventDefault();
+          this.clearNoteSelections();
+        }
+      }
+    },
+    selectSingle(id) {
+      this.clearNoteSelections();
+      this.selectNote(id);
+    },
+    selectMulti(id) {
+      if(this.isNoteSelected(id)){
+        this.deselectNote(id)        
+      } else {
+        this.selectNote(id);
+      }
+    },
+    appendSelections(character) {
+      let notes = this.getNoteSelectionsOfBeat(this.id)
+      for(let id of notes){
+        let currentNote = this.note(id).note;
+        this.queueNote({ 
+          mutation: 'replaceNote', 
+          payload: { 
+            id: id, 
+            value: currentNote.length < 2 ? currentNote + character : currentNote 
+          }
+        });
       }
     },
     backspaceSelections(){
-      for(let index in this.selections){
-        if(this.selections[index]){
-          let notes = this.notesOfBeat(this.id);
-          if(notes[index].length > 0){
-            this.backspaceNote({ beatId: this.id, index: index });
+      let notes = this.getNoteSelectionsOfBeat(this.id)
+      for(let id of notes){
+        let currentNote = this.note(id).note;
+        this.queueNote({ 
+          mutation: 'replaceNote', 
+          payload: { 
+            id: id, 
+            value: currentNote.length > 0 ? currentNote.slice(0, -1) : currentNote 
           }
-        }
+        });
       }
     }
   }
-}
+};
 </script>
 
 <style scoped>
 .tab-text {
-  font-family: 'Roboto Mono';
+  font-family: "Roboto Mono";
   font-size: 10pt;
   font-weight: bold;
   pointer-events: none;
   text-anchor: middle;
   fill: black;
 
-  -webkit-touch-callout: none; 
+  -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -127,7 +129,7 @@ export default {
   fill-opacity: 0;
 }
 
-.hovered{
+.hovered {
   fill: aqua;
   fill-opacity: 1;
 }
