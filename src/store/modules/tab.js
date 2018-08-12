@@ -89,7 +89,7 @@ const mutations = {
     Helpers.createSection(state, payload);
   },
   addSectionReference(state, payload){
-    state.tab.sections.splice(payload.index, 0, payload.sectionId);
+    state.tab.sections.splice(payload.index, 0, payload.id);
   },
   removeSectionReference(state, index){
     state.tab.sections.splice(index, 1);

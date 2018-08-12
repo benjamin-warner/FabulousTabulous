@@ -70,35 +70,6 @@ const Helpers = {
       commit('clearRedoStack', commit)
       state.changes = [];
     }
-  },
-  revertChange(commit, getters, reversion){
-    switch(reversion.type){
-      case 'removeBar':
-        commit('addBarReference', { parentId: reversion.parentId, index: reversion.index , barId: reversion.id });
-        reversion.type = 'addBar'
-        break;      
-      case 'addBar':
-        commit('removeBarReference', { parentId: reversion.parentId, index: reversion.index });
-        reversion.type = 'removeBar';
-        break;
-      case 'addSection':
-        commit('removeSectionReference', reversion.index);
-        reversion.type = 'removeSection';
-        break;
-      case 'removeSection':
-        commit('addSectionReference', { index: reversion.index, sectionId: reversion.id });
-        reversion.type = 'addSection';
-        break;
-      case 'noteEdited':
-        for(let change of reversion.notes){
-          let oldValue = getters.note(change.payload.id).note;
-          commit(change.mutation, change.payload);
-          change.payload.value = oldValue;
-        }
-        break;
-      default:
-        break;
-    }
   }
 }
 
@@ -133,20 +104,28 @@ const actions = {
     commit('pushToUndoStack', {
       undoCallback: 'addBarReference',
       redoCallback: 'removeBarReference', 
-      payload: { index: index, id: id } 
+      payload: { id: id, index: index } 
     });
     commit('clearRedoStack', commit);
   },
   queueAddSection({commit}, index){
     let id = Utils.makeGUID();
     commit('addSection', { index: index, id: id });
-    commit('pushToUndoStack', { type: 'addSection', id: id, index: index });  
+    commit('pushToUndoStack', {  
+      undoCallback: 'removeSectionReference',
+      redoCallback: 'addSectionReference', 
+      payload: { id: id, index: index }
+    });
     commit('clearRedoStack', commit);  
   },
-  queueRemoveSection({commit, state}, sectionId){
-    let index = state.Tab.tab.sections.indexOf(sectionId);
+  queueRemoveSection({commit, state}, id){
+    let index = state.Tab.tab.sections.indexOf(id);
     commit('removeSectionReference', index);
-    commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId });
+    commit('pushToUndoStack', {  
+      undoCallback: 'addSectionReference',
+      redoCallback: 'removeSectionReference', 
+      payload: { id: id, index: index}
+    });
     commit('clearRedoStack', commit);
   },
   undo({commit, state}){
