@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Vue from 'vue'
+import Utils from './utils.js'
 
 const state = {
 }
@@ -41,27 +42,19 @@ const getters = {
 }
 
 const Helpers = {
-  makeGUID() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    )
-  },
-  createSection(state, index){
-    let sectionId = this.makeGUID();
-    state.tab.sections.splice(index, 0, sectionId);
-    Vue.set(state.sections, sectionId, { id: sectionId, bars: [] });
-    
-    let barId = this.makeGUID();
-    this.createBar(state, barId, sectionId);
-    state.sections[sectionId].bars.push(barId);
+  createSection(state, payload){
+    Vue.set(state.sections, payload.id, { id: payload.id, bars: [] });
+    let barId = Utils.makeGUID();
+    this.createBar(state, barId, payload.id);
+    state.sections[payload.id].bars.push(barId);
   },
   createBar(state, barId, parentId){
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
     while(state.bars[barId].beats.length < 4){
-      let beatId = this.makeGUID();
+      let beatId = Utils.makeGUID();
       Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
       while(state.beats[beatId].notes.length < 6){
-        let noteId = this.makeGUID();
+        let noteId = Utils.makeGUID();
         Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
         state.beats[beatId].notes.push(noteId);
       }
@@ -91,8 +84,9 @@ const mutations = {
       Vue.set(state, key, tab[key]);
     });
   },
-  addSection(state, index){
-    Helpers.createSection(state, index);
+  addSection(state, payload){
+    state.tab.sections.splice(payload.index, 0, payload.id);
+    Helpers.createSection(state, payload);
   },
   addSectionReference(state, payload){
     state.tab.sections.splice(payload.index, 0, payload.sectionId);
@@ -104,17 +98,18 @@ const mutations = {
     Helpers.deleteSection(state, sectionId);
   },
   addBar(state, payload){
-    let barId = Helpers.makeGUID();
-    state.sections[payload.parentId].bars.splice(payload.index, 0, barId);
-    Helpers.createBar(state, barId, payload.parentId);
+    state.sections[payload.parentId].bars.splice(payload.index, 0, payload.id);
+    Helpers.createBar(state, payload.id, payload.parentId);
   },
   addBarReference(state, payload){
-    let barRefs = state.sections[payload.parentId].bars;
-    barRefs.splice(payload.index, 0, payload.barId);
+    let parentId = state.bars[payload.id].parentId
+    state.sections[parentId].bars.splice(payload.index, 0, payload.id);
   },
   removeBarReference(state, payload){
-    let barRefs = state.sections[payload.parentId].bars;
-    barRefs.splice(payload.index, 1,);
+    let parentId = state.bars[payload.id].parentId;
+    let barRefs = state.sections[parentId].bars;
+    let index = barRefs.indexOf(payload.id);
+    barRefs.splice(index, 1,);
   },
   deleteBar(state, barId){
     let parentId = state.bars[barId].parentId;

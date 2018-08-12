@@ -1,6 +1,7 @@
 /* eslint-disable */
 import Vue from 'vue'
 import Tab from './tab.js'
+import Utils from './utils.js'
 
 const state = {
   undoStack: [],
@@ -116,24 +117,29 @@ const actions = {
     }
   },
   queueAddBar({commit}, payload){
+    payload.id = Utils.makeGUID();
     commit('addBar', payload);
-    // Actions can return this id. Look into it later.
-    let id = state.Tab.sections[payload.parentId].bars[payload.index];
-    commit('pushToUndoStack', { type: 'addBar', parentId: payload.parentId, index: payload.index, id: id });
+    commit('pushToUndoStack', {
+      undoCallback: 'removeBarReference',
+      redoCallback: 'addBarReference', 
+      payload: { id: payload.id, index: payload.index } 
+    });
     commit('clearRedoStack', commit);
   },
-  queueRemoveBar({commit, state}, barId){
-    let parentId = state.Tab.bars[barId].parentId;
-    let index = state.Tab.sections[parentId].bars.indexOf(barId);
-    // Actions can return this id. Look into it later.
-    commit('removeBarReference', { parentId: parentId, index: index });
-    commit('pushToUndoStack', { type: 'removeBar', parentId: parent.id, index: index, id: barId });
+  queueRemoveBar({commit, state}, id){
+    let parentId = state.Tab.bars[id].parentId;
+    let index = state.Tab.sections[parentId].bars.indexOf(id);
+    commit('removeBarReference', { id: id, index: index });
+    commit('pushToUndoStack', {
+      undoCallback: 'addBarReference',
+      redoCallback: 'removeBarReference', 
+      payload: { index: index, id: id } 
+    });
     commit('clearRedoStack', commit);
   },
-  queueAddSection({commit, state}, index){
-    commit('addSection', index);
-    // Actions can return this id. Look into it later.
-    let id = state.Tab.tab.sections[index];
+  queueAddSection({commit}, index){
+    let id = Utils.makeGUID();
+    commit('addSection', { index: index, id: id });
     commit('pushToUndoStack', { type: 'addSection', id: id, index: index });  
     commit('clearRedoStack', commit);  
   },
@@ -143,14 +149,14 @@ const actions = {
     commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId });
     commit('clearRedoStack', commit);
   },
-  undo({commit, state, getters}){
+  undo({commit, state}){
     let changeToUndo = state.undoStack.pop();
-    Helpers.revertChange(commit, getters, changeToUndo);
+    commit(changeToUndo.undoCallback, changeToUndo.payload);
     commit('pushToRedoStack', changeToUndo);
   },
-  redo({commit, state, getters}){
+  redo({commit, state}){
     let changeToRedo = state.redoStack.pop();
-    Helpers.revertChange(commit, getters, changeToRedo);
+    commit(changeToRedo.redoCallback, changeToRedo.payload);
     commit('pushToUndoStack', changeToRedo);
   }
 }
