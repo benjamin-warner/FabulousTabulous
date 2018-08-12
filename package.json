@@ -8,12 +8,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "vue": "^2.5.16"
+    "vue": "^2.5.16",
+    "vuex": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.0-rc.9",
     "@vue/cli-plugin-eslint": "^3.0.0-rc.9",
     "@vue/cli-service": "^3.0.0-rc.9",
+    "gift": "^0.10.2",
+    "gulp": "^4.0.0",
+    "gulp-gh-pages": "^0.5.4",
     "vue-template-compiler": "^2.5.16"
   },
   "eslintConfig": {

@@ -20,27 +20,6 @@ export default {
     }
     document.onkeydown = function(evt) {
       evt = evt || window.event;
-      // Because Steve Jobs.
-      if (navigator.appVersion.indexOf("Mac")!=-1){
-        if (evt.metaKey && evt.keyCode === 90) {
-          evt.preventDefault();
-          EventBus.$emit('undo');
-        }
-        else if(evt.metaKey && evt.keyCode === 89){
-          evt.preventDefault();
-          EventBus.$emit('redo');
-        }
-      }
-      // Ctrl Z - undo
-      if (evt.ctrlKey && evt.keyCode === 90) {
-        evt.preventDefault();
-        EventBus.$emit('undo');
-      }
-      // Ctrl Y - redo
-      else if(evt.ctrlKey && evt.keyCode === 89){
-        evt.preventDefault();
-        EventBus.$emit('redo');
-      }
       // Shift Tab - nav left
       if(evt.shiftKey && evt.keyCode === 9){
         evt.preventDefault();
@@ -60,14 +39,6 @@ export default {
       else if(evt.keyCode === 13){
         evt.preventDefault();
         EventBus.$emit('nav-down');
-      }
-      if(evt.keyCode >= 48 && evt.keyCode <= 57){
-        evt.preventDefault();
-        EventBus.$emit('numerical-keypress', evt.keyCode - 48);
-      }
-      if(evt.keyCode === 8){
-        evt.preventDefault();
-        EventBus.$emit('delete-keypress');
       }
     };
   },
