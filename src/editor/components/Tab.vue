@@ -21,7 +21,7 @@
 /* eslint-disable */
 import SectionComponent from './Section.vue'
 import EventBus from '../../eventBus.js'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'Tab',
@@ -29,24 +29,17 @@ export default {
     SectionComponent
   },
   computed: {
-    ...mapGetters('tab', [
+    ...mapState('editor', ['tuning']),
+    ...mapGetters('editor', [
       'sections',
       'sectionCount'
     ])
   },
-  data: function(){
-    return {
-    }
-  },
-  mounted(){
-    EventBus.$on('undo', this.undo);
-    EventBus.$on('redo', this.redo);
-  },
   methods: {
-    ...mapActions('tab',[
+    ...mapActions('editor',[
       'queueAddSection',
-      'queueRemoveSection'
-    ]),
+      'queueRemoveSection',
+    ])
   }
 }
 </script>

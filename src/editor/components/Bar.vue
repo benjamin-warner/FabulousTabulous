@@ -24,8 +24,11 @@ export default {
     id: String,
   },
   computed: {
-    ...mapState('tab', ['tuning']),
-    ...mapGetters('tab', ['beatsOfBar', 'isLastBar']),
+    ...mapGetters('editor', [
+      'beatsOfBar',
+      'isLastBar',
+      'tuning'
+      ]),
   },
   data: function() {
     return {

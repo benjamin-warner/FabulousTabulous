@@ -24,7 +24,7 @@ export default {
     xIndex: Number
   },
   computed: {
-    ...mapGetters('tab', [
+    ...mapGetters('editor', [
       'notesOfBeat',
       'note',
       'isNoteSelected',
@@ -38,12 +38,12 @@ export default {
     document.removeEventListener('keydown', this.onKeyPress);
   },
   methods: {
-    ...mapMutations('tab', [
+    ...mapMutations('editor', [
       'selectNote', 
       'deselectNote',
       'clearNoteSelections'
     ]),
-    ...mapActions('tab', ['queueNote']),
+    ...mapActions('editor', ['queueNote']),
     onKeyPress(evt) {
       if(this.getNoteSelectionsOfBeat(this.id).length !== 0){
         // 0 through 9

@@ -1,5 +1,6 @@
 /* eslint-disable */
 import Vue from 'vue'
+import Tab from './tab.js'
 
 const state = {
   undoStack: [],
@@ -101,6 +102,9 @@ const Helpers = {
 }
 
 const actions = {
+  loadTab({commit}, tab){
+    commit('populateTab', tab)
+  },
   queueNote({commit, state, getters}, entity){
     if(entity.payload.value !== getters.note(entity.payload.id).note){
       state.changes.push(entity);
@@ -111,29 +115,30 @@ const actions = {
       state.selectionPointer = 0;
     }
   },
-  queueAddBar({commit, getters}, payload){
+  queueAddBar({commit}, payload){
     commit('addBar', payload);
     // Actions can return this id. Look into it later.
-    let id = getters.barIdViaSectionIndex({ parentId: payload.parentId, index: payload.index });
+    let id = state.Tab.sections[payload.parentId].bars[payload.index];
     commit('pushToUndoStack', { type: 'addBar', parentId: payload.parentId, index: payload.index, id: id });
     commit('clearRedoStack', commit);
   },
-  queueRemoveBar({commit, getters}, barId){
-    let parent = getters.barParent(barId);
-    let index = parent.bars.indexOf(barId);
-    commit('removeBarReference', { parentId: parent.id, index: index });
+  queueRemoveBar({commit, state}, barId){
+    let parentId = state.Tab.bars[barId].parentId;
+    let index = state.Tab.sections[parentId].bars.indexOf(barId);
+    // Actions can return this id. Look into it later.
+    commit('removeBarReference', { parentId: parentId, index: index });
     commit('pushToUndoStack', { type: 'removeBar', parentId: parent.id, index: index, id: barId });
     commit('clearRedoStack', commit);
   },
-  queueAddSection({commit, getters}, index){
-    // Actions can return this id. Look into it later.
+  queueAddSection({commit, state}, index){
     commit('addSection', index);
-    let id = getters.sectionIdViaTabIndex(index);
+    // Actions can return this id. Look into it later.
+    let id = state.Tab.tab.sections[index];
     commit('pushToUndoStack', { type: 'addSection', id: id, index: index });  
     commit('clearRedoStack', commit);  
   },
-  queueRemoveSection({commit, getters}, sectionId){
-    let index = getters.sectionIndex(sectionId);
+  queueRemoveSection({commit, state}, sectionId){
+    let index = state.Tab.tab.sections.indexOf(sectionId);
     commit('removeSectionReference', index);
     commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId });
     commit('clearRedoStack', commit);
@@ -151,8 +156,12 @@ const actions = {
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,
-  actions
+  actions,
+  modules: {
+    Tab
+  }
 }

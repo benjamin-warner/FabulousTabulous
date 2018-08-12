@@ -28,7 +28,7 @@ export default {
     BarComponent
   },
   computed: {
-    ...mapGetters('tab', [
+    ...mapGetters('editor', [
      'barsOfSection',
      'barCountOfSection',
      'sectionCount',
@@ -36,7 +36,7 @@ export default {
     ]),
   },
   methods: {
-    ...mapActions('tab', [
+    ...mapActions('editor', [
       'queueAddBar',
       'queueRemoveBar',
       'queueRemoveSection'
