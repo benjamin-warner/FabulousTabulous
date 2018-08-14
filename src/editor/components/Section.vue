@@ -1,17 +1,13 @@
 <template>
-  <div id="section" class="-block">
-    <div class="section-block" v-for="(bar, barKey) in barsOfSection(id)" :key="barKey">
-      <div id="bar-control">
-        <Button v-on:click="queueAddBar({parentId: id, index: barKey})">+</Button>
-        <Button v-if="sectionCount > 1 || barCountOfSection(id) > 1" v-on:click="handleDeletion(bar.id)">X</Button>
-        <Button v-on:click="queueAddBar({parentId: id, index: barKey+1})">+</Button>
-      </div>
-      <BarComponent :id="bar.id" class="section-block" />
-      <svg v-if="isLastBar(bar.id)" width="4" height="145" class="section-block" >
-        <rect x="0" y="10" width="4" height="126" style="fill: black"/>
-      </svg>
-    </div>
-  </div>
+  <g id="section" class="-block">
+    <g v-for="(string, stringIndex) in tuning" :key="string">
+      <rect x="0" :y="index*145+stringIndex*25+10" :width="barCountOfSection(id)*320" height="1" style="fill: black"/>
+    </g>
+    <g class="section-block" v-for="(bar, barKey) in barsOfSection(id)" :key="barKey">
+      <BarComponent :id="bar.id" class="section-block" :index="barKey"/>
+      <rect :x="barKey*320" :y="index*145+10" height="125" width="1"/>
+    </g>
+  </g>
 </template>
 
 <script>
@@ -21,7 +17,8 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
   name: 'Section',
   props: {
-    id: String
+    id: String,
+    index: Number
   },
   components: {
     BarComponent
@@ -31,7 +28,9 @@ export default {
      'barsOfSection',
      'barCountOfSection',
      'sectionCount',
-     'isLastBar'
+     'sectionIndex',
+     'isLastBar',
+     'tuning'
     ]),
   },
   methods: {

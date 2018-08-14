@@ -10,6 +10,9 @@ const getters = {
   sections: (state) => {
     return state.tab.sections.map(sectionId => state.sections[sectionId]);
   },
+  sectionIndex: (state) => (id) => {
+    return state.tab.sections.indexOf(id);
+  },
   sectionCount: (state) => {
     return state.tab.sections.length;
   },

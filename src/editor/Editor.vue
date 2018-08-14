@@ -21,12 +21,12 @@ export default {
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
-        sections: ['0']
+        sections: ['0','0']
       },
       sections: {
         '0': {
           id: '0',
-          bars: ['0']
+          bars: ['0', '0']
         }
       },
       bars: {
@@ -130,15 +130,7 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1 {
-  font-size: 36pt;
+#editor{
+  height: 100%
 }
 </style>

@@ -1,12 +1,7 @@
 <template>
-  <svg width="320" height="145">
-    <rect x="0" y="10" width="1" height="125" style="fill: black"/>
-    <g v-for="(string, stringIndex) in tuning" :key="string">
-      <rect x="0" :y="stringIndex*25+10" width="320" height="1" style="fill: black"/>
-    </g>
+  <g>
     <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :xIndex="beatIndex"/>
-    <rect x="319" y="10" width="1" height="125" style="fill: black"/>
-  </svg>
+  </g>
 </template>
 
 <script>
@@ -19,13 +14,12 @@ export default {
     BeatComponent
   },
   props: {
-    id: String,
+    id: String
   },
   computed: {
     ...mapGetters('editor', [
       'beatsOfBar',
-      'isLastBar',
-      'tuning'
+      'isLastBar'
       ]),
   },
   data: function() {

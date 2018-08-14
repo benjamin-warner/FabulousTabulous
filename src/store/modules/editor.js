@@ -91,8 +91,8 @@ const actions = {
     commit('addBar', payload);
     commit('pushToUndoStack', {
       undoCallback: 'removeBarReference',
-      redoCallback: 'addBarReference', 
-      payload: { id: payload.id, index: payload.index } 
+      redoCallback: 'addBarReference',
+      payload: { id: payload.id, index: payload.index }
     });
     commit('clearRedoStack', commit);
   },
@@ -102,17 +102,17 @@ const actions = {
     commit('removeBarReference', { id: id, index: index });
     commit('pushToUndoStack', {
       undoCallback: 'addBarReference',
-      redoCallback: 'removeBarReference', 
-      payload: { id: id, index: index } 
+      redoCallback: 'removeBarReference',
+      payload: { id: id, index: index }
     });
     commit('clearRedoStack', commit);
   },
   queueAddSection({commit}, index){
     let id = Utils.makeGUID();
     commit('addSection', { index: index, id: id });
-    commit('pushToUndoStack', {  
+    commit('pushToUndoStack', {
       undoCallback: 'removeSectionReference',
-      redoCallback: 'addSectionReference', 
+      redoCallback: 'addSectionReference',
       payload: { id: id, index: index }
     });
     commit('clearRedoStack', commit);  
@@ -120,9 +120,9 @@ const actions = {
   queueRemoveSection({commit, state}, id){
     let index = state.Tab.tab.sections.indexOf(id);
     commit('removeSectionReference', index);
-    commit('pushToUndoStack', {  
+    commit('pushToUndoStack', {
       undoCallback: 'addSectionReference',
-      redoCallback: 'removeSectionReference', 
+      redoCallback: 'removeSectionReference',
       payload: { id: id, index: index}
     });
     commit('clearRedoStack', commit);

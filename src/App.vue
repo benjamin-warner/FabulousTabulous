@@ -46,15 +46,15 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 60px;
+html{
+  height: 100%;
 }
-
-h1 {
-  font-size: 36pt;
+body{
+  min-height: 100%;
+  margin: 0;
+}
+#app{
+  height: 100vh;
+  width: 100%;
 }
 </style>

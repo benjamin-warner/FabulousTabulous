@@ -1,20 +1,10 @@
 <template>
-  <div class="tab">
-    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-      <div class="tab-block">
-        <div>
-          <button v-on:click="queueAddSection(sectionIndex)">+</button>
-        </div>
-        <div>
-          <button v-if="sectionCount > 1" v-on:click="queueRemoveSection(section.id)">x</button>
-        </div>
-        <div>
-          <button v-on:click="queueAddSection(sectionIndex+1)">+</button>
-        </div>
-      </div>
-      <SectionComponent class="tab-block" :id="section.id"/>
-    </div>
-  </div>
+  <svg id="tab">
+    <rect width="100%" height="100%" fill="lavender"/>
+    <g v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+      <SectionComponent class="tab-block" :id="section.id" :index="sectionIndex"/>
+    </g>
+  </svg>
 </template>
 
 <script>
@@ -44,7 +34,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+#tab{
+  width: 100%;
+  height: 100%;
+}
 .tab-block{
   display: inline-block;
 }
