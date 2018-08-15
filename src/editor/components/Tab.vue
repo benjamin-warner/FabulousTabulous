@@ -1,5 +1,5 @@
 <template>
-  <svg id="tab" :height="sectionCount*145" xmlns="http://www.w3.org/2000/svg">
+  <svg id="tab" width="100%" :height="sectionCount*145" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
     <SectionComponent v-for="(section, sectionIndex) in sections" :key="sectionIndex" :index="sectionIndex" :id="section.id"/>
   </svg>
 </template>

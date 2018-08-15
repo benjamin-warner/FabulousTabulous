@@ -13,6 +13,9 @@ const getters = {
   sectionCount: (state) => {
     return state.tab.sections.length;
   },
+  sectionLength: (state) => (id) => {
+    return state.sections[id].bars.length;
+  },
   barsOfSection: (state) => (id) => {
     return state.sections[id].bars.map(barId => state.bars[barId]);
   },

@@ -1,6 +1,8 @@
 <template>
   <svg id="bar" width="360" height="145" :x="xPos" y="0">
+    <line x1="0" y1="10" x2="0" y2="135" style="stroke: black; stroke-width: 2;"/>
     <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :beatIndex="beatIndex"/>
+    <line x1="360" y1="10" x2="360" y2="135" style="stroke: black; stroke-width: 2;"/>
   </svg>
 </template>
 
@@ -23,7 +25,7 @@ export default {
       'beatsOfBar',
     ]),
     xPos(){
-      return this.barIndex*320;
+      return this.barIndex*360;
     }
   },
   data: function() {

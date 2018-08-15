@@ -1,7 +1,7 @@
 <template>
-  <svg id="section" width="360" height="145" x="0" :y="yPos">
+  <svg id="section" :width="sectionLength(id)*360" height="145" x="0" :y="yPos">
     <g v-for="(string, stringIndex) in tuning" :key="string">
-      <rect x="0" :y="stringIndex*25+10" width="360" height="1" style="fill: black"/>
+      <rect x="0" :y="stringIndex*25+10" :width="sectionLength(id)*360" height="1" style="fill: black"/>
     </g>
     <BarComponent v-for="(bar, barIndex) in barsOfSection(id)" :key="barIndex" :id="bar.id" :barIndex="barIndex" :sectionIndex="index"/>
   </svg>
@@ -23,6 +23,7 @@ export default {
   computed: {
     ...mapGetters('editor', [
      'barsOfSection',
+     'sectionLength',
      'tuning'
     ]),
     yPos(){

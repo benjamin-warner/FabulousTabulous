@@ -26,7 +26,7 @@ export default {
       sections: {
         '0': {
           id: '0',
-          bars: ['0']
+          bars: ['0','1']
         },
         '1' : {
           id: '1',
