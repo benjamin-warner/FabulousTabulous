@@ -1,9 +1,7 @@
 <template>
-  <g id="beat">
-    <g v-for="(note, index) in notesOfBeat(id)" :key="index">
-      <NoteComponent :id="note.id" :xPosition="xIndex" :yPosition="index"/>
-    </g>
-  </g>
+  <svg id="beat" width="20" height="145" :x="beatIndex*60+60-10" y="0">>
+    <NoteComponent v-for="(note, index) in notesOfBeat(id)" :key="index" :id="note.id" :index="index"/>
+  </svg>
 </template>
 
 <script>
@@ -17,7 +15,7 @@ export default {
   },
   props: {
     id: String,
-    xIndex: Number
+    beatIndex: Number
   },
   computed: {
     ...mapGetters('editor', [

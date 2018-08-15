@@ -21,18 +21,25 @@ export default {
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
-        sections: ['0','0']
+        sections: ['0']
       },
       sections: {
         '0': {
           id: '0',
-          bars: ['0', '0']
+          bars: ['0']
+        },
+        '1' : {
+          id: '1',
+          bars: ['1']
         }
       },
       bars: {
         '0': {
           id: '0',
-          parentId: '0',
+          beats: ['0', '1', '2', '3']
+        },
+        '1':{
+          id: '1',
           beats: ['0', '1', '2', '3']
         }
       },
@@ -59,7 +66,7 @@ export default {
         }
       },
       notes: {
-        '0': { parentId: '0', id: '0', note: '' },
+        '0': { parentId: '0', id: '0', note: '0' },
         '1': { id: '1', parentId: '0', note: '' },
         '2': { id: '2', parentId: '0', note: '' },
         '3': { id: '3', parentId: '0', note: '' },
@@ -76,7 +83,7 @@ export default {
         '12': { id: '12', parentId: '2', note: '' },
         '13': { id: '13', parentId: '2', note: '' },
         '14': { id: '14', parentId: '2', note: '' },
-        '15': { id: '15', parentId: '2', note: '' },
+        '15': { id: '15', parentId: '2', note: '35' },
         '16': { id: '16', parentId: '2', note: '' },
         '17': { id: '17', parentId: '2', note: '' },
 

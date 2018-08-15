@@ -10,23 +10,11 @@ const getters = {
   sections: (state) => {
     return state.tab.sections.map(sectionId => state.sections[sectionId]);
   },
-  sectionIndex: (state) => (id) => {
-    return state.tab.sections.indexOf(id);
-  },
   sectionCount: (state) => {
     return state.tab.sections.length;
   },
-  barsOfSection: (state) => (sectionId) => {
-    return state.sections[sectionId].bars.map(barId => state.bars[barId]);
-  },
-  barCountOfSection: (state) => (sectionId) => {
-    let barReferences = state.sections[sectionId].bars;
-    return Object.keys(barReferences).length;
-  },
-  isLastBar: (state) => (barId) => {
-    let parentId = state.bars[barId].parentId;
-    let barReferences = state.sections[parentId].bars;
-    return barReferences[barReferences.length-1] === barId;
+  barsOfSection: (state) => (id) => {
+    return state.sections[id].bars.map(barId => state.bars[barId]);
   },
   beatsOfBar: (state) => (barId) => {
     return state.bars[barId].beats.map(beatId => state.beats[beatId]);
@@ -43,12 +31,6 @@ const getters = {
 }
 
 const Helpers = {
-  createSection(state, payload){
-    Vue.set(state.sections, payload.id, { id: payload.id, bars: [] });
-    let barId = Utils.makeGUID();
-    this.createBar(state, barId, payload.id);
-    state.sections[payload.id].bars.push(barId);
-  },
   createBar(state, barId, parentId){
     Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
     while(state.bars[barId].beats.length < 4){
@@ -61,12 +43,6 @@ const Helpers = {
       }
       state.bars[barId].beats.push(beatId);
     }
-  },
-  deleteSection(state, sectionId){
-    for(let barId of state.sections[sectionId].bars){
-      this.deleteBar(state, barId)
-    }
-    Vue.delete(state.sections, sectionId)
   },
   deleteBar(state, barId){
     for(let beatId of state.bars[barId].beats){
@@ -84,19 +60,6 @@ const mutations = {
     Object.keys(tab).forEach(key => {
       Vue.set(state, key, tab[key]);
     });
-  },
-  addSection(state, payload){
-    state.tab.sections.splice(payload.index, 0, payload.id);
-    Helpers.createSection(state, payload);
-  },
-  addSectionReference(state, payload){
-    state.tab.sections.splice(payload.index, 0, payload.id);
-  },
-  removeSectionReference(state, index){
-    state.tab.sections.splice(index, 1);
-  },
-  deleteSection(state, sectionId){
-    Helpers.deleteSection(state, sectionId);
   },
   addBar(state, payload){
     state.sections[payload.parentId].bars.splice(payload.index, 0, payload.id);

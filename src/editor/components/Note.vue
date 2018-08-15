@@ -1,13 +1,11 @@
 <template>
-  <g id="note" @click.exact="selectSingle(id)" 
+  <svg id="note" width="20" height="20" x="0" :y="index*25" @click.exact="selectSingle(id)"
     @click.ctrl.exact="selectMulti(id)" @click.meta.exact="selectMulti(id)" 
       @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
-    <rect :x="rectPosition.x" :y="rectPosition.y" width="18" height="18" rx="5" ry="5" fill="white" 
+    <rect x="0" y="0" width="20" height="20" rx="5" ry="5" fill="white" 
     v-bind:class="{ selected: isNoteSelected(id) }"/>
-    <text :x="textPosition.x" :y="textPosition.y" class="tab-text" alignment-baseline="middle">
-      {{ note(id).note }}
-    </text>
-  </g>
+    <text x="10" y="11" class="tab-text" alignment-baseline="middle">{{ note(id).note }}</text>
+  </svg>
 </template>
 
 <script>
@@ -17,8 +15,7 @@ export default {
   name: 'note',
   props: {
     id: String,
-    xPosition: Number,
-    yPosition: Number
+    index: Number
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
@@ -30,13 +27,7 @@ export default {
     ...mapGetters('editor', [
       'note',
       'isNoteSelected'
-    ]),
-    rectPosition(){
-      return { x: 64*this.xPosition+64-9, y: 25*this.yPosition+10 -9 }
-    },
-    textPosition(){
-      return { x: 64*this.xPosition+64, y: 25*this.yPosition+10 }
-    }
+    ])
   },
   methods: {
     ...mapMutations('editor', [

@@ -1,7 +1,7 @@
 <template>
-  <g>
-    <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :xIndex="beatIndex"/>
-  </g>
+  <svg id="bar" width="360" height="145" :x="xPos" y="0">
+    <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :beatIndex="beatIndex"/>
+  </svg>
 </template>
 
 <script>
@@ -14,13 +14,17 @@ export default {
     BeatComponent
   },
   props: {
-    id: String
+    id: String,
+    barIndex: Number,
+    sectionIndex: Number
   },
   computed: {
     ...mapGetters('editor', [
       'beatsOfBar',
-      'isLastBar'
-      ]),
+    ]),
+    xPos(){
+      return this.barIndex*320;
+    }
   },
   data: function() {
     return {

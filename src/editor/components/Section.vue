@@ -1,13 +1,10 @@
 <template>
-  <g id="section" class="-block">
+  <svg id="section" width="360" height="145" x="0" :y="yPos">
     <g v-for="(string, stringIndex) in tuning" :key="string">
-      <rect x="0" :y="index*145+stringIndex*25+10" :width="barCountOfSection(id)*320" height="1" style="fill: black"/>
+      <rect x="0" :y="stringIndex*25+10" width="360" height="1" style="fill: black"/>
     </g>
-    <g class="section-block" v-for="(bar, barKey) in barsOfSection(id)" :key="barKey">
-      <BarComponent :id="bar.id" class="section-block" :index="barKey"/>
-      <rect :x="barKey*320" :y="index*145+10" height="125" width="1"/>
-    </g>
-  </g>
+    <BarComponent v-for="(bar, barIndex) in barsOfSection(id)" :key="barIndex" :id="bar.id" :barIndex="barIndex" :sectionIndex="index"/>
+  </svg>
 </template>
 
 <script>
@@ -26,12 +23,11 @@ export default {
   computed: {
     ...mapGetters('editor', [
      'barsOfSection',
-     'barCountOfSection',
-     'sectionCount',
-     'sectionIndex',
-     'isLastBar',
      'tuning'
     ]),
+    yPos(){
+      return this.index*145;
+    }
   },
   methods: {
     ...mapActions('editor', [
@@ -53,8 +49,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.section-block {
-  display: inline-block;
-  vertical-align: middle;
-}
 </style>
