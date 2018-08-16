@@ -1,9 +1,8 @@
 <template>
-  <svg id="tab" width="100%" :height="tabHeight" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+  <svg id="tab" width="1440" :height="tabHeight" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
     <g v-for="(barId, barIndex) in barList" :key="barIndex">
-      <g v-if="barIndex%2 === 0" v-for="(string, stringIndex) in tuning" :key="string">
-        <rect v-if="barIndex === barList.length - 1" x="0" :y="staffPos(barIndex)+stringIndex*25+10" width="360" height="1" style="fill: black"/>
-        <rect v-else x="0" :y="staffPos(barIndex)+stringIndex*25+10" width="720" height="1" style="fill: black"/>
+      <g v-if="barIndex%4 === 0" v-for="(string, stringIndex) in tuning" :key="string">
+        <rect x="0" :y="tabLinePos(barIndex)+stringIndex*25+10" :width="tabLineWidth(barIndex)" height="1" style="fill: black"/>
       </g>
       <BarComponent :id="barId" :index="barIndex"/>
     </g>
@@ -25,15 +24,18 @@ export default {
       'tuning'
     ]),
     tabHeight(){
-      return Math.ceil(this.barList.length/2)*145;
+      return Math.ceil(this.barList.length/4)*145;
     }
   },
   methods: {
-    staffPos(index){
-      return Math.floor(index/2)*145;
+    tabLinePos(index){
+      return Math.floor(index/4)*145;
     },
-    sectionWidth(index){
-
+    tabLineWidth(index){
+      if(index >= this.barList.length - 4){
+        return (this.barList.length - index) *360;
+      }
+      else return 4*360
     }
   }
 }

@@ -21,7 +21,7 @@ export default {
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
-        bars: ['0','0','0']
+        bars: ['0']
       },
       bars: {
         '0': {

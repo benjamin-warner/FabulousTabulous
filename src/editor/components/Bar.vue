@@ -24,10 +24,10 @@ export default {
       'beatsOfBar',
     ]),
     xPos(){
-      return this.index%2*360;
+      return this.index%4*360;
     },
     yPos(){
-      return Math.floor(this.index/2)*145;
+      return Math.floor(this.index/4)*145;
     }
   },
   data: function() {
