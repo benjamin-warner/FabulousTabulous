@@ -7,20 +7,14 @@ const getters = {
   tuning: (state) => {
     return state.tuning;
   },
-  sections: (state) => {
-    return state.tab.sections.map(sectionId => state.sections[sectionId]);
+  barList: (state) => {
+    return state.tab.bars;
   },
-  sectionCount: (state) => {
-    return state.tab.sections.length;
+  bar: (state) => (id) => {
+    return state.bars[id];
   },
-  sectionLength: (state) => (id) => {
-    return state.sections[id].bars.length;
-  },
-  barsOfSection: (state) => (id) => {
-    return state.sections[id].bars.map(barId => state.bars[barId]);
-  },
-  beatsOfBar: (state) => (barId) => {
-    return state.bars[barId].beats.map(beatId => state.beats[beatId]);
+  beatsOfBar: (state) => (id) => {
+    return state.bars[id].beats.map(beatId => state.beats[beatId]);
   },
   beat: (state) => (beatId) => {
     return state.beats[beatId];
@@ -34,17 +28,17 @@ const getters = {
 }
 
 const Helpers = {
-  createBar(state, barId, parentId){
-    Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
-    while(state.bars[barId].beats.length < 4){
+  createBar(state, id){
+    Vue.set(state.bars, id, { id: id, beats: [] });
+    while(state.bars[id].beats.length < 4){
       let beatId = Utils.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
+      Vue.set(state.beats, beatId, { id: beatId, parentId: id, notes: [] });
       while(state.beats[beatId].notes.length < 6){
         let noteId = Utils.makeGUID();
         Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
         state.beats[beatId].notes.push(noteId);
       }
-      state.bars[barId].beats.push(beatId);
+      state.bars[id].beats.push(beatId);
     }
   },
   deleteBar(state, barId){

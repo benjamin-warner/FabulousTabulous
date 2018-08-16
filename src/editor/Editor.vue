@@ -21,25 +21,11 @@ export default {
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
-        sections: ['0']
-      },
-      sections: {
-        '0': {
-          id: '0',
-          bars: ['0','1']
-        },
-        '1' : {
-          id: '1',
-          bars: ['1']
-        }
+        bars: ['0','0','0']
       },
       bars: {
         '0': {
           id: '0',
-          beats: ['0', '1', '2', '3']
-        },
-        '1':{
-          id: '1',
           beats: ['0', '1', '2', '3']
         }
       },

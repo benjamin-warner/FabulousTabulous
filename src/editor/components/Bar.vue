@@ -1,5 +1,5 @@
 <template>
-  <svg id="bar" width="360" height="145" :x="xPos" y="0">
+  <svg id="bar" width="360" height="145" :x="xPos" :y="yPos">
     <line x1="0" y1="10" x2="0" y2="135" style="stroke: black; stroke-width: 2;"/>
     <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :beatIndex="beatIndex"/>
     <line x1="360" y1="10" x2="360" y2="135" style="stroke: black; stroke-width: 2;"/>
@@ -17,15 +17,17 @@ export default {
   },
   props: {
     id: String,
-    barIndex: Number,
-    sectionIndex: Number
+    index: Number,
   },
   computed: {
     ...mapGetters('editor', [
       'beatsOfBar',
     ]),
     xPos(){
-      return this.barIndex*360;
+      return this.index%2*360;
+    },
+    yPos(){
+      return Math.floor(this.index/2)*145;
     }
   },
   data: function() {
