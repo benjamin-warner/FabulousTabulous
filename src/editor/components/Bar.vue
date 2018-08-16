@@ -1,14 +1,16 @@
 <template>
-  <svg id="bar" width="360" height="145" :x="xPos" :y="yPos">
-    <line x1="0" y1="10" x2="0" y2="135" style="stroke: black; stroke-width: 2;"/>
+  <svg id="bar" width="360" height="155" :x="xPos" :y="yPos" @mouseover="hovered = true" @mouseout="hovered = false">
+    <rect x="0" y="0" width="360" height="155" style="opacity: 0"/>
+    <rect x="0" y="0" width="360" height="10" :class="hovered ? 'show' : 'hide'" @click="queueRemoveBar(id)"/>
+    <line x1="0" y1="20" x2="0" y2="145" style="stroke: black; stroke-width: 2;"/>
     <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :beatIndex="beatIndex"/>
-    <line x1="360" y1="10" x2="360" y2="135" style="stroke: black; stroke-width: 2;"/>
+    <line x1="360" y1="20" x2="360" y2="145" style="stroke: black; stroke-width: 2;"/>
   </svg>
 </template>
 
 <script>
 import BeatComponent from './Beat.vue'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'Bar',
@@ -34,6 +36,9 @@ export default {
     return {
       hovered: false
     };
+  },
+  methods: {
+    ...mapActions('editor', ['queueRemoveBar'])
   }
 }
 </script>
@@ -42,6 +47,15 @@ export default {
 #bar{
   padding-top: 4px;
   white-space:nowrap;
+}
+
+.show{
+  fill: black;
+  opacity: 1;
+}
+
+.hide{
+  opacity: 0;
 }
 
 .hover{

@@ -1,9 +1,9 @@
 <template>
   <svg id="note" width="20" height="20" x="0" :y="index*25" @click.exact="selectSingle(id)"
     @click.ctrl.exact="selectMulti(id)" @click.meta.exact="selectMulti(id)" 
-      @mouseover="$event.target.classList.add('hovered')" @mouseout="$event.target.classList.remove('hovered')">
-    <rect x="0" y="0" width="20" height="20" rx="5" ry="5" fill="white" 
-    v-bind:class="{ selected: isNoteSelected(id) }"/>
+      @mouseover="hovered = true" @mouseout="hovered = false">
+    <rect x="0" y="0" width="20" height="20" rx="5" ry="5" :fill="hovered ? 'aqua' : 'white'" :opacity="opacity" 
+    :class="{ selected: isNoteSelected(id) }"/>
     <text x="10" y="11" class="tab-text" alignment-baseline="middle">{{ note(id).note }}</text>
   </svg>
 </template>
@@ -15,7 +15,8 @@ export default {
   name: 'note',
   props: {
     id: String,
-    index: Number
+    index: Number,
+    parentHover: Boolean
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
@@ -27,7 +28,21 @@ export default {
     ...mapGetters('editor', [
       'note',
       'isNoteSelected'
-    ])
+    ]),
+    opacity(){
+      if(this.isNoteSelected(this.id)){
+        return 1;
+      }
+      if(this.note(this.id).note.length === 0 && !this.hovered){
+        return 0;
+      }
+      return 1;
+    }
+  },
+  data(){
+    return {
+      hovered: false
+    }
   },
   methods: {
     ...mapMutations('editor', [
@@ -96,10 +111,7 @@ export default {
 
 .selected {
   fill: aqua;
-}
-
-.empty {
-  fill-opacity: 0;
+  fill-opacity: 1;
 }
 
 .hovered {

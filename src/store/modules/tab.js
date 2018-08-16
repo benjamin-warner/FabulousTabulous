@@ -63,21 +63,16 @@ const mutations = {
     Helpers.createBar(state, payload.id, payload.parentId);
   },
   addBarReference(state, payload){
-    let parentId = state.bars[payload.id].parentId
-    state.sections[parentId].bars.splice(payload.index, 0, payload.id);
+    state.tab.bars.splice(payload.index, 0, payload.id);
   },
   removeBarReference(state, payload){
-    let parentId = state.bars[payload.id].parentId;
-    let barRefs = state.sections[parentId].bars;
-    let index = barRefs.indexOf(payload.id);
-    barRefs.splice(index, 1,);
+    let index = state.tab.bars.indexOf(payload.id);
+    state.tab.bars.splice(index, 1,);
   },
-  deleteBar(state, barId){
-    let parentId = state.bars[barId].parentId;
-    let parent = state.sections[parentId];
-    let barIndex = parent.bars.indexOf(barId);
-    Vue.delete(parent.bars, barIndex);
-    Helpers.deleteBar(state, barId);
+  deleteBar(state, id){
+    let index = state.tab.bars.indexOf(id);
+    Vue.delete(state.tab.bars, index);
+    Helpers.deleteBar(state, id);
   },
   replaceNote(state, payload){
     Vue.set(state.notes[payload.id], 'note', payload.value);

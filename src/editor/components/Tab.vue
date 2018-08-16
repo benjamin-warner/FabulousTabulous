@@ -2,7 +2,7 @@
   <svg id="tab" width="1440" :height="tabHeight" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
     <g v-for="(barId, barIndex) in barList" :key="barIndex">
       <g v-if="barIndex%4 === 0" v-for="(string, stringIndex) in tuning" :key="string">
-        <rect x="0" :y="tabLinePos(barIndex)+stringIndex*25+10" :width="tabLineWidth(barIndex)" height="1" style="fill: black"/>
+        <rect x="0" :y="tabLinePos(barIndex)+stringIndex*25+10+10" :width="tabLineWidth(barIndex)" height="1" style="fill: black"/>
       </g>
       <BarComponent :id="barId" :index="barIndex"/>
     </g>
@@ -24,12 +24,12 @@ export default {
       'tuning'
     ]),
     tabHeight(){
-      return Math.ceil(this.barList.length/4)*145;
+      return Math.ceil(this.barList.length/4)*155;
     }
   },
   methods: {
     tabLinePos(index){
-      return Math.floor(index/4)*145;
+      return Math.floor(index/4)*155;
     },
     tabLineWidth(index){
       if(index >= this.barList.length - 4){
