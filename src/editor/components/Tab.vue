@@ -43,6 +43,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#tab{
+  margin: 10px;
+}
 .tab-block{
   display: inline-block;
 }

@@ -8,6 +8,7 @@ const state = {
   changes: [],
   
   noteSelections: [],
+  notesDirty: false,
   selectionPointer: 0
 }
 
@@ -37,6 +38,7 @@ const mutations = {
   },
   clearNoteSelections(state){
     state.noteSelections = [];
+    state.notesDirty = false;
   },
   pushToUndoStack(state, payload){
     state.undoStack.push(payload);
@@ -46,29 +48,11 @@ const mutations = {
   },
   clearRedoStack(state, commit){
     for(let change of state.redoStack){
-      if(change.type === 'removeBar'){
+      if(change.redoCallback === 'addBarReference'){
         commit('deleteBar', change.id)
-      }
-      if(change.type === 'removeSection'){
-        commit('deleteSection', change.id)
       }
     }
     state.redoStack = [];
-  },
-}
-
-const Helpers = {
-  commitNotes(commit, state, getters){
-    for(let change of state.changes){
-      let oldValue = getters.note(change.payload.id).note;
-      commit(change.mutation, change.payload);
-      change.payload.value = oldValue;
-    }
-    if(state.changes.length !== 0){
-      commit('pushToUndoStack', { type: 'noteEdited', notes: state.changes });
-      commit('clearRedoStack', commit)
-      state.changes = [];
-    }
   }
 }
 
@@ -76,14 +60,17 @@ const actions = {
   loadTab({commit}, tab){
     commit('populateTab', tab)
   },
-  queueNote({commit, state, getters}, entity){
-    if(entity.payload.value !== getters.note(entity.payload.id).note){
-      state.changes.push(entity);
-    }
-    state.selectionPointer++;
-    if(state.selectionPointer === state.noteSelections.length){
-      Helpers.commitNotes(commit, state, getters);
-      state.selectionPointer = 0;
+  queueNote({commit, state}, payload){
+    state.changes.push({ id: payload.id, newValue: payload.value });
+    if(state.changes.length === state.noteSelections.length){
+      commit('swapNoteBatch', state.changes);
+      commit('pushToUndoStack', { 
+        undoCallback: 'swapNoteBatch',
+        redoCallback: 'swapNoteBatch',
+        payload: state.changes
+      });
+      state.changes = [];
+      state.notesDirty = !state.notesDirty;
     }
   },
   queueAddBar({commit}, payload){

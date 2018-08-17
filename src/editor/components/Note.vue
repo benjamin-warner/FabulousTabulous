@@ -83,11 +83,15 @@ export default {
     },
     appendSelections(number) {
       let currentNote = this.note(this.id).note;
-      this.queueNote({  });
+      if(currentNote.length < 2){
+        this.queueNote({ id: this.id, value: currentNote + number });
+      }
     },
     backspaceSelections(){
       let currentNote = this.note(this.id).note;
-      this.queueNote({  });
+      if(currentNote.length > 0){
+        this.queueNote({ id: this.id, value: currentNote.slice(0, -1) });
+      }
     }
   }
 };
