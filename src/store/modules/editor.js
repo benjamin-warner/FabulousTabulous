@@ -63,11 +63,31 @@ const actions = {
   loadTab({commit}, tab){
     commit('populateTab', tab)
   },
-  queueNote({commit, state}, payload){
-    let currentNote = state.Tab.notes[payload.id].note;
+  queueNoteBackspace({commit, state}, id){
+    if(!state.notesDirty){
+      state.changes.push({ id: id, value: '' });
+    } else {
+      let currentNote = state.Tab.notes[id].note;
+      state.changes.push({ id: id, value: currentNote.slice(0, -1) });
+    }
+    if(state.changes.length === state.noteSelections.length){
+      if(!state.notesDirty){
+        commit('pushToUndoStack', {
+          undoCallback: 'swapNoteBatch',
+          redoCallback: 'swapNoteBatch',
+          payload: state.changes
+        });
+      }
+      state.notesDirty = true;
+      commit('swapNoteBatch', state.changes);
+      state.changes = [];
+    }
+  },
+  queueNoteEntry({commit, state}, payload){
     if(!state.notesDirty){
       state.changes.push({ id: payload.id, value: payload.value });
     } else {
+      let currentNote = state.Tab.notes[payload.id].note;
       state.changes.push({ id: payload.id, value: currentNote + payload.value });
     }
     if(state.changes.length === state.noteSelections.length){
@@ -83,13 +103,16 @@ const actions = {
       state.changes = [];
     }
   },
-  commitNoteChanges({commit}){
-    commit('clearNoteSelections');
+  commitNoteChanges({state}){
+    state.noteSelections = [];
+    state.notesDirty = false;
   },
   abandonNoteChanges({commit, state}){
-    let changeToAbandon = state.undoStack.pop();
-    console.log(changeToAbandon)
-    commit(changeToAbandon.undoCallback, changeToAbandon.payload);
+    if(state.notesDirty){
+      let changeToAbandon = state.undoStack.pop();
+      commit(changeToAbandon.undoCallback, changeToAbandon.payload);
+      state.notesDirty = false;
+    }
     state.noteSelections = [];
   },
   queueAddBar({commit}, payload){

@@ -52,7 +52,8 @@ export default {
       'clearNoteSelections' 
     ]),
     ...mapActions('editor', [
-      'queueNote',
+      'queueNoteEntry',
+      'queueNoteBackspace',
       'commitNoteChanges',
       'abandonNoteChanges'
     ]),
@@ -90,13 +91,13 @@ export default {
     appendSelections(number) {
       let currentNote = this.note(this.id).note;
       if(!this.noteSelectionsDirty || currentNote.length < 2){
-        this.queueNote({ id: this.id, value: number });
+        this.queueNoteEntry({ id: this.id, value: number });
       }
     },
     backspaceSelections(){
       let currentNote = this.note(this.id).note;
       if(currentNote.length > 0){
-        this.queueNote({ id: this.id, value: currentNote.slice(0, -1) });
+        this.queueNoteBackspace(this.id);
       }
     }
   }
