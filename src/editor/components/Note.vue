@@ -27,7 +27,8 @@ export default {
   computed: {
     ...mapGetters('editor', [
       'note',
-      'isNoteSelected'
+      'isNoteSelected',
+      'noteSelectionsDirty'
     ]),
     opacity(){
       if(this.isNoteSelected(this.id)){
@@ -48,25 +49,30 @@ export default {
     ...mapMutations('editor', [
       'selectNote', 
       'deselectNote',
-      'clearNoteSelections'
+      'clearNoteSelections' 
     ]),
-    ...mapActions('editor', ['queueNote']),
+    ...mapActions('editor', [
+      'queueNote',
+      'commitNoteChanges',
+      'abandonNoteChanges'
+    ]),
     onKeyPress(evt) {
       if(this.isNoteSelected(this.id)){
-        // 0 through 9
         if (evt.key >= 0 && evt.key <= 9) {
           evt.preventDefault();
           this.appendSelections(evt.key);
         }
-        // backspace || delete
-        if (evt.keyCode === 8 || evt.keyCode === 46) {
+        if (evt.key === 'Backspace' || evt.key === 'Delete') {
           evt.preventDefault();
           this.backspaceSelections();
         }
-        // escape
-        if (evt.keyCode === 27) {
+        if(evt.key === 'Enter'){
           evt.preventDefault();
-          this.clearNoteSelections();
+          this.commitNoteChanges()
+        }
+        if (evt.key === 'Escape') {
+          evt.preventDefault();
+          this.abandonNoteChanges();
         }
       }
     },
@@ -83,8 +89,8 @@ export default {
     },
     appendSelections(number) {
       let currentNote = this.note(this.id).note;
-      if(currentNote.length < 2){
-        this.queueNote({ id: this.id, value: currentNote + number });
+      if(!this.noteSelectionsDirty || currentNote.length < 2){
+        this.queueNote({ id: this.id, value: number });
       }
     },
     backspaceSelections(){

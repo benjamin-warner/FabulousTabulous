@@ -76,9 +76,9 @@ const mutations = {
   },
   swapNoteBatch(state, batch){
     for(let payload of batch){
-      let current = state.notes[payload.id].note;
-      Vue.set(state.notes[payload.id], 'note', payload.newValue);
-      payload.newValue = current;
+      let oldNote = state.notes[payload.id].note;
+      Vue.set(state.notes[payload.id], 'note', payload.value);
+      payload.value = oldNote;
     }
   }
 }
