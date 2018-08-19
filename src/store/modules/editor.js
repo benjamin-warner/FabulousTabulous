@@ -47,7 +47,7 @@ const mutations = {
   clearRedoStack(state, commit){
     for(let change of state.redoStack){
       if(change.redoCallback === 'addBarReference'){
-        commit('deleteBar', change.id)
+        commit('deleteBar', change.payload.id);
       }
     }
     state.redoStack = [];
@@ -82,13 +82,13 @@ const actions = {
     state.changes = {};
     commit('clearRedoStack', commit);
   },
-  queueAddBar({commit}, payload){
-    payload.id = Utils.makeGUID();
-    commit('addBar', payload);
+  queueAddBar({commit}, index){
+    let id = Utils.makeGUID();
+    commit('addBar', { id: id, index: index });
     commit('pushToUndoStack', {
       undoCallback: 'removeBarReference',
       redoCallback: 'addBarReference',
-      payload: { id: payload.id, index: payload.index }
+      payload: { id: id, index: index }
     });
     commit('clearRedoStack', commit);
   },

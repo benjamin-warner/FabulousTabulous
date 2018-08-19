@@ -27,31 +27,6 @@ const getters = {
   }
 }
 
-const Helpers = {
-  createBar(state, id){
-    Vue.set(state.bars, id, { id: id, beats: [] });
-    while(state.bars[id].beats.length < 4){
-      let beatId = Utils.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: id, notes: [] });
-      while(state.beats[beatId].notes.length < 6){
-        let noteId = Utils.makeGUID();
-        Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
-        state.beats[beatId].notes.push(noteId);
-      }
-      state.bars[id].beats.push(beatId);
-    }
-  },
-  deleteBar(state, barId){
-    for(let beatId of state.bars[barId].beats){
-      for(let noteId of state.beats[beatId].notes){
-        Vue.delete(state.notes, noteId)
-      }
-      Vue.delete(state.beats, beatId);
-    }
-    Vue.delete(state.bars, barId);
-  }
-}
-
 const mutations = {
   populateTab(state, tab){
     Object.keys(tab).forEach(key => {
@@ -59,8 +34,18 @@ const mutations = {
     });
   },
   addBar(state, payload){
-    state.sections[payload.parentId].bars.splice(payload.index, 0, payload.id);
-    Helpers.createBar(state, payload.id, payload.parentId);
+    state.tab.bars.splice(payload.index, 0, payload.id);
+    Vue.set(state.bars, payload.id, { id: payload.id, beats: [] });
+    while(state.bars[payload.id].beats.length < 4){
+      let beatId = Utils.makeGUID();
+      Vue.set(state.beats, beatId, { id: beatId, parentId: payload.id, notes: [] });
+      while(state.beats[beatId].notes.length < 6){
+        let noteId = Utils.makeGUID();
+        Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
+        state.beats[beatId].notes.push(noteId);
+      }
+      state.bars[payload.id].beats.push(beatId);
+    }
   },
   addBarReference(state, payload){
     state.tab.bars.splice(payload.index, 0, payload.id);
@@ -72,7 +57,14 @@ const mutations = {
   deleteBar(state, id){
     let index = state.tab.bars.indexOf(id);
     Vue.delete(state.tab.bars, index);
-    Helpers.deleteBar(state, id);
+    console.log(id, state.bars)
+    for(let beatId of state.bars[id].beats){
+      for(let noteId of state.beats[beatId].notes){
+        Vue.delete(state.notes, noteId)
+      }
+      Vue.delete(state.beats, beatId);
+    }
+    Vue.delete(state.bars, id);
   },
   setNote(state, payload){
     state.notes[payload.id].note = payload.value;
