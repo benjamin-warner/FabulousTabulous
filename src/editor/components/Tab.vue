@@ -1,61 +1,52 @@
 <template>
-  <div class="tab">
-    <div v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-      <div class="tab-block">
-        <div>
-          <button v-on:click="queueAddSection(sectionIndex)">+</button>
-        </div>
-        <div>
-          <button v-if="sectionCount > 1" v-on:click="queueRemoveSection(section.id)">x</button>
-        </div>
-        <div>
-          <button v-on:click="queueAddSection(sectionIndex+1)">+</button>
-        </div>
-      </div>
-      <SectionComponent class="tab-block" :id="section.id"/>
-    </div>
-  </div>
+  <svg id="tab" width="1440" :height="tabHeight" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+    <g v-for="(barId, barIndex) in barList" :key="barIndex">
+      <g v-if="barIndex%4 === 0" v-for="(string, stringIndex) in tuning" :key="string">
+        <rect x="0" :y="tabLinePos(barIndex)+stringIndex*25+10+10" :width="tabLineWidth(barIndex)" height="1" style="fill: black"/>
+      </g>
+      <BarComponent :id="barId" :index="barIndex"/>
+    </g>
+  </svg>
 </template>
 
 <script>
-/* eslint-disable */
-import SectionComponent from './Section.vue'
-import EventBus from '../../eventBus.js'
-import { mapGetters, mapActions } from 'vuex'
+import BarComponent from './Bar.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Tab',
   components: {
-    SectionComponent
+    BarComponent
   },
   computed: {
-    ...mapGetters('tab', [
-      'sections',
-      'sectionCount'
-    ])
-  },
-  data: function(){
-    return {
+    ...mapGetters('editor', [
+      'barList',
+      'tuning'
+    ]),
+    tabHeight(){
+      return Math.ceil(this.barList.length/4)*155;
     }
   },
-  mounted(){
-    EventBus.$on('undo', this.undo);
-    EventBus.$on('redo', this.redo);
-  },
   methods: {
-    ...mapActions('tab',[
-      'queueAddSection',
-      'queueRemoveSection'
-    ]),
+    tabLinePos(index){
+      return Math.floor(index/4)*155;
+    },
+    tabLineWidth(index){
+      if(index >= this.barList.length - 4){
+        return (this.barList.length - index) *360;
+      }
+      else return 4*360
+    }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+#tab{
+  margin: 10px;
+}
 .tab-block{
   display: inline-block;
 }
-
 </style>

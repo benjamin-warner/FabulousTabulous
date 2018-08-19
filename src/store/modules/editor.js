@@ -1,10 +1,11 @@
-/* eslint-disable */
 import Vue from 'vue'
+import Tab from './tab.js'
+import Utils from './utils.js'
 
 const state = {
   undoStack: [],
   redoStack: [],  
-  changes: [],
+  changes: {},
   
   noteSelections: [],
   selectionPointer: 0
@@ -45,114 +46,81 @@ const mutations = {
   },
   clearRedoStack(state, commit){
     for(let change of state.redoStack){
-      if(change.type === 'removeBar'){
-        commit('deleteBar', change.id)
-      }
-      if(change.type === 'removeSection'){
-        commit('deleteSection', change.id)
+      if(change.redoCallback === 'addBarReference'){
+        commit('deleteBar', change.payload.id);
       }
     }
     state.redoStack = [];
-  },
-}
-
-const Helpers = {
-  commitNotes(commit, state, getters){
-    for(let change of state.changes){
-      let oldValue = getters.note(change.payload.id).note;
-      commit(change.mutation, change.payload);
-      change.payload.value = oldValue;
-    }
-    if(state.changes.length !== 0){
-      commit('pushToUndoStack', { type: 'noteEdited', notes: state.changes });
-      commit('clearRedoStack', commit)
-      state.changes = [];
-    }
-  },
-  revertChange(commit, getters, reversion){
-    switch(reversion.type){
-      case 'removeBar':
-        commit('addBarReference', { parentId: reversion.parentId, index: reversion.index , barId: reversion.id });
-        reversion.type = 'addBar'
-        break;      
-      case 'addBar':
-        commit('removeBarReference', { parentId: reversion.parentId, index: reversion.index });
-        reversion.type = 'removeBar';
-        break;
-      case 'addSection':
-        commit('removeSectionReference', reversion.index);
-        reversion.type = 'removeSection';
-        break;
-      case 'removeSection':
-        commit('addSectionReference', { index: reversion.index, sectionId: reversion.id });
-        reversion.type = 'addSection';
-        break;
-      case 'noteEdited':
-        for(let change of reversion.notes){
-          let oldValue = getters.note(change.payload.id).note;
-          commit(change.mutation, change.payload);
-          change.payload.value = oldValue;
-        }
-        break;
-      default:
-        break;
-    }
   }
 }
 
 const actions = {
-  queueNote({commit, state, getters}, entity){
-    if(entity.payload.value !== getters.note(entity.payload.id).note){
-      state.changes.push(entity);
-    }
-    state.selectionPointer++;
-    if(state.selectionPointer === state.noteSelections.length){
-      Helpers.commitNotes(commit, state, getters);
-      state.selectionPointer = 0;
-    }
+  loadTab({commit}, tab){
+    commit('populateTab', tab)
   },
-  queueAddBar({commit, getters}, payload){
-    commit('addBar', payload);
-    // Actions can return this id. Look into it later.
-    let id = getters.barIdViaSectionIndex({ parentId: payload.parentId, index: payload.index });
-    commit('pushToUndoStack', { type: 'addBar', parentId: payload.parentId, index: payload.index, id: id });
+  queueNote({commit, state}, id){
+    commit('selectNote', id);
+    let currentNote = state.Tab.notes[id].note;
+    Vue.set(state.changes, id, { id: id, value: currentNote });
+    commit('setNote', { id: id, value: '' });
+  },
+  dequeueNote({commit, state}, id){
+    commit('deselectNote', id);
+    commit('setNote', { id: id, value: state.changes[id].value });
+    Vue.delete(state.changes, id);
+  },
+  writeToNote({commit}, payload){
+    commit('setNote', { id: payload.id, value: payload.value });
+  },
+  commitNoteChanges({commit, state}){
+    commit('clearNoteSelections');
+    commit('pushToUndoStack', {
+      undoCallback: 'swapNoteBatch',
+      redoCallback: 'swapNoteBatch',
+      payload: state.changes
+    });
+    state.changes = {};
     commit('clearRedoStack', commit);
   },
-  queueRemoveBar({commit, getters}, barId){
-    let parent = getters.barParent(barId);
-    let index = parent.bars.indexOf(barId);
-    commit('removeBarReference', { parentId: parent.id, index: index });
-    commit('pushToUndoStack', { type: 'removeBar', parentId: parent.id, index: index, id: barId });
+  queueAddBar({commit}, index){
+    let id = Utils.makeGUID();
+    commit('addBar', { id: id, index: index });
+    commit('pushToUndoStack', {
+      undoCallback: 'removeBarReference',
+      redoCallback: 'addBarReference',
+      payload: { id: id, index: index }
+    });
     commit('clearRedoStack', commit);
   },
-  queueAddSection({commit, getters}, index){
-    // Actions can return this id. Look into it later.
-    commit('addSection', index);
-    let id = getters.sectionIdViaTabIndex(index);
-    commit('pushToUndoStack', { type: 'addSection', id: id, index: index });  
-    commit('clearRedoStack', commit);  
-  },
-  queueRemoveSection({commit, getters}, sectionId){
-    let index = getters.sectionIndex(sectionId);
-    commit('removeSectionReference', index);
-    commit('pushToUndoStack', {type: 'removeSection', index: index, id: sectionId });
+  queueRemoveBar({commit, state}, id){
+    let index = state.Tab.tab.bars.indexOf(id);
+    commit('removeBarReference', { id: id, index: index });
+    commit('pushToUndoStack', {
+      undoCallback: 'addBarReference',
+      redoCallback: 'removeBarReference',
+      payload: { id: id, index: index }
+    });
     commit('clearRedoStack', commit);
   },
-  undo({commit, state, getters}){
+  undo({commit, state}){
     let changeToUndo = state.undoStack.pop();
-    Helpers.revertChange(commit, getters, changeToUndo);
+    commit(changeToUndo.undoCallback, changeToUndo.payload);
     commit('pushToRedoStack', changeToUndo);
   },
-  redo({commit, state, getters}){
+  redo({commit, state}){
     let changeToRedo = state.redoStack.pop();
-    Helpers.revertChange(commit, getters, changeToRedo);
+    commit(changeToRedo.redoCallback, changeToRedo.payload);
     commit('pushToUndoStack', changeToRedo);
   }
 }
 
 export default {
+  namespaced: true,
   state,
   getters,
   mutations,
-  actions
+  actions,
+  modules: {
+    Tab
+  }
 }

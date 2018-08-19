@@ -1,119 +1,20 @@
-/* eslint-disable */
 import Vue from 'vue'
-import Editor from './editor.js'
+import Utils from './utils.js'
 
-const state = {
-  tuning: [
-    'e',
-    'B',
-    'G',
-    'D',
-    'A',
-    'E'
-  ],
-  tab: {
-    sections: ['0']
-  },
-  sections: {
-    '0':{
-      id: '0',
-      bars: ['0']
-    },
-  },
-  bars: {
-    '0':{
-      id: '0',
-      parentId: '0',
-      beats: ['0', '1', '2', '3']
-    }
-  },
-  beats: {
-    '0':{
-      id: '0',
-      parentId: '0',
-      notes: ['0','1','2','3','4','5']
-    },
-    '1':{
-      id: '1',
-      parentId: '0',
-      notes: ['6','7','8','9','10','11']
-    },
-    '2':{
-      id:'2',
-      parentId:'0',
-      notes: ['12','13','14','15','16','17']
-    },
-    '3':{
-      id:'3',
-      parentId: '0',
-      notes: ['18','19','20','21','22','23']
-    }
-  },
-  notes: {
-    '0': { parentId: '0', id: '0', note: ''},
-    '1': { id: '1', parentId: '0', note: ''},
-    '2': { id: '2', parentId: '0', note: ''},
-    '3': { id: '3', parentId: '0', note: ''},
-    '4': { id: '4', parentId: '0', note: ''},
-    '5': { id: '5', parentId: '0', note: ''},
-
-    '6': { id: '6', parentId: '1', note: ''},
-    '7': { id: '7', parentId: '1', note: ''},
-    '8': { id: '8', parentId: '1', note: ''},
-    '9': { id: '9', parentId: '1', note: ''},
-    '10': { id: '10', parentId: '1', note: ''},
-    '11': { id: '11', parentId: '1', note: ''},
-
-    '12': { id: '12', parentId: '2', note: ''},
-    '13': { id: '13', parentId: '2', note: ''},
-    '14': { id: '14', parentId: '2', note: ''},
-    '15': { id: '15', parentId: '2', note: ''},
-    '16': { id: '16', parentId: '2', note: ''},
-    '17': { id: '17', parentId: '2', note: ''},
-
-    '18': { id: '18', parentId: '3', note: ''},
-    '19': { id: '19', parentId: '3', note: ''},
-    '20': { id: '20', parentId: '3', note: ''},
-    '21': { id: '21', parentId: '3', note: ''},
-    '22': { id: '22', parentId: '3', note: ''},
-    '23': { id: '23', parentId: '3', note: ''}
-  }
-}
+const state = {}
 
 const getters = {
-  sections: (state) => {
-    return state.tab.sections.map(sectionId => state.sections[sectionId]);
+  tuning: (state) => {
+    return state.tuning;
   },
-  sectionIdViaTabIndex: (state) => (index) => {
-    return state.tab.sections[index];
+  barList: (state) => {
+    return state.tab.bars;
   },
-  sectionIndex: (state) => (sectionId) => {
-    return state.tab.sections.indexOf(sectionId);
+  bar: (state) => (id) => {
+    return state.bars[id];
   },
-  sectionCount: (state) => {
-    return state.tab.sections.length;
-  },
-  barsOfSection: (state) => (sectionId) => {
-    return state.sections[sectionId].bars.map(barId => state.bars[barId]);
-  },
-  barIdViaSectionIndex: (state) => (payload) => {
-    return state.sections[payload.parentId].bars[payload.index];
-  },
-  barParent: (state) => (barId) => {
-    let parentId = state.bars[barId].parentId;
-    return state.sections[parentId];
-  },
-  barCountOfSection: (state) => (sectionId) => {
-    let barReferences = state.sections[sectionId].bars;
-    return Object.keys(barReferences).length;
-  },
-  isLastBar: (state) => (barId) => {
-    let parentId = state.bars[barId].parentId;
-    let barReferences = state.sections[parentId].bars;
-    return barReferences[barReferences.length-1] === barId;
-  },
-  beatsOfBar: (state) => (barId) => {
-    return state.bars[barId].beats.map(beatId => state.beats[beatId]);
+  beatsOfBar: (state) => (id) => {
+    return state.bars[id].beats.map(beatId => state.beats[beatId]);
   },
   beat: (state) => (beatId) => {
     return state.beats[beatId];
@@ -126,95 +27,59 @@ const getters = {
   }
 }
 
-const Helpers = {
-  makeGUID() {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-    )
+const mutations = {
+  populateTab(state, tab){
+    Object.keys(tab).forEach(key => {
+      Vue.set(state, key, tab[key]);
+    });
   },
-  createSection(state, index){
-    let sectionId = this.makeGUID();
-    state.tab.sections.splice(index, 0, sectionId);
-    Vue.set(state.sections, sectionId, { id: sectionId, bars: [] });
-    
-    let barId = this.makeGUID();
-    this.createBar(state, barId, sectionId);
-    state.sections[sectionId].bars.push(barId);
-  },
-  createBar(state, barId, parentId){
-    Vue.set(state.bars, barId, { id: barId, parentId: parentId, beats: [] });
-    while(state.bars[barId].beats.length < 4){
-      let beatId = this.makeGUID();
-      Vue.set(state.beats, beatId, { id: beatId, parentId: barId, notes: [] });
+  addBar(state, payload){
+    state.tab.bars.splice(payload.index, 0, payload.id);
+    Vue.set(state.bars, payload.id, { id: payload.id, beats: [] });
+    while(state.bars[payload.id].beats.length < 4){
+      let beatId = Utils.makeGUID();
+      Vue.set(state.beats, beatId, { id: beatId, parentId: payload.id, notes: [] });
       while(state.beats[beatId].notes.length < 6){
-        let noteId = this.makeGUID();
+        let noteId = Utils.makeGUID();
         Vue.set(state.notes, noteId, {id: noteId, parentId: beatId, note: ''});
         state.beats[beatId].notes.push(noteId);
       }
-      state.bars[barId].beats.push(beatId);
+      state.bars[payload.id].beats.push(beatId);
     }
   },
-  deleteSection(state, sectionId){
-    for(let barId of state.sections[sectionId].bars){
-      this.deleteBar(state, barId)
-    }
-    Vue.delete(state.sections, sectionId)
+  addBarReference(state, payload){
+    state.tab.bars.splice(payload.index, 0, payload.id);
   },
-  deleteBar(state, barId){
-    for(let beatId of state.bars[barId].beats){
+  removeBarReference(state, payload){
+    let index = state.tab.bars.indexOf(payload.id);
+    state.tab.bars.splice(index, 1,);
+  },
+  deleteBar(state, id){
+    let index = state.tab.bars.indexOf(id);
+    Vue.delete(state.tab.bars, index);
+    console.log(id, state.bars)
+    for(let beatId of state.bars[id].beats){
       for(let noteId of state.beats[beatId].notes){
         Vue.delete(state.notes, noteId)
       }
       Vue.delete(state.beats, beatId);
     }
-    Vue.delete(state.bars, barId);
-  }
-}
-
-const mutations = {
-  addSection(state, index){
-    Helpers.createSection(state, index);
+    Vue.delete(state.bars, id);
   },
-  addSectionReference(state, payload){
-    state.tab.sections.splice(payload.index, 0, payload.sectionId);
+  setNote(state, payload){
+    state.notes[payload.id].note = payload.value;
   },
-  removeSectionReference(state, index){
-    state.tab.sections.splice(index, 1);
-  },
-  deleteSection(state, sectionId){
-    Helpers.deleteSection(state, sectionId);
-  },
-  addBar(state, payload){
-    let barId = Helpers.makeGUID();
-    state.sections[payload.parentId].bars.splice(payload.index, 0, barId);
-    Helpers.createBar(state, barId, payload.parentId);
-  },
-  addBarReference(state, payload){
-    let barRefs = state.sections[payload.parentId].bars;
-    barRefs.splice(payload.index, 0, payload.barId);
-  },
-  removeBarReference(state, payload){
-    let barRefs = state.sections[payload.parentId].bars;
-    barRefs.splice(payload.index, 1,);
-  },
-  deleteBar(state, barId){
-    let parentId = state.bars[barId].parentId;
-    let parent = state.sections[parentId];
-    let barIndex = parent.bars.indexOf(barId);
-    Vue.delete(parent.bars, barIndex);
-    Helpers.deleteBar(state, barId);
-  },
-  replaceNote(state, payload){
-    Vue.set(state.notes[payload.id], 'note', payload.value);
+  swapNoteBatch(state, batch){
+    for(let id in batch){
+      let oldNote = state.notes[id].note;
+      Vue.set(state.notes[id], 'note', batch[id].value);
+      batch[id].value = oldNote;
+    }
   }
 }
 
 export default {
-  namespaced: true,
   state,
   getters,
-  mutations,
-  modules: {
-    Editor
-  }
+  mutations
 }

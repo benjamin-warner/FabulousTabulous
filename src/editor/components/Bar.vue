@@ -1,36 +1,49 @@
 <template>
-  <svg width="320" height="145">
-    <rect x="0" y="10" width="1" height="125" style="fill: black"/>
-    <g v-for="(string, stringIndex) in tuning" :key="string">
-      <rect x="0" :y="stringIndex*25+10" width="320" height="1" style="fill: black"/>
-    </g>
-    <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :xIndex="beatIndex"/>
-    <rect x="319" y="10" width="1" height="125" style="fill: black"/>
+  <svg id="bar" width="360" height="155" :x="xPos" :y="yPos" @mouseover="hovered = true" @mouseout="hovered = false">
+    <rect x="0" y="0" width="360" height="155" style="opacity: 0"/>
+    <rect x="0" y="0" width="10" height="10" :class="hovered ? 'show' : 'hide'" @click="queueAddBar(index)"/>
+    <rect x="175" y="0" width="10" height="10" :class="hovered ? 'show' : 'hide'" @click="queueRemoveBar(id)"/>
+    <rect x="350" y="0" width="10" height="10" :class="hovered ? 'show' : 'hide'" @click="queueAddBar(index+1)"/>
+    <line x1="0" y1="20" x2="0" y2="145" style="stroke: black; stroke-width: 2;"/>
+    <BeatComponent v-for="(beat, beatIndex) in beatsOfBar(id)" :key="beatIndex" :id="beat.id" :beatIndex="beatIndex"/>
+    <line x1="360" y1="20" x2="360" y2="145" style="stroke: black; stroke-width: 2;"/>
   </svg>
 </template>
 
 <script>
-/* eslint-disable */
-import EventBus from '../../eventBus.js'
 import BeatComponent from './Beat.vue'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
-  name: "Bar",
+  name: 'Bar',
   components: {
     BeatComponent
   },
   props: {
     id: String,
+    index: Number,
   },
   computed: {
-    ...mapState('tab', ['tuning']),
-    ...mapGetters('tab', ['beatsOfBar', 'isLastBar']),
+    ...mapGetters('editor', [
+      'beatsOfBar',
+    ]),
+    xPos(){
+      return this.index%4*360;
+    },
+    yPos(){
+      return Math.floor(this.index/4)*145;
+    }
   },
   data: function() {
     return {
       hovered: false
     };
+  },
+  methods: {
+    ...mapActions('editor', [
+      'queueRemoveBar',
+      'queueAddBar'
+      ])
   }
 }
 </script>
@@ -39,6 +52,15 @@ export default {
 #bar{
   padding-top: 4px;
   white-space:nowrap;
+}
+
+.show{
+  fill: black;
+  opacity: 1;
+}
+
+.hide{
+  opacity: 0;
 }
 
 .hover{
