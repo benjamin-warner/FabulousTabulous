@@ -74,11 +74,14 @@ const mutations = {
     Vue.delete(state.tab.bars, index);
     Helpers.deleteBar(state, id);
   },
+  setNote(state, payload){
+    state.notes[payload.id].note = payload.value;
+  },
   swapNoteBatch(state, batch){
-    for(let payload of batch){
-      let oldNote = state.notes[payload.id].note;
-      Vue.set(state.notes[payload.id], 'note', payload.value);
-      payload.value = oldNote;
+    for(let id in batch){
+      let oldNote = state.notes[id].note;
+      Vue.set(state.notes[id], 'note', batch[id].value);
+      batch[id].value = oldNote;
     }
   }
 }

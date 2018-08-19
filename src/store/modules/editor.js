@@ -5,10 +5,9 @@ import Utils from './utils.js'
 const state = {
   undoStack: [],
   redoStack: [],  
-  changes: [],
+  changes: {},
   
   noteSelections: [],
-  notesDirty: false,
   selectionPointer: 0
 }
 
@@ -19,9 +18,6 @@ const getters = {
   getNoteSelectionsOfBeat: (state, getters) => (beatId) =>{
     let beatNotes = getters.beat(beatId).notes;
     return state.noteSelections.filter(selection => beatNotes.includes(selection));
-  },
-  noteSelectionsDirty: (state) => {
-    return state.notesDirty;
   },
   canUndo: (state) => {
     return state.undoStack.length !== 0;
@@ -41,7 +37,6 @@ const mutations = {
   },
   clearNoteSelections(state){
     state.noteSelections = [];
-    state.notesDirty = false;
   },
   pushToUndoStack(state, payload){
     state.undoStack.push(payload);
@@ -63,57 +58,29 @@ const actions = {
   loadTab({commit}, tab){
     commit('populateTab', tab)
   },
-  queueNoteBackspace({commit, state}, id){
-    if(!state.notesDirty){
-      state.changes.push({ id: id, value: '' });
-    } else {
-      let currentNote = state.Tab.notes[id].note;
-      state.changes.push({ id: id, value: currentNote.slice(0, -1) });
-    }
-    if(state.changes.length === state.noteSelections.length){
-      if(!state.notesDirty){
-        commit('pushToUndoStack', {
-          undoCallback: 'swapNoteBatch',
-          redoCallback: 'swapNoteBatch',
-          payload: state.changes
-        });
-      }
-      state.notesDirty = true;
-      commit('swapNoteBatch', state.changes);
-      state.changes = [];
-    }
+  queueNote({commit, state}, id){
+    commit('selectNote', id);
+    let currentNote = state.Tab.notes[id].note;
+    Vue.set(state.changes, id, { id: id, value: currentNote });
+    commit('setNote', { id: id, value: '' });
   },
-  queueNoteEntry({commit, state}, payload){
-    if(!state.notesDirty){
-      state.changes.push({ id: payload.id, value: payload.value });
-    } else {
-      let currentNote = state.Tab.notes[payload.id].note;
-      state.changes.push({ id: payload.id, value: currentNote + payload.value });
-    }
-    if(state.changes.length === state.noteSelections.length){
-      if(!state.notesDirty){
-        commit('pushToUndoStack', {
-          undoCallback: 'swapNoteBatch',
-          redoCallback: 'swapNoteBatch',
-          payload: state.changes
-        });
-      }
-      state.notesDirty = true;
-      commit('swapNoteBatch', state.changes);
-      state.changes = [];
-    }
+  dequeueNote({commit, state}, id){
+    commit('deselectNote', id);
+    commit('setNote', { id: id, value: state.changes[id].value });
+    Vue.delete(state.changes, id);
   },
-  commitNoteChanges({state}){
-    state.noteSelections = [];
-    state.notesDirty = false;
+  writeToNote({commit}, payload){
+    commit('setNote', { id: payload.id, value: payload.value });
   },
-  abandonNoteChanges({commit, state}){
-    if(state.notesDirty){
-      let changeToAbandon = state.undoStack.pop();
-      commit(changeToAbandon.undoCallback, changeToAbandon.payload);
-      state.notesDirty = false;
-    }
-    state.noteSelections = [];
+  commitNoteChanges({commit, state}){
+    commit('clearNoteSelections');
+    commit('pushToUndoStack', {
+      undoCallback: 'swapNoteBatch',
+      redoCallback: 'swapNoteBatch',
+      payload: state.changes
+    });
+    state.changes = {};
+    commit('clearRedoStack', commit);
   },
   queueAddBar({commit}, payload){
     payload.id = Utils.makeGUID();

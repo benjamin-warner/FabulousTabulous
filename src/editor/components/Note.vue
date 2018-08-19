@@ -28,7 +28,6 @@ export default {
     ...mapGetters('editor', [
       'note',
       'isNoteSelected',
-      'noteSelectionsDirty'
     ]),
     opacity(){
       if(this.isNoteSelected(this.id)){
@@ -47,15 +46,13 @@ export default {
   },
   methods: {
     ...mapMutations('editor', [
-      'selectNote', 
-      'deselectNote',
       'clearNoteSelections' 
     ]),
     ...mapActions('editor', [
-      'queueNoteEntry',
-      'queueNoteBackspace',
+      'queueNote',
+      'dequeueNote',
       'commitNoteChanges',
-      'abandonNoteChanges'
+      'writeToNote'
     ]),
     onKeyPress(evt) {
       if(this.isNoteSelected(this.id)){
@@ -73,31 +70,31 @@ export default {
         }
         if (evt.key === 'Escape') {
           evt.preventDefault();
-          this.abandonNoteChanges();
+          this.dequeueNote(this.id);
         }
       }
     },
     selectSingle(id) {
       this.clearNoteSelections();
-      this.selectNote(id);
+      this.queueNote(id);
     },
     selectMulti(id) {
       if(this.isNoteSelected(id)){
-        this.deselectNote(id)        
+        this.dequeueNote(id)        
       } else {
-        this.selectNote(id);
+        this.queueNote(id);
       }
     },
     appendSelections(number) {
       let currentNote = this.note(this.id).note;
-      if(!this.noteSelectionsDirty || currentNote.length < 2){
-        this.queueNoteEntry({ id: this.id, value: number });
+      if(currentNote.length < 2){
+        this.writeToNote({ id: this.id, value: currentNote + number });
       }
     },
     backspaceSelections(){
       let currentNote = this.note(this.id).note;
       if(currentNote.length > 0){
-        this.queueNoteBackspace(this.id);
+        this.writeToNote({ id: this.id, value: currentNote.slice(0, -1) });
       }
     }
   }
