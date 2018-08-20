@@ -57,7 +57,6 @@ const mutations = {
   deleteBar(state, id){
     let index = state.tab.bars.indexOf(id);
     Vue.delete(state.tab.bars, index);
-    console.log(id, state.bars)
     for(let beatId of state.bars[id].beats){
       for(let noteId of state.beats[beatId].notes){
         Vue.delete(state.notes, noteId)
