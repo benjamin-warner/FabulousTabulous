@@ -22,7 +22,7 @@ export default {
       'notesOfBeat',
     ])
   }
-};
+}
 </script>
 
 <style scoped>

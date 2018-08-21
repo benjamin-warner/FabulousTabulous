@@ -8,7 +8,6 @@ const state = {
   changes: {},
   
   noteSelections: [],
-  selectionPointer: 0
 }
 
 const getters = {
@@ -54,7 +53,7 @@ const mutations = {
   }
 }
 
-const actions = {
+const actions = { 
   loadTab({commit}, tab){
     commit('populateTab', tab)
   },
@@ -68,6 +67,12 @@ const actions = {
     commit('deselectNote', id);
     commit('setNote', { id: id, value: state.changes[id].value });
     Vue.delete(state.changes, id);
+  },
+  dequeueAllNotes({commit, state}){
+    for(let id in state.changes){
+      commit('deselectNote', id);
+      commit('setNote', { id: id, value: state.changes[id].value });
+    }
   },
   writeToNote({commit}, payload){
     commit('setNote', { id: payload.id, value: payload.value });
