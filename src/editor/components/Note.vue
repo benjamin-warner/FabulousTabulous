@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: 'note',
@@ -45,12 +45,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations('editor', [
-      'clearNoteSelections' 
-    ]),
     ...mapActions('editor', [
       'queueNote',
       'dequeueNote',
+      'dequeueAllNotes',
       'commitNoteChanges',
       'writeToNote'
     ]),
@@ -75,7 +73,7 @@ export default {
       }
     },
     selectSingle(id) {
-      this.clearNoteSelections();
+      this.dequeueAllNotes();
       this.queueNote(id);
     },
     selectMulti(id) {
@@ -98,7 +96,7 @@ export default {
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>
