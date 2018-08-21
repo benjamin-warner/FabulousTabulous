@@ -1,5 +1,5 @@
 <template>
-  <svg id="beat" width="20" height="145" :x="beatIndex*72+72-10" y="10">
+  <svg id="beat" width="20" height="180" :x="beatIndex*72+72-10" y="15">
     <NoteComponent v-for="(note, index) in notesOfBeat(id)" :key="index" :id="note.id" :index="index"/>
   </svg>
 </template>
