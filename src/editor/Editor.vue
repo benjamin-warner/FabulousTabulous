@@ -1,12 +1,14 @@
 <template>
   <div id="editor">
+    <input type="text" placeholder="old but gold" v-model="loadName"><button @click="getTab">Load</button><br>
+    <input type="text" placeholder="cool new one" v-model="saveName"><button @click="saveTab">Save</button>
     <TabComponent/>
   </div>
 </template>
 
 <script>
 import TabComponent from './components/Tab.vue'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'Editor',
@@ -14,6 +16,7 @@ export default {
     TabComponent
   },
   computed: {
+    ...mapState('editor', ['Tab']),
     ...mapGetters('editor', ['canUndo', 'canRedo'])
   },
   created() {
@@ -85,6 +88,12 @@ export default {
   destroyed() {
     document.removeEventListener('keydown', this.onKeyPress);
   },
+  data() {
+    return {
+      saveName: '',
+      loadName: ''
+    }
+  },
   methods: {
     ...mapActions('editor', ['undo', 'redo', 'loadTab']),
     onKeyPress(evt) {
@@ -116,6 +125,21 @@ export default {
         if (this.canRedo) {
           this.redo();
         }
+      }
+    },
+    saveTab(){
+      if(localStorage.getItem(this.saveName) == null){
+        localStorage.setItem(this.saveName, JSON.stringify(this.Tab));
+      } else {
+        alert('Tab already exists!');
+      }
+    },
+    getTab(){
+      let tab = JSON.parse(localStorage.getItem(this.loadName));
+      if(tab === null){
+        alert('No such tab exists!');
+      } else {
+        this.loadTab(tab);
       }
     }
   }
