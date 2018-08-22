@@ -1,6 +1,10 @@
 <template>
   <div id="editor">
-    <input type="text" placeholder="old but gold" v-model="loadName"><button @click="getTab">Load</button><br>
+    <select v-model="selectedTab">
+      <option disabled value="">Choose a tab</option>
+      <option v-for="(tabName, key) in savedTabs" :key="key">{{ tabName }}</option>
+    </select>
+    <button v-if="selectedTab !== ''" @click="getTab">Load</button><br>
     <input type="text" placeholder="cool new one" v-model="saveName"><button @click="saveTab">Save</button>
     <TabComponent/>
   </div>
@@ -21,6 +25,7 @@ export default {
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
+    this.savedTabs = JSON.parse(localStorage.getItem('saved-tab-list'));
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
@@ -91,7 +96,8 @@ export default {
   data() {
     return {
       saveName: '',
-      loadName: ''
+      savedTabs: [],
+      selectedTab: ''
     }
   },
   methods: {
@@ -128,19 +134,19 @@ export default {
       }
     },
     saveTab(){
-      if(localStorage.getItem(this.saveName) == null){
-        localStorage.setItem(this.saveName, JSON.stringify(this.Tab));
-      } else {
+      let savedTabList = JSON.parse(localStorage.getItem('saved-tab-list')) || [];
+      if(savedTabList.includes(this.saveName)){
         alert('Tab already exists!');
+      } else {
+        savedTabList.push(this.saveName);
+        this.savedTabs = savedTabList;
+        localStorage.setItem('saved-tab-list', JSON.stringify(savedTabList));
+        localStorage.setItem(this.saveName, JSON.stringify(this.Tab));
       }
     },
     getTab(){
-      let tab = JSON.parse(localStorage.getItem(this.loadName));
-      if(tab === null){
-        alert('No such tab exists!');
-      } else {
-        this.loadTab(tab);
-      }
+      let tab = JSON.parse(localStorage.getItem(this.selectedTab));
+      this.loadTab(tab);
     }
   }
 };
