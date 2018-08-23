@@ -27,6 +27,12 @@ const getters = {
 }
 
 const mutations = {
+  resetEditor(state){
+    state.undoStack = [];
+    state.redoStack = [];
+    state.changes = {};
+    state.noteSelections = [];
+  },
   selectNote(state, id){
     state.noteSelections.push(id);
   },
@@ -55,6 +61,7 @@ const mutations = {
 
 const actions = { 
   loadTab({commit}, tab){
+    commit('resetEditor');
     commit('populateTab', tab)
   },
   queueNote({commit, state}, id){
