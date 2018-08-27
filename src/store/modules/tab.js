@@ -1,7 +1,14 @@
 import Vue from 'vue'
 import Utils from './utils.js'
 
-const state = {}
+const state = {
+  name: null,
+  tab: [],
+  tuning: [],
+  bars: {},
+  beats: {},
+  notes: {},
+}
 
 const getters = {
   tuning: (state) => {
@@ -28,6 +35,9 @@ const getters = {
 }
 
 const mutations = {
+  setTabName(state, name){
+    state.name = name;
+  },
   populateTab(state, tab){
     Object.keys(tab).forEach(key => {
       Vue.set(state, key, tab[key]);

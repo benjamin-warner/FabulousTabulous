@@ -1,18 +1,22 @@
 <template>
   <div id="editor">
     <select v-model="selectedTab">
-      <option disabled value="">Choose a tab</option>
-      <option v-for="(tabName, key) in savedTabs" :key="key">{{ tabName }}</option>
+      <option disabled value="">Load tab...</option>
+      <option v-for="(name, key) in savedTabs" :key="key">{{ name }}</option>
     </select>
-    <button v-if="selectedTab !== ''" @click="getTab">Load</button><br>
-    <input type="text" placeholder="cool new one" v-model="saveName"><button @click="saveTab">Save</button>
+
+    <button v-if="selectedTab !== ''" @click="getTab">Load</button>
+    <br>
+    <button v-if="Tab.name !== undefined" @click="saveTab">Save</button>
+    <input type="text" placeholder="New tab name" v-model="saveName">
+    <button @click="saveTabAs">Save as</button>
     <TabComponent/>
   </div>
 </template>
 
 <script>
 import TabComponent from './components/Tab.vue'
-import { mapActions, mapGetters, mapState } from 'vuex'
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'Editor',
@@ -102,6 +106,7 @@ export default {
   },
   methods: {
     ...mapActions('editor', ['undo', 'redo', 'loadTab']),
+    ...mapMutations('editor', ['setTabName']),
     onKeyPress(evt) {
       // Because Steve Jobs.
       if (navigator.appVersion.indexOf('Mac') !== -1) {
@@ -134,11 +139,16 @@ export default {
       }
     },
     saveTab(){
+      console.log(this.Tab)
+      localStorage.setItem(this.Tab.Name, JSON.stringify(this.Tab));
+    },
+    saveTabAs(){
       let savedTabList = JSON.parse(localStorage.getItem('saved-tab-list')) || [];
       if(savedTabList.includes(this.saveName)){
         alert('Tab already exists!');
       } else {
         savedTabList.push(this.saveName);
+        this.setTabName(this.saveName);
         this.savedTabs = savedTabList;
         localStorage.setItem('saved-tab-list', JSON.stringify(savedTabList));
         localStorage.setItem(this.saveName, JSON.stringify(this.Tab));
