@@ -7,7 +7,7 @@
 
     <button v-if="selectedTab !== ''" @click="getTab">Load</button>
     <br>
-    <button v-if="Tab.name !== undefined" @click="saveTab">Save</button>
+    <button v-if="tabName !== undefined" @click="saveTab">Save</button>
     <input type="text" placeholder="New tab name" v-model="saveName">
     <button @click="saveTabAs">Save as</button>
     <TabComponent/>
@@ -24,8 +24,12 @@ export default {
     TabComponent
   },
   computed: {
-    ...mapState('editor', ['Tab']),
-    ...mapGetters('editor', ['canUndo', 'canRedo'])
+    ...mapGetters('editor', [
+      'canUndo',
+      'canRedo',
+      'tabName',
+      'generateSaveTab'
+    ])
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
@@ -139,8 +143,7 @@ export default {
       }
     },
     saveTab(){
-      console.log(this.Tab)
-      localStorage.setItem(this.Tab.Name, JSON.stringify(this.Tab));
+      localStorage.setItem(this.tabName, JSON.stringify(this.generateSaveTab));
     },
     saveTabAs(){
       let savedTabList = JSON.parse(localStorage.getItem('saved-tab-list')) || [];
@@ -151,7 +154,9 @@ export default {
         this.setTabName(this.saveName);
         this.savedTabs = savedTabList;
         localStorage.setItem('saved-tab-list', JSON.stringify(savedTabList));
-        localStorage.setItem(this.saveName, JSON.stringify(this.Tab));
+        let tabClone = JSON.stringify(this.generateSaveTab);
+        console.log(this.generateSaveTab);
+        localStorage.setItem(this.saveName, tabClone);
       }
     },
     getTab(){

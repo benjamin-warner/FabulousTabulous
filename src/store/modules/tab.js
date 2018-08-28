@@ -3,14 +3,17 @@ import Utils from './utils.js'
 
 const state = {
   name: null,
-  tab: [],
   tuning: [],
+  tab: {},
   bars: {},
   beats: {},
   notes: {},
 }
 
 const getters = {
+  tabName: (state) => {
+    return state.name;
+  },
   tuning: (state) => {
     return state.tuning;
   },
@@ -31,6 +34,30 @@ const getters = {
   },
   note: (state) => (noteId) => {
     return state.notes[noteId];
+  },
+  generateSaveTab: (state) =>{
+    let tabClone = {
+      name: state.name,
+      tuning: state.tuning,
+      tab: state.tab,
+      bars: {},
+      beats: {},
+      notes: {}
+    }
+    tabClone.tab.bars.forEach( barId => {
+      tabClone.bars[barId] = state.bars[barId];
+    });
+    Object.keys(tabClone.bars).forEach( barId => {
+      for(let beatId of tabClone.bars[barId].beats){
+        tabClone.beats[beatId] = state.beats[beatId];
+      }
+    });
+    Object.keys(tabClone.beats).forEach( beatId => {
+      for(let noteId of tabClone.beats[beatId].notes){
+        tabClone.notes[noteId] = state.notes[noteId];
+      }
+    });
+    return tabClone;
   }
 }
 
