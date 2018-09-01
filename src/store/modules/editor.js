@@ -27,6 +27,12 @@ const getters = {
 }
 
 const mutations = {
+  resetEditor(state){
+    state.undoStack = [];
+    state.redoStack = [];
+    state.changes = {};
+    state.noteSelections = [];
+  },
   selectNote(state, id){
     state.noteSelections.push(id);
   },
@@ -55,7 +61,33 @@ const mutations = {
 
 const actions = { 
   loadTab({commit}, tab){
+    commit('resetEditor');
     commit('populateTab', tab)
+  },
+  generateSaveTab({state, getters}){
+    let tabClone = {
+      name: state.Tab.name,
+      tuning: state.Tab.tuning,
+      tab: state.Tab.tab,
+      bars: {},
+      beats: {},
+      notes: {}
+    }
+    tabClone.tab.bars.forEach( barId => {
+      tabClone.bars[barId] = getters.bar(barId);
+    });
+    Object.keys(tabClone.bars).forEach( barId => {
+      for(let beatId of tabClone.bars[barId].beats){
+        tabClone.beats[beatId] = state.Tab.beats[beatId];
+      }
+    });
+    Object.keys(tabClone.beats).forEach( beatId => {
+      for(let noteId of tabClone.beats[beatId].notes){
+        tabClone.notes[noteId] = state.Tab.notes[noteId];
+      }
+    });
+    console.log(tabClone);
+    return tabClone;
   },
   queueNote({commit, state}, id){
     commit('selectNote', id);

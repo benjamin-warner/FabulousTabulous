@@ -1,9 +1,19 @@
 import Vue from 'vue'
 import Utils from './utils.js'
 
-const state = {}
+const state = {
+  name: null,
+  tuning: [],
+  tab: {},
+  bars: {},
+  beats: {},
+  notes: {},
+}
 
 const getters = {
+  tabName: (state) => {
+    return state.name;
+  },
   tuning: (state) => {
     return state.tuning;
   },
@@ -24,10 +34,37 @@ const getters = {
   },
   note: (state) => (noteId) => {
     return state.notes[noteId];
+  },
+  generateSaveTab: (state) =>{
+    let tabClone = {
+      name: state.name,
+      tuning: state.tuning,
+      tab: state.tab,
+      bars: {},
+      beats: {},
+      notes: {}
+    }
+    tabClone.tab.bars.forEach( barId => {
+      tabClone.bars[barId] = state.bars[barId];
+    });
+    Object.keys(tabClone.bars).forEach( barId => {
+      for(let beatId of tabClone.bars[barId].beats){
+        tabClone.beats[beatId] = state.beats[beatId];
+      }
+    });
+    Object.keys(tabClone.beats).forEach( beatId => {
+      for(let noteId of tabClone.beats[beatId].notes){
+        tabClone.notes[noteId] = state.notes[noteId];
+      }
+    });
+    return tabClone;
   }
 }
 
 const mutations = {
+  setTabName(state, name){
+    state.name = name;
+  },
   populateTab(state, tab){
     Object.keys(tab).forEach(key => {
       Vue.set(state, key, tab[key]);

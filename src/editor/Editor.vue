@@ -1,12 +1,22 @@
 <template>
   <div id="editor">
+    <select v-model="selectedTab">
+      <option disabled value="">Load tab...</option>
+      <option v-for="(name, key) in savedTabs" :key="key">{{ name }}</option>
+    </select>
+
+    <button v-if="selectedTab !== ''" @click="getTab">Load</button>
+    <br>
+    <button v-if="tabName !== undefined" @click="saveTab">Save</button>
+    <input type="text" placeholder="New tab name" v-model="saveName">
+    <button @click="saveTabAs">Save as</button>
     <TabComponent/>
   </div>
 </template>
 
 <script>
 import TabComponent from './components/Tab.vue'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState, mapMutations } from 'vuex'
 
 export default {
   name: 'Editor',
@@ -14,10 +24,16 @@ export default {
     TabComponent
   },
   computed: {
-    ...mapGetters('editor', ['canUndo', 'canRedo'])
+    ...mapGetters('editor', [
+      'canUndo',
+      'canRedo',
+      'tabName',
+      'generateSaveTab'
+    ])
   },
   created() {
     document.addEventListener('keydown', this.onKeyPress);
+    this.savedTabs = JSON.parse(localStorage.getItem('saved-tab-list'));
     this.loadTab({
       tuning: ['e', 'B', 'G', 'D', 'A', 'E'],
       tab: {
@@ -85,8 +101,16 @@ export default {
   destroyed() {
     document.removeEventListener('keydown', this.onKeyPress);
   },
+  data() {
+    return {
+      saveName: '',
+      savedTabs: [],
+      selectedTab: ''
+    }
+  },
   methods: {
     ...mapActions('editor', ['undo', 'redo', 'loadTab']),
+    ...mapMutations('editor', ['setTabName']),
     onKeyPress(evt) {
       // Because Steve Jobs.
       if (navigator.appVersion.indexOf('Mac') !== -1) {
@@ -117,6 +141,27 @@ export default {
           this.redo();
         }
       }
+    },
+    saveTab(){
+      localStorage.setItem(this.tabName, JSON.stringify(this.generateSaveTab));
+    },
+    saveTabAs(){
+      let savedTabList = JSON.parse(localStorage.getItem('saved-tab-list')) || [];
+      if(savedTabList.includes(this.saveName)){
+        alert('Tab already exists!');
+      } else {
+        savedTabList.push(this.saveName);
+        this.setTabName(this.saveName);
+        this.savedTabs = savedTabList;
+        localStorage.setItem('saved-tab-list', JSON.stringify(savedTabList));
+        let tabClone = JSON.stringify(this.generateSaveTab);
+        console.log(this.generateSaveTab);
+        localStorage.setItem(this.saveName, tabClone);
+      }
+    },
+    getTab(){
+      let tab = JSON.parse(localStorage.getItem(this.selectedTab));
+      this.loadTab(tab);
     }
   }
 };
